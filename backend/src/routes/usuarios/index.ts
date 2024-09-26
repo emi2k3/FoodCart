@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from "fastify"
 import { UsuarioPostSchema } from "../../types/usuario.js";
 import { join } from "node:path";
 import { writeFileSync } from "node:fs";
-import { query } from "../../../services/database.js";
+import { query } from "../../services/database.js";
 
 const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post('/', {
