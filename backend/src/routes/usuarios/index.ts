@@ -26,6 +26,13 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
     }
   });
 
+  fastify.get('/', {
+    // falta authenticate
+    handler: async function (request, reply) {
+      const response = await query("SELECT * from personas");
+      return response.rows;
+    }
+  });
 
 }
 
