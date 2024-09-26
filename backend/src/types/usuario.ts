@@ -1,4 +1,4 @@
-import { Static, Type } from '@sinclair/typebox';
+ import { Static, Type } from '@sinclair/typebox';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_-])[A-Za-z\d!@#$%^&_-]{8,20}$/;
 
