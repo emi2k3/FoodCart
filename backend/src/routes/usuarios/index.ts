@@ -34,6 +34,32 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
     }
   });
 
+  fastify.put('/', {
+    schema: {
+      body: UsuarioPostSchema
+    },
+    handler: async function (request, reply) {
+      const postUsuario = request.body as UsuarioPostSchema;
+
+      if (postUsuario.contraseña != postUsuario.repetirContraseña) {
+        return reply.status(400).send({ error: "Las contraseñas no coinciden" });
+      }
+
+      const fileBuffer = (postUsuario.foto as Buffer);
+      const fileName = join(process.cwd(), "archivos", postUsuario.email + ".jpg")
+      writeFileSync(fileName, fileBuffer);
+
+      await query("UPDATE direccion set numero = $1 , calle = $2 , apto = $3 WHERE id_usuario = $2)",
+        [postUsuario.numero, postUsuario.calle, postUsuario.apto]) //TODO Acá va el id que vamos a sacar de JWT
+
+      await query("UPDATE telefono set numeroTel = $1 where id_usuario = $2)",
+        [postUsuario.telefono]) //TODO Acá va el id que vamos a sacar de JWT
+
+      await query("UPDATE personas set nombre = $1, email = $2, contraseña = crypt($3, gen_salt('bf')))",
+        [postUsuario.nombre, postUsuario.email, postUsuario.contraseña])
+      return reply.status(201).send("El usuario se creó correctamente")
+    }
+  });
 }
 
 export default usuarioRoute;
