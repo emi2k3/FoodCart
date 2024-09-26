@@ -135,7 +135,7 @@ document.getElementById("RegistroForm").addEventListener('submit', async functio
 
 async function fetchPost(persona) {
     try {
-        const response = await fetch("http://localhost/backend/personas", {
+        const response = await fetch("http://localhost/backend/usuarios", {
             method: 'POST',
             body: persona
         })
