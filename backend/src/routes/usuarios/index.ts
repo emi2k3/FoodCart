@@ -34,6 +34,58 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
     }
   });
 
+  fastify.put('/', {
+    onRequest: [fastify.authenticate],
+    schema: {
+      body: UsuarioPostSchema
+    },
+    handler: async function (request, reply) {
+      const postUsuario = request.body as UsuarioPostSchema;
+
+      const id = (request.params as { id: string }).id;
+      const idt = request.user.id;
+      if (id != idt) {
+        return reply.status(401).send({ error: "No tiene permisos para hacer esto." });
+      }
+
+      if (postUsuario.contraseña != postUsuario.repetirContraseña) {
+        return reply.status(400).send({ error: "Las contraseñas no coinciden" });
+      }
+
+      const fileBuffer = (postUsuario.foto as Buffer);
+      const fileName = join(process.cwd(), "archivos", postUsuario.email + ".jpg")
+      writeFileSync(fileName, fileBuffer);
+      try{
+        await query("UPDATE direccion set numero = $1 , calle = $2 , apto = $3 WHERE id_usuario = $4)",
+          [postUsuario.numero, postUsuario.calle, postUsuario.apto, idt])
+
+      }
+      catch
+      {
+        return reply.status(500).send("Hubo un error al intentar actualizar la dirección.");
+      }
+
+      try {
+        await query("UPDATE telefono set numeroTel = $1 where id_usuario = $2)",
+          [postUsuario.telefono,idt]) 
+    
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar actualizar el telefono.");
+        
+      }
+    
+      try {
+        await query("UPDATE personas set nombre = $1, email = $2, contraseña = crypt($3, gen_salt('bf')) where id = $4)",
+        [postUsuario.nombre, postUsuario.email, postUsuario.contraseña, idt])
+        return reply.status(201).send("El usuario se editó correctamente")
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar actualizar al usuario.");
+
+     }
+
+      
+    }
+  });
 }
 
 export default usuarioRoute;
