@@ -138,6 +138,8 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
         console.error("Error al intentar crear la imagen:", error);
         return reply.status(500).send("Hubo un error al intentar crear la imagen")
       }
+
+      if (postUsuario.apto != null || postUsuario.apto != undefined) {
       try {
         await query("UPDATE direccion set numero = $1 , calle = $2 , apto = $3 WHERE id_usuario = $4",
           [postUsuario.numero, postUsuario.calle, postUsuario.apto, idt])
@@ -146,7 +148,17 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       catch {
         return reply.status(500).send("Hubo un error al intentar actualizar la dirección.");
       }
+    }
+    else{
+      try {
+        await query("UPDATE direccion set numero = $1 , calle = $2  WHERE id_usuario = $4",
+          [postUsuario.numero, postUsuario.calle, idt])
 
+      }
+      catch {
+        return reply.status(500).send("Hubo un error al intentar actualizar la dirección.");
+      }
+    }
       try {
         await query("UPDATE telefono set numeroTel = $1 where id_usuario = $2",
           [postUsuario.telefono, idt])
