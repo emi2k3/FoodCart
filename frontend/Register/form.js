@@ -1,11 +1,16 @@
 var nameinput = document.getElementById('nombre');
 var surnameinput = document.getElementById('apellido');
 var emailinput = document.getElementById('email');
+var telefonoinput = document.getElementById('telefono');
+var calleinput = document.getElementById('calle');
+var numeroinput = document.getElementById('numero');
+var aptoinput = document.getElementById('apto');
 var passwordinput = document.getElementById('password');
-var repeatPasswordinput = document.getElementById('repeatPassword');
+var repeatPasswordinput = document.getElementById('repeatedPassword');
 
 function validarNombre(input) {
     const nombre = input.value;
+    const regex = /\d/g;
     if (nombre === '') {
         error(input, 'Su nombre no puede estar vacío.');
         return false;
@@ -60,6 +65,53 @@ function validarEmail(input) {
     }
 }
 
+function validarTelefono(input) {
+    const telefono = input.value;
+    if (telefono === '') {
+        error(input, 'Su telefono no puede estar vacío.');
+        return false;
+        // falta capaz alguna validación más específica    
+    } else {
+        exito(input);
+        return true;
+    }
+}
+
+function validarCalle(input) {
+    const calle = input.value;
+    if (calle === '') {
+        error(input, 'El campo calle no puede estar vacío.');
+        return false;
+        // falta capaz alguna validación más específica    
+    } else {
+        exito(input);
+        return true;
+    }
+}
+
+function validarNumero(input) {
+    const numero = input.value;
+    if (numero === '') {
+        error(input, 'El campo numero no puede estar vacío.');
+        return false;
+        // falta capaz alguna validación más específica    
+    } else {
+        exito(input);
+        return true;
+    }
+}
+
+function validarApto(input) {
+    const apto = input.value;
+    if (apto === '') {
+        exito(input);
+        return true;
+    } else {
+        exito(input);
+        return true;
+    }
+}
+
 function validarContraseña(input) {
     const password = input.value;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/;
@@ -68,7 +120,7 @@ function validarContraseña(input) {
         error(input, 'La contraseña no puede estar vacía.');
         return false;
     } else if (!passwordRegex.test(password)) {
-        error(input, 'Entre 8 y 20 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales.');
+        error(input, 'Entre 8 y 20 caracteres, incluyendo may, min, números y caracteres especiales.');
         return false;
     } else {
         exito(input);
@@ -80,8 +132,8 @@ function validarRepetirContraseña(contraseñaPrincipal, contraseñaRepetida) {
     const password = contraseñaPrincipal.value;
     const repetirContraseña = contraseñaRepetida.value;
 
-    if (!validarPassword(contraseñaPrincipal)) {
-        error(repetirContraseña, 'La contraseña principal no es válida.');
+    if (!validarContraseña(contraseñaPrincipal) || password === '') {
+        error(contraseñaRepetida, 'La contraseña principal no es válida.');
         return false;
     }
 
@@ -97,39 +149,57 @@ function validarRepetirContraseña(contraseñaPrincipal, contraseñaRepetida) {
     return true;
 }
 
-function error(input, errormessage) {
-    const div = input.parentElement;
-    const small = div.querySelector('small');
-    small.innerText = errormessage;
-    div.className = "divinputerror";
+function error(input, errorMessage) {
+    const containerform = input.closest('.containerform');
+    const small = containerform.querySelector('small');
+    small.innerText = errorMessage;
+    containerform.classList.remove('exito');
+    containerform.classList.add('error');
 }
 
+
 function exito(input) {
-    const div = input.parentElement;
-    const small = div.querySelector('small');
+    const containerform = input.closest('.containerform');
+    const small = containerform.querySelector('small');
     small.innerText = "";
-    div.className = "divinputsuccess";
+    containerform.classList.remove('error');
+    containerform.classList.add('exito');
 }
 
 nameinput.addEventListener("blur", () => validarNombre(nameinput));
 surnameinput.addEventListener("blur", () => validarApellido(surnameinput));
 emailinput.addEventListener("blur", () => validarEmail(emailinput));
+telefonoinput.addEventListener("blur", () => validarTelefono(telefonoinput));
+calleinput.addEventListener("blur", () => validarCalle(calleinput));
+numeroinput.addEventListener("blur", () => validarNumero(numeroinput));
+aptoinput.addEventListener("blur", () => validarApto(aptoinput));
 passwordinput.addEventListener("blur", () => validarContraseña(passwordinput));
 repeatPasswordinput.addEventListener("blur", () => validarRepetirContraseña(passwordinput, repeatPasswordinput));
 
-document.getElementById("RegistroForm").addEventListener('submit', async function (event) {
+document.getElementById("registroForm").addEventListener('submit', async function (event) {
     event.preventDefault();
 
     const nombreValido = validarNombre(nameinput);
     const apellidoValido = validarApellido(surnameinput);
     const emailValido = validarEmail(emailinput);
+    const telefonoValido = validarTelefono(telefonoinput);
+    const calleValida = validarCalle(calleinput);
+    const numeroValido = validarNumero(numeroinput);
+    const aptoValido = validarApto(aptoinput);
     const contraseñaValida = validarContraseña(passwordinput);
     const repetirContraseñaValida = validarRepetirContraseña(passwordinput, repeatPasswordinput);
 
-    if (nombreValido && apellidoValido && emailValido && contraseñaValida && repetirContraseñaValida) {
-        var formData = new FormData(document.getElementById("RegistroForm"));
+    if (nombreValido && apellidoValido && emailValido && telefonoValido && calleValida && numeroValido
+        && aptoValido && contraseñaValida && repetirContraseñaValida) {
+
+        var formData = new FormData(document.getElementById("registroForm"));
+        formData.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+        });
         await fetchPost(formData);
-        window.location.href = "../login/index.html";
+        window.location.href = '../Login/index.html'
+    } else {
+        alert('Por favor, corrija los errores antes de enviar el formulario.');
     }
 })
 
