@@ -20,7 +20,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             };
 
             const checkResult = await query(
-                "SELECT id_persona FROM personas WHERE email = $1 AND contraseña = crypt($2, contraseña)",
+                "SELECT id FROM usuario WHERE email = $1 AND contraseña = crypt($2, contraseña)",
                 [email, contraseña]
             );
             const rows = checkResult.rows;
