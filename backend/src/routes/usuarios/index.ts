@@ -14,6 +14,7 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       const postUsuario = request.body as UsuarioPostSchema;
       var direccionId: QueryResult<any>;
       var telefonoId: QueryResult<any>;
+      var usuarioId: QueryResult<any>;
 
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
         return reply.status(400).send({ error: "Las contraseñas no coinciden" });
@@ -23,8 +24,14 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       const fileName = join(process.cwd(), "Resources", postUsuario.email + ".jpg")
       writeFileSync(fileName, fileBuffer);
       try {
-        direccionId = await query("INSERT INTO direccion (numero, calle, apto) VALUES ($1, $2, $3) RETURNING id",
-          [postUsuario.numero, postUsuario.calle, postUsuario.apto])
+        if (postUsuario.apto != null || postUsuario.apto != undefined) {
+          direccionId = await query("INSERT INTO direccion (numero, calle, apto) VALUES ($1, $2, $3) RETURNING id",
+            [postUsuario.numero, postUsuario.calle, postUsuario.apto])
+        } else {
+          direccionId = await query("INSERT INTO direccion (numero, calle) VALUES ($1, $2) RETURNING id",
+            [postUsuario.numero, postUsuario.calle])
+        }
+
       } catch (error) {
         console.error("Error al intentar crear la dirección:", error);
         return reply.status(500).send("Hubo un error al intentar crear la dirección")
@@ -40,14 +47,20 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       }
 
       try {
-        await query(`INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
+        usuarioId = await query(`INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
           VALUES ($1,$2, $3, crypt($4, gen_salt('bf')), $5, $6)`,
           [postUsuario.nombre, postUsuario.apellido, postUsuario.email, postUsuario.contraseña, direccionId.rows[0].id, telefonoId.rows[0].id])
 
         await query("UPDATE direccion SET id_usuario = (SELECT id FROM usuario WHERE email = $1) WHERE id = $2",
           [postUsuario.email, direccionId.rows[0].id]);
+
         await query("UPDATE telefono SET id_usuario = (SELECT id FROM usuario WHERE email = $1) WHERE id = $2",
           [postUsuario.email, telefonoId.rows[0].id]);
+
+        await query(`INSERT INTO usuarios_direcciones(usuario_id, direccion_id) 
+            VALUES ($1,$2)`,
+          [usuarioId.rows[0].id, direccionId.rows[0].id])
+
 
         return reply.status(201).send("El usuario se creó correctamente");
       }
