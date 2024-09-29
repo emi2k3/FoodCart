@@ -47,14 +47,14 @@ document.getElementById("LogInForm").addEventListener('submit', async function (
         await fetchPost(formData);
 
         if (localStorage.getItem("token" != null) || localStorage.getItem("token") != undefined) {
-            window.location.href = "../principal/index.html"
+            window.location.href = "../Main/index.html"
         }
     }
 });
 
 async function fetchPost(persona) {
     try {
-        const response = await fetch("http://localhost/backend/auth/login", {
+        const response = await fetch("https://localhost/backend/auth/login", {
             method: 'POST',
             body: persona
         })
