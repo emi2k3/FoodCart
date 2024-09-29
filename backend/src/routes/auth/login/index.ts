@@ -3,15 +3,23 @@ import { query } from "../../../services/database.js";
 
 const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.post('/', {
+        
         schema: {
+            tags: ['Auth'],
             body: {
                 type: "object",
                 properties: {
-                    email: { type: "string", format: "email" },
-                    contraseña: { type: "string" },
+                    email: { type: "string", format: "email" , examples : ["emilio.rodriguez@example.com"]},
+                    contraseña: { type: "string", examples : ["Contraseña123!"] },
                 },
                 required: ["email", "contraseña"],
             },
+            response: {
+                200: {
+                  description: 'Token del usuario'
+                }
+              }
+            
         },
         handler: async function (request, reply) {
             const { email, contraseña } = request.body as {

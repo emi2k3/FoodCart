@@ -12,12 +12,13 @@ const options: SwaggerOptions = {
         },
         servers: [
             {
-                url: 'http://localhost/backend/docs',
+                url: 'https://localhost/backend',
                 description: 'Development server'
             }
         ],
         tags: [
-            { name: 'Usuarios', description: 'CRUD de usuarios' }
+            { name: 'Usuarios', description: 'CRUD de usuarios' },
+            { name: 'Auth', description: 'Autorización para logearse' }
         ],
         components: {
             securitySchemes: {
@@ -25,13 +26,20 @@ const options: SwaggerOptions = {
                     type: 'apiKey',
                     name: 'apiKey',
                     in: 'header'
+                },
+                BearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT' 
                 }
+                
             }
         },
         externalDocs: {
             url: 'https://swagger.io',
             description: 'Find more info here'
         }
+        
     }
 };
 

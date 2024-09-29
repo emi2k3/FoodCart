@@ -54,7 +54,6 @@ export const UsuarioPostSchema = Type.Object(
         }),
         foto: Type.Optional(
             Type.Object({},
-            { examples: [{}] }
         ))
     },
     { additionalProperties: false }

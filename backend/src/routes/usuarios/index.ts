@@ -99,13 +99,13 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
     schema: {
       tags: ['Usuarios'],
       body: UsuarioPostSchema,
-      querystring: {
+      security: [{ BearerAuth: [] }],
+      params: {
         type: 'object',
         properties: {
-          id: {  
-            examples: ["1"]
-          }
-        }
+          id: { type: 'string' }
+        },
+        required: ['id']
       },
       response: {
         200: {
