@@ -40,25 +40,25 @@ const googleRoutes: FastifyPluginAsync = async (
             .json();
 
         console.log({ userInfo });
-        const res = await query('SELECT * FROM personas WHERE email=$1', [userInfo.email]);
+        const res = await query('SELECT * FROM usuario WHERE email=$1', [userInfo.email]);
 
         //Si no existe el mail en la bd
         if (res.rowCount === 0) {
             ``
-            const formUrl = `https://localhost/personas/alta/form.html?email=${encodeURIComponent(userInfo.email)}&given_name=${encodeURIComponent(userInfo.given_name)}&family_name=${encodeURIComponent(userInfo.family_name || '')}`;
+            const formUrl = `https://localhost/Register/form.html?email=${encodeURIComponent(userInfo.email)}&given_name=${encodeURIComponent(userInfo.given_name)}&family_name=${encodeURIComponent(userInfo.family_name || '')}`;
             return reply.redirect(formUrl);
         }
 
-        /*const payload = {
+        const payload = {
             id: res.rows[0].id_persona,
             email: res.rows[0].email,
             roles: ["admin", "user"],
             expiresIn: '3h'
-        };*/
+        };
 
-        //const token = fastify.jwt.sign(payload);
-        //const url = `https://localhost/personas/index.html?token=${token}`;
-        //return reply.redirect(url);
+        const token = fastify.jwt.sign(payload);
+        const url = `https://localhost/Main/index.html?token=${token}`;
+        return reply.redirect(url);
     });
 }
 
