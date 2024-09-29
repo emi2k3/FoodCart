@@ -7,9 +7,15 @@ import { QueryResult } from "pg";
 
 const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post('/', {
-    schema: {
-      body: UsuarioPostSchema
-    },
+  schema: {
+    tags: ['Usuarios'],
+    body: UsuarioPostSchema,
+    response: {
+      201: {
+        description: 'El usuario se creó correctamente'
+      }
+    }
+  },
     handler: async function (request, reply) {
       const postUsuario = request.body as UsuarioPostSchema;
       var direccionId: QueryResult<any>;
@@ -18,10 +24,19 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
         return reply.status(400).send({ error: "Las contraseñas no coinciden" });
       }
-
-      const fileBuffer = (postUsuario.foto as Buffer);
-      const fileName = join(process.cwd(), "Resources", postUsuario.email + ".jpg")
-      writeFileSync(fileName, fileBuffer);
+      try{
+        if(postUsuario.foto!=null || postUsuario.foto!=undefined)
+          {
+            const fileBuffer = (postUsuario.foto as Buffer);
+            const fileName = join(process.cwd(), "Resources", postUsuario.email + ".jpg")
+            writeFileSync(fileName, fileBuffer);
+          }
+      }
+      catch (error){
+        console.error("Error al intentar crear la imagen:", error);
+        return reply.status(500).send("Hubo un error al intentar crear la imagen")
+      }
+     
       try {
         direccionId = await query("INSERT INTO direccion (numero, calle, apto) VALUES ($1, $2, $3) RETURNING id",
           [postUsuario.numero, postUsuario.calle, postUsuario.apto])

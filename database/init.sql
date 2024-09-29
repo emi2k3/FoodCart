@@ -11,7 +11,7 @@ create table if not exists direccion (
     id serial primary key,
     numero varchar(10) not null,
     calle varchar(20) not null,
-    apto varchar(5) not null
+    apto varchar(5) null
 );
 
 -- Crear la tabla usuario que hará referencia a direccion y telefono más adelante
@@ -23,6 +23,13 @@ create table if not exists usuario (
     id_direccion integer not null,
     id_telefono integer not null,
     contraseña varchar(225) not null
+);
+
+CREATE TABLE if not exists usuarios_direcciones (
+    usuario_id INT,
+    CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id),
+    direccion_id INT,
+    CONSTRAINT fk_direccion FOREIGN KEY (direccion_id) REFERENCES direccion(id)
 );
 
 -- Alterar tabla usuario para añadir claves foráneas a direccion y telefono
