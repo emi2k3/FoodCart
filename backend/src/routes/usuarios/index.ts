@@ -80,11 +80,25 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       return response.rows;
     }
   });
-
-  fastify.put('/', {
+  
+  fastify.put('/:id', {
     onRequest: [fastify.authenticate],
     schema: {
-      body: UsuarioPostSchema
+      tags: ['Usuarios'],
+      body: UsuarioPostSchema,
+      querystring: {
+        type: 'object',
+        properties: {
+          id: {  
+            examples: ["1"]
+          }
+        }
+      },
+      response: {
+        200: {
+          description: 'El usuario se editó correctamente'
+        }
+      }
     },
     handler: async function (request, reply) {
       const postUsuario = request.body as UsuarioPostSchema;
@@ -99,9 +113,18 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
         return reply.status(400).send({ error: "Las contraseñas no coinciden" });
       }
 
-      const fileBuffer = (postUsuario.foto as Buffer);
-      const fileName = join(process.cwd(), "archivos", postUsuario.email + ".jpg")
-      writeFileSync(fileName, fileBuffer);
+      try{
+        if(postUsuario.foto!=null || postUsuario.foto!=undefined)
+          {
+            const fileBuffer = (postUsuario.foto as Buffer);
+            const fileName = join(process.cwd(), "Resources", postUsuario.email + ".jpg")
+            writeFileSync(fileName, fileBuffer);
+          }
+      }
+      catch (error){
+        console.error("Error al intentar crear la imagen:", error);
+        return reply.status(500).send("Hubo un error al intentar crear la imagen")
+      }
       try {
         await query("UPDATE direccion set numero = $1 , calle = $2 , apto = $3 WHERE id_usuario = $4",
           [postUsuario.numero, postUsuario.calle, postUsuario.apto, idt])
@@ -114,10 +137,8 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       try {
         await query("UPDATE telefono set numeroTel = $1 where id_usuario = $2",
           [postUsuario.telefono, idt])
-
       } catch (error) {
         return reply.status(500).send("Hubo un error al intentar actualizar el telefono.");
-
       }
 
       try {
@@ -126,10 +147,7 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
         return reply.status(201).send("El usuario se editó correctamente")
       } catch (error) {
         return reply.status(500).send("Hubo un error al intentar actualizar al usuario.");
-
       }
-
-
     }
   });
 }
