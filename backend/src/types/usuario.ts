@@ -5,9 +5,9 @@ const passwordRegex =
 
 export const UsuarioPostSchema = Type.Object(
     {
-        nombre: Type.String({ 
-            minLength: 3, 
-            maxLength: 20, 
+        nombre: Type.String({
+            minLength: 3,
+            maxLength: 20,
             pattern: "^[^\\d]+$",
             examples: ["Emilio"]
         }),
@@ -17,45 +17,44 @@ export const UsuarioPostSchema = Type.Object(
             pattern: "^[^\\d]+$",
             examples: ["Rodriguez"]
         }),
-        email: Type.String({ 
+        email: Type.String({
             format: "email",
             examples: ["emilio.rodriguez@example.com"]
-            
+
         }),
-        telefono: Type.String({ 
-            minLength: 3, 
+        telefono: Type.String({
+            minLength: 3,
             maxLength: 20,
-            examples: ["099471882"] 
+            examples: ["099471882"]
         }),
-        calle: Type.String({ 
+        calle: Type.String({
             maxLength: 20,
             examples: ["Calle"]
 
         }),
-        numero: Type.String({ 
+        numero: Type.String({
             maxLength: 10,
-            examples:["123"] 
+            examples: ["123"]
         }),
-        apto: Type.String({  
+        apto: Type.String({
             maxLength: 5,
-            examples:["A1"] 
+            examples: ["A11"]
         }),
         contraseña: Type.String({
             minLength: 5,
             maxLength: 20,
             pattern: passwordRegex.source,
-            examples:["Contraseña123!"]
+            examples: ["Contraseña123!"]
         }),
         repetirContraseña: Type.String({
             minLength: 5,
             maxLength: 20,
             pattern: passwordRegex.source,
-            examples:["Contraseña123!"]
+            examples: ["Contraseña123!"]
         }),
         foto: Type.Optional(
             Type.Object({},
-            { examples: [{}] }
-        ))
+            ))
     },
     { additionalProperties: false }
 );
