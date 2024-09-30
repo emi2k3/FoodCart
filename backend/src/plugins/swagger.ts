@@ -18,7 +18,12 @@ const options: SwaggerOptions = {
         ],
         tags: [
             { name: 'Usuarios', description: 'CRUD de usuarios' },
-            { name: 'Auth', description: 'Autorización para logearse' }
+            { name: 'Auth', description: 'Autorización para logearse' },
+            { name: 'Bebidas', description: 'CRUD de bebidas' },
+            { name: 'Locales', description: 'CRUD de locales' },
+            { name: 'Pedidos', description: 'CRUD de pedidos' },
+            { name: 'Productos', description: 'CRUD de productos' },
+
         ],
         components: {
             securitySchemes: {

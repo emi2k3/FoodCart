@@ -9,6 +9,7 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
   fastify.post('/', {
     schema: {
       tags: ['Usuarios'],
+      description: "Crear un usuario",
       body: UsuarioPostSchema,
       response: {
         201: {
@@ -102,6 +103,7 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
     onRequest: [fastify.authenticate],
     schema: {
       tags: ['Usuarios'],
+      description: "Editar un usuario",
       body: UsuarioPostSchema,
       security: [{ BearerAuth: [] }],
       params: {
@@ -135,7 +137,7 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       }
 
       try {
-        if (postUsuario.foto != null || postUsuario.foto != undefined) {
+        if (postUsuario.foto && Object.keys(postUsuario.foto).length > 0) {
           const fileBuffer = (postUsuario.foto as Buffer);
           const fileName = join(process.cwd(), "Resources", postUsuario.email + ".jpg");
           writeFileSync(fileName, fileBuffer);
@@ -169,20 +171,20 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       }
 
       try {
-        await query("UPDATE personas set nombre = $1, email = $2, contraseña = crypt($3, gen_salt('bf')) WHERE id = $4",
+        await query("UPDATE usuario set nombre = $1, email = $2, contraseña = crypt($3, gen_salt('bf')) WHERE id = $4",
           [postUsuario.nombre, postUsuario.email, postUsuario.contraseña, idt]);
         return reply.status(201).send("El usuario se editó correctamente");
       } catch (error) {
-        return reply.status(500).send("Hubo un error al intentar actualizar al usuario.");
+        return reply.status(500).send(error);
       }
     }
   });
-
   fastify.delete("/:id", {
     onRequest: [fastify.authenticate],
     schema: {
       description: "Borrar un usuario",
       tags: ["Usuarios"],
+      security: [{ BearerAuth: [] }],
       summary: "Borrar un usuario",
       params: {
         type: "object",
@@ -203,23 +205,12 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       try {
         await query("DELETE FROM usuario WHERE id = $1", [id]);
       } catch (error) {
-        return reply.status(500).send("Hubo un error al intentar borrar al usuario.");
-      }
-
-      try {
-        await query("DELETE FROM usuarios_direcciones WHERE usuario_id = $1", [id]);
-      } catch (error) {
-        return reply.status(500).send("Hubo un error al intentar borrar la relación usuario-dirección.");
-      }
-
-      try {
-        await query("DELETE FROM telefono WHERE id_usuario = $1", [id]);
-      } catch (error) {
-        return reply.status(500).send("Hubo un error al intentar borrar el teléfono.");
+        return reply.status(500).send(error);
       }
       return reply.status(204).send();
     }
   });
+  
 };
 
 export default usuarioRoute;
