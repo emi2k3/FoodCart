@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from "fastify"
+import { FastifyPluginAsync } from "fastify";
 import { UsuarioPostSchema } from "../../types/usuario.js";
 import { join } from "node:path";
 import { writeFileSync } from "node:fs";
@@ -23,7 +23,9 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       var usuarioId: QueryResult<any>;
 
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
-        return reply.status(400).send({ error: "Las contraseñas no coinciden" });
+        return reply
+          .status(400)
+          .send({ error: "Las contraseñas no coinciden" });
       }
 
       if (postUsuario.foto && Object.keys(postUsuario.foto).length > 0) {
@@ -127,11 +129,15 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       const id = (request.params as { id: string }).id;
       const idt = request.user.id;
       if (id != idt) {
-        return reply.status(401).send({ error: "No tiene permisos para hacer esto." });
+        return reply
+          .status(401)
+          .send({ error: "No tiene permisos para hacer esto." });
       }
 
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
-        return reply.status(400).send({ error: "Las contraseñas no coinciden" });
+        return reply
+          .status(400)
+          .send({ error: "Las contraseñas no coinciden" });
       }
 
       try {
@@ -178,10 +184,58 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
           [postUsuario.nombre, postUsuario.email, postUsuario.contraseña, idt])
         return reply.status(201).send("El usuario se editó correctamente")
       } catch (error) {
+        return reply
+          .status(500)
+          .send("Hubo un error al intentar actualizar al usuario.");
+      }
+    },
+  });
+
+  fastify.delete("/:id", {
+    onRequest: [fastify.authenticate],
+    schema: {
+      description: "Borrar un usuario",
+      tags: ["Usuarios"],
+      summary: "Borrar un usuario",
+      params: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+        },
+        required: ["id"],
+      },
+    },
+    handler: async function (request, reply) {
+      const id = (request.params as { id: string }).id;
+      const idt = request.user.id;
+      if (id != idt) {
+        return reply
+          .status(401)
+          .send({ error: "No tiene permisos para hacer esto." });
+      }
+      try {
+        await query("DELETE FROM usuario WHERE id = $1", [id]);
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar borrar al usuario.");
+      }
+
+      try {
+        await query("DELETE FROM usuarios_direcciones WHERE usuario_id = $1", [id]);
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar borrar la relación usuario-dirección.");
+      }
+
+      try {
+        await query("DELETE FROM telefono WHERE id_usuario = $1", [id]);
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar borrar el telefono.");
+      }
+      return reply.status(204).send();
+    },
         return reply.status(500).send("Hubo un error al intentar actualizar al usuario.");
       }
     }
-  });
-}
 
+  });
+};
 export default usuarioRoute;
