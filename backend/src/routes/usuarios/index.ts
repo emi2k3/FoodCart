@@ -158,6 +158,9 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
   fastify.delete("/:id", {
     onRequest: [fastify.authenticate],
     schema: {
+      description: "Borrar un usuario",
+      tags: ["Usuarios"],
+      summary: "Borrar un usuario",
       params: {
         type: "object",
         properties: {
@@ -181,9 +184,9 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       }
 
       try {
-        await query("DELETE FROM direccion WHERE id_usuario = $1", [id]);
+        await query("DELETE FROM usuarios_direcciones WHERE usuario_id = $1", [id]);
       } catch (error) {
-        return reply.status(500).send("Hubo un error al intentar borrar la dirección.");
+        return reply.status(500).send("Hubo un error al intentar borrar la relación usuario-dirección.");
       }
 
       try {
