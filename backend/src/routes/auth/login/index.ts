@@ -36,11 +36,10 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 return reply.unauthorized("Tu correo o contraseña es incorrecto");
             }
 
-            const id_personas = rows[0].id_persona;
+            const id_usuario = rows[0].id;
             const token = fastify.jwt.sign({
                 email,
-                id: id_personas,
-                roles: ["admin", "user"],
+                id: id_usuario,
                 expiresIn: '3h'
             });
             reply.send({ token });
