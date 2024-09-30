@@ -150,13 +150,23 @@ const usuarioRoute: FastifyPluginAsync = async (
           .send({ error: "No tiene permisos para hacer esto." });
       }
       try {
-        await query("DELETE FROM personas WHERE id = $1", [id]);
-        return reply.status(204).send();
+        await query("DELETE FROM usuario WHERE id = $1", [id]);
       } catch (error) {
-        return reply
-          .status(500)
-          .send("Hubo un error al intentar borrar al usuario.");
+        return reply.status(500).send("Hubo un error al intentar borrar al usuario.");
       }
+
+      try {
+        await query("DELETE FROM direccion WHERE id_usuario = $1", [id]);
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar borrar la dirección.");
+      }
+
+      try {
+        await query("DELETE FROM telefono WHERE id_usuario = $1", [id]);
+      } catch (error) {
+        return reply.status(500).send("Hubo un error al intentar borrar el telefono.");
+      }
+      return reply.status(204).send();
     },
   });
 };
