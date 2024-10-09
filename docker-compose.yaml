@@ -16,10 +16,13 @@ services:
       - GOOGLE_ID=${GOOGLE_ID}
       - GOOGLE_SECRET=${GOOGLE_SECRET}
   frontend:
-    image: nginx:alpine
+    image: frontend
     container_name: frontend
+    build:
+      context: ./frontend
     volumes:
-      - ./frontend/:/usr/share/nginx/html
+      - ./frontend/:/frontend
+    command: sh -c "npm install && npm start"
   database:
     image: database
     container_name: database
