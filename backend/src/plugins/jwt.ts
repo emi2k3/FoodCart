@@ -3,9 +3,8 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
 const jwtOptions: FastifyJWTOptions = {
-    secret: process.env.JWTSECRET
+    secret: process.env.JWTSECRET as string
 }
-
 export default fp<FastifyJWTOptions>(async (fastify) => {
     fastify.register(jwt, jwtOptions);
     fastify.decorate("authenticate", async function (request: FastifyRequest, reply: FastifyReply) {

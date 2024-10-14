@@ -36,10 +36,11 @@ export const UsuarioPostSchema = Type.Object(
             maxLength: 10,
             examples: ["123"]
         }),
-        apto: Type.String({
-            maxLength: 5,
-            examples: ["A11"]
-        }),
+        apto: Type.Optional(
+            Type.String({
+                maxLength: 5,
+                examples: ["A11"]
+            })),
         contraseña: Type.String({
             minLength: 5,
             maxLength: 20,
@@ -53,8 +54,7 @@ export const UsuarioPostSchema = Type.Object(
             examples: ["Contraseña123!"]
         }),
         foto: Type.Optional(
-            Type.Object({},
-            ))
+            Type.Object({}))
     },
     { additionalProperties: false }
 );

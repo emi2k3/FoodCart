@@ -3,7 +3,6 @@ import { UsuarioPostSchema } from "../../types/usuario.js";
 import { join } from "node:path";
 import { writeFileSync } from "node:fs";
 import { query } from "../../services/database.js";
-import { QueryResult } from "pg";
 
 const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post('/', {
@@ -19,10 +18,6 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
     },
     handler: async function (request, reply) {
       const postUsuario = request.body as UsuarioPostSchema;
-      var direccionId: QueryResult<any>;
-      var telefonoId: QueryResult<any>;
-      var usuarioId: QueryResult<any>;
-
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
         return reply
           .status(400)
@@ -39,41 +34,86 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
           return reply.status(500).send("Hubo un error al intentar crear la imagen");
         }
       }
-
       try {
         if (postUsuario.apto != null || postUsuario.apto != undefined) {
-          direccionId = await query("INSERT INTO direccion (numero, calle, apto) VALUES ($1, $2, $3) RETURNING id",
-            [postUsuario.numero, postUsuario.calle, postUsuario.apto]);
+          await query(`
+            WITH direccionid AS (
+              INSERT INTO direccion (numero, calle, apto) 
+              VALUES ($1, $2, $3) 
+              RETURNING id
+            ),
+            telefonoid AS (
+              INSERT INTO telefono (numeroTel) 
+              VALUES ($8) 
+              RETURNING id
+            ),
+            usuarioid AS(
+              INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
+              VALUES ($4, $5, $6, crypt($7, gen_salt('bf')), (SELECT id FROM direccionid), (SELECT id FROM telefonoid)) 
+              RETURNING id
+            ),
+            updatedireccion AS
+            (
+              UPDATE direccion SET id_usuario = (SELECT id FROM usuarioid) 
+              WHERE id = (SELECT id FROM direccionid)
+              RETURNING *
+            ),
+            updatedtelefono AS
+            (
+              UPDATE telefono SET id_usuario = (SELECT id FROM usuarioid) 
+              WHERE id = (SELECT id FROM telefonoid) 
+              RETURNING *
+            )
+            INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ((SELECT id FROM usuarioid), (SELECT id FROM direccionid));`,
+            [postUsuario.numero, postUsuario.calle, postUsuario.apto, postUsuario.nombre,
+            postUsuario.apellido, postUsuario.email, postUsuario.contraseña, postUsuario.telefono],);
         } else {
-          direccionId = await query("INSERT INTO direccion (numero, calle) VALUES ($1, $2) RETURNING id",
-            [postUsuario.numero, postUsuario.calle]);
+          await query(`
+            WITH direccionid AS (
+              INSERT INTO direccion (numero, calle) 
+              VALUES ($1, $2) 
+              RETURNING id
+            ),
+            telefonoid AS (
+              INSERT INTO telefono (numeroTel) 
+              VALUES ($7) 
+              RETURNING id
+            ),
+            usuarioid AS(
+              INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
+              VALUES ($3, $4, $5, crypt($6, gen_salt('bf')), (SELECT id FROM direccionid), (SELECT id FROM telefonoid)) 
+              RETURNING id
+            ),
+            updatedireccion AS
+            (
+              UPDATE direccion SET id_usuario = (SELECT id FROM usuarioid) 
+              WHERE id = (SELECT id FROM direccionid)
+              RETURNING *
+            ),
+            updatedtelefono AS
+            (
+              UPDATE telefono SET id_usuario = (SELECT id FROM usuarioid) 
+              WHERE id = (SELECT id FROM telefonoid) 
+              RETURNING *
+            )
+            INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ((SELECT id FROM usuarioid), (SELECT id FROM direccionid));`,
+            [postUsuario.numero, postUsuario.calle, postUsuario.nombre, postUsuario.apellido,
+            postUsuario.email, postUsuario.contraseña, postUsuario.telefono],);
         }
-      } catch (error) {
-        console.error("Error al intentar crear la dirección:", error);
-        return reply.status(500).send("Hubo un error al intentar crear la dirección");
-      }
+        // telefonoId = await query("INSERT INTO telefono (numeroTel) VALUES ($1) RETURNING id",
+        //   [postUsuario.telefono]);
+        // usuarioId = await query(`INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
+        //   VALUES ($1, $2, $3, crypt($4, gen_salt('bf')), $5, $6) RETURNING id`,
+        //   [postUsuario.nombre, postUsuario.apellido, postUsuario.email, postUsuario.contraseña, direccionId.rows[0].id, telefonoId.rows[0].id]);
 
-      try {
-        telefonoId = await query("INSERT INTO telefono (numeroTel) VALUES ($1) RETURNING id",
-          [postUsuario.telefono]);
-      } catch (error) {
-        console.error("Error al intentar crear el teléfono:", error);
-        return reply.status(500).send("Hubo un error al intentar crear el teléfono");
-      }
+        // await query("UPDATE direccion SET id_usuario = $1 WHERE id = $2",
+        //   [usuarioId.rows[0].id, direccionId.rows[0].id]);
 
-      try {
-        usuarioId = await query(`INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
-          VALUES ($1, $2, $3, crypt($4, gen_salt('bf')), $5, $6) RETURNING id`,
-          [postUsuario.nombre, postUsuario.apellido, postUsuario.email, postUsuario.contraseña, direccionId.rows[0].id, telefonoId.rows[0].id]);
+        // await query("UPDATE telefono SET id_usuario = $1 WHERE id = $2",
+        //   [usuarioId.rows[0].id, telefonoId.rows[0].id]);
 
-        await query("UPDATE direccion SET id_usuario = $1 WHERE id = $2", 
-          [usuarioId.rows[0].id, direccionId.rows[0].id]);
-
-        await query("UPDATE telefono SET id_usuario = $1 WHERE id = $2",
-          [usuarioId.rows[0].id, telefonoId.rows[0].id]);
-
-        await query(`INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ($1, $2)`,
-          [usuarioId.rows[0].id, direccionId.rows[0].id]);
+        // await query(`INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ($1, $2)`,
+        //   [usuarioId.rows[0].id, direccionId.rows[0].id]);
 
         return reply.status(201).send("Se creó correctamente el usuario");
       } catch (error) {
@@ -210,7 +250,7 @@ const usuarioRoute: FastifyPluginAsync = async (fastify, opts): Promise<void> =>
       return reply.status(204).send();
     }
   });
-  
+
 };
 
 export default usuarioRoute;
