@@ -5,7 +5,6 @@ import fp from "fastify-plugin";
 const jwtOptions: FastifyJWTOptions = {
   secret: process.env.JWTSECRET || "defaultSecret",
 };
-
 export default fp<FastifyJWTOptions>(async (fastify) => {
   fastify.register(jwt, jwtOptions);
   fastify.decorate(

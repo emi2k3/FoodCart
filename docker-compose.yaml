@@ -15,6 +15,7 @@ services:
       - PGHOST=${PGHOST}
       - GOOGLE_ID=${GOOGLE_ID}
       - GOOGLE_SECRET=${GOOGLE_SECRET}
+      - JWTSECRET=${JWTSECRET}
   frontend:
     image: frontend
     container_name: frontend
