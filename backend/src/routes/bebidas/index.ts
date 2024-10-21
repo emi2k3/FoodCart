@@ -1,7 +1,6 @@
 import { FastifyPluginAsync } from "fastify";
 import { bebidaSchema, bebidaProductoSchema } from "../../types/bebidas.js";
 import { productoSchema } from "../../types/productos.js";
-import { Type } from "@fastify/type-provider-typebox";
 import { query } from "../../services/database.js";
 
 const bebidasRoute: FastifyPluginAsync = async (
@@ -47,7 +46,7 @@ const bebidasRoute: FastifyPluginAsync = async (
       const id_producto = (request.params as { id_producto: string })
         .id_producto;
       const response = await query(
-        "SELECT * FROM productos JOIN bebidas on productos.id_producto=bebidas.id_producto WHERE id_producto=$1 ",
+        "SELECT * FROM producto JOIN bebida on producto.id=bebida.id_producto WHERE id=$1 ",
         [id_producto]
       );
       if (response.rows.length == 0 || !response.rows) {
@@ -71,7 +70,7 @@ const bebidasRoute: FastifyPluginAsync = async (
         },
         required: ["id_producto"],
       },
-      body: Type.Intersect([productoSchema, bebidaSchema]),
+      body: bebidaProductoSchema,
       response: {
         200: {
           description:
@@ -94,7 +93,32 @@ const bebidasRoute: FastifyPluginAsync = async (
       },
     },
     onRequest: [fastify.authenticate],
-    handler: async function (request, reply) {},
+    handler: async function (request, reply) {
+      const bodybebida: bebidaProductoSchema =
+        request.body as bebidaProductoSchema;
+      const id_producto = (request.params as { id_producto: string })
+        .id_producto;
+
+      try {
+        await query(
+          `WITH bebidaproducto as (
+          UPDATE producto SET nombre=$1,descripcion=$2,precio_unidad=$3 WHERE id=$5
+          RETURNING id
+          )
+          UPDATE bebida SET tipo_bebida=$4 WHERE id_producto=(SELECT id from bebidaproducto)`,
+          [
+            bodybebida.nombre,
+            bodybebida.descripcion,
+            bodybebida.precio_unidad,
+            bodybebida.tipo_bebida,
+            id_producto,
+          ]
+        );
+        reply.code(200).send(bodybebida);
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+    },
   });
   fastify.delete("/:id_producto", {
     schema: {
@@ -117,7 +141,17 @@ const bebidasRoute: FastifyPluginAsync = async (
       },
     },
     onRequest: [fastify.authenticate],
-    handler: async function (request, reply) {},
+    handler: async function (request, reply) {
+      const id_producto = (request.params as { id_producto: string })
+        .id_producto;
+
+      try {
+        await query("DELETE FROM producto WHERE id = $1", [id_producto]);
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+      reply.code(204);
+    },
   });
   fastify.post("/", {
     schema: {
