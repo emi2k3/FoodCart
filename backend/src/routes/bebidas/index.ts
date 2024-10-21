@@ -1,7 +1,8 @@
 import { FastifyPluginAsync } from "fastify";
-import { bebidaSchema } from "../../types/bebidas.js";
+import { bebidaSchema, bebidaProductoSchema } from "../../types/bebidas.js";
 import { productoSchema } from "../../types/productos.js";
 import { Type } from "@fastify/type-provider-typebox";
+import { query } from "../../services/database.js";
 
 const bebidasRoute: FastifyPluginAsync = async (
   fastify,
@@ -42,7 +43,21 @@ const bebidasRoute: FastifyPluginAsync = async (
       },
     },
     onRequest: [fastify.authenticate],
-    handler: async function (request, reply) {},
+    handler: async function (request, reply) {
+      const id_producto = (request.params as { id_producto: string })
+        .id_producto;
+      const response = await query(
+        "SELECT * FROM productos JOIN bebidas on productos.id_producto=bebidas.id_producto WHERE id_producto=$1 ",
+        [id_producto]
+      );
+      if (response.rows.length == 0 || !response.rows) {
+        return reply
+          .status(404)
+          .send("No se encontro ningun producto con ese id.");
+      }
+      reply.code(200);
+      return response.rows[0];
+    },
   });
   fastify.put("/:id_producto", {
     schema: {
@@ -109,7 +124,7 @@ const bebidasRoute: FastifyPluginAsync = async (
       description: "Creamos una bebida.",
       tags: ["Bebidas"],
       security: [{ BearerAuth: [] }],
-      body: Type.Intersect([productoSchema, bebidaSchema]),
+      body: bebidaProductoSchema,
       response: {
         200: {
           description: "Muestra el objeto resultante por crear la bebida",
@@ -131,7 +146,28 @@ const bebidasRoute: FastifyPluginAsync = async (
       },
     },
     onRequest: [fastify.authenticate],
-    handler: async function (request, reply) {},
+    handler: async function (request, reply) {
+      const bodybebida: bebidaProductoSchema =
+        request.body as bebidaProductoSchema;
+      try {
+        await query(
+          `WITH bebidaproducto as (
+          INSERT INTO producto(nombre,descripcion,precio_unidad) VALUES($1,$2,$3)
+          RETURNING id
+          )
+          INSERT INTO bebida(id_producto,tipo_bebida) VALUES ((SELECT id from bebidaproducto),$4)`,
+          [
+            bodybebida.nombre,
+            bodybebida.descripcion,
+            bodybebida.precio_unidad,
+            bodybebida.tipo_bebida,
+          ]
+        );
+        reply.code(201).send(bodybebida);
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+    },
   });
 };
 export default bebidasRoute;

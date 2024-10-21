@@ -47,4 +47,34 @@ alter table telefono
 alter table direccion 
     ADD CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id) on delete cascade;
 
+create table if not exists producto (
+    id serial primary key,
+    nombre varchar(20) not null,
+    descripcion varchar(300) not null,
+    precio_unidad integer not null 
+);
 
+create table if not exists bebida (
+    id_producto integer,
+    tipo_bebida varchar(50) not null,
+    CONSTRAINT fk_producto FOREIGN KEY(id_producto) REFERENCES producto(id) on delete cascade
+);
+
+create table if not exists menu (
+    id_producto integer not null,
+    ingredientes varchar(100) not null,
+    acompañamiento varchar(300) null,
+    CONSTRAINT fk_producto FOREIGN KEY(id_producto) REFERENCES producto(id) on delete cascade
+);
+
+-- create table if not exists pedido (
+--     id serial PRIMARY KEY,
+--     id_producto integer not null,
+--     id_menu integer not null,
+--     id_usuario integer not null,
+--     fecha_hora timestamp not null,
+--     importe_total integer not null,
+--     CONSTRAINT fk_producto FOREIGN KEY(id_producto) REFERENCES producto(id) on delete cascade,
+--     CONSTRAINT fk_menu FOREIGN KEY(id_menu) REFERENCES menu(id_producto) on delete cascade,
+--     CONSTRAINT fk_usuario FOREIGN KEY(id_usuario) REFERENCES usuario(id) on delete cascade
+-- );
