@@ -1,5 +1,12 @@
 import { Static, Type } from "@sinclair/typebox";
 
+export const IdProductoSchema = Type.Object({
+  id: Type.Integer({
+    description: "Identificador único del producto",
+  }),
+});
+export type IdProductoType = Static<typeof IdProductoSchema>;
+
 export const productoSchema = Type.Object(
   {
     nombre: Type.String({
@@ -11,7 +18,6 @@ export const productoSchema = Type.Object(
     descripcion: Type.String({
       minLength: 3,
       maxLength: 300,
-      pattern: "^[^\\d]+$",
       examples: [
         `Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.`,
       ],

@@ -7,8 +7,11 @@ const bebidasRoute: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
+  // ################################################### GET ###################################################
+
   fastify.get("/:id_producto", {
     schema: {
+      summary: "Obtención una bebida por su id",
       description: "Consigue una bebida por su id.",
       tags: ["Bebidas"],
       security: [{ BearerAuth: [] }],
@@ -58,8 +61,12 @@ const bebidasRoute: FastifyPluginAsync = async (
       return response.rows[0];
     },
   });
+
+  // ################################################### PUT ###################################################
+
   fastify.put("/:id_producto", {
     schema: {
+      summary: "Modificación de una bebida por su id",
       description: "Edita los datos de la bebida.",
       tags: ["Bebidas"],
       security: [{ BearerAuth: [] }],
@@ -120,8 +127,12 @@ const bebidasRoute: FastifyPluginAsync = async (
       }
     },
   });
+
+  // ################################################### DELETE ###################################################
+
   fastify.delete("/:id_producto", {
     schema: {
+      summary: "Eliminación de una bebida por su id",
       description: "Eliminamos un tipo de bebida por su id.",
       tags: ["Bebidas"],
       security: [{ BearerAuth: [] }],
@@ -153,8 +164,12 @@ const bebidasRoute: FastifyPluginAsync = async (
       reply.code(204);
     },
   });
+
+  // ################################################### POST ###################################################
+
   fastify.post("/", {
     schema: {
+      summary: "Creación de una bebida",
       description: "Creamos una bebida.",
       tags: ["Bebidas"],
       security: [{ BearerAuth: [] }],
