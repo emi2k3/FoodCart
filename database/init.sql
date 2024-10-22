@@ -14,6 +14,15 @@ create table if not exists direccion (
     apto varchar(5) null
 );
 
+-- Crear la tabla LOCAL
+create table if not exists local (
+    id_local serial primary key,
+    id_telefono integer not null,
+    id_direccion integer not null,
+    CONSTRAINT fk_telefono FOREIGN KEY(id_telefono) REFERENCES telefono(id) on delete cascade,
+    CONSTRAINT fk_direccion FOREIGN KEY(id_direccion) REFERENCES direccion(id) on delete cascade
+);
+
 -- Crear la tabla usuario que hará referencia a direccion y telefono más adelante
 create table if not exists usuario (
     id serial primary key,
