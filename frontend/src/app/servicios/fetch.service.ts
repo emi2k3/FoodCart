@@ -19,7 +19,7 @@ export class FetchService {
     }
   }
 
-  async post<T = any>(url: string, body: string): Promise<T | undefined> {
+  async post<T = any>(url: string, body: string): Promise<T> {
     console.log(body);
     try {
       const response = await fetch(`${this.baseurl}${url}`, {
@@ -31,7 +31,7 @@ export class FetchService {
       if (response.ok) {
         return data;
       } else if (response.status == 401) {
-        return undefined;
+        throw new Error('Usuario no verificado.');
       } else {
         throw new Error(data);
       }
@@ -40,7 +40,7 @@ export class FetchService {
     }
   }
 
-  async get<T = any>(url: string): Promise<T | undefined> {
+  async get<T = any>(url: string): Promise<T> {
     try {
       const response = await fetch(`${this.baseurl}${url}`, {
         method: 'GET',
@@ -50,7 +50,7 @@ export class FetchService {
       if (response.ok) {
         return data;
       } else if (response.status == 401) {
-        return undefined;
+        throw new Error('Usuario no verificado');
       } else {
         throw new Error(data);
       }

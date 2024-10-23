@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
+import { UsuarioLogin } from '../../interfaces/usuario';
 
 @Component({
   selector: 'app-login',
@@ -14,18 +15,21 @@ import { NgClass, NgIf } from '@angular/common';
 export class LoginPage {
   email: string = '';
   password: string = '';
-  loginokay: boolean = false;
+  loginOkay: boolean = true;
+  loginUser?: UsuarioLogin;
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
   async onSubmit() {
-    this.loginokay = await this.authService.Login(
-      JSON.stringify({ email: this.email, contraseña: this.password }),
-    );
+    this.loginUser = {
+      email: this.email,
+      contraseña: this.password,
+    };
+    await this.authService.login(JSON.stringify(this.loginUser));
 
-    if (this.loginokay) {
+    if (localStorage.getItem('token')) {
       this.router.navigate(['']);
     } else {
-      this.loginokay = true;
+      this.loginOkay = false;
     }
   }
 }

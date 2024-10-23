@@ -5,13 +5,22 @@ import { FetchService } from './fetch.service';
 })
 export class AuthService {
   private apiSerivce: FetchService = inject(FetchService);
-  async Login(body: string) {
-    const response = await this.apiSerivce.post('auth/login', body);
-    if (response == undefined) {
-      return false;
+  async login(body: string) {
+    try {
+      const response = await this.apiSerivce.post('auth/login', body);
+      localStorage.setItem('token', response.token);
+    } catch (error) {
+      console.log(error);
     }
-    localStorage.setItem('token', response.token);
-    return true;
+  }
+
+  async registro(body: string): Promise<any> {
+    try {
+      const response = await this.apiSerivce.post('usuarios/', body);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
   }
   Logut() {
     localStorage.removeItem('token');
