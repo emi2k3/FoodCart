@@ -47,16 +47,103 @@ const localesRoute: FastifyPluginAsync = async (
 
   fastify.put("/:id", {
     schema: {
-      summary: "Modificación de un local por su id",
-      description: " ",
+      summary: "Actualización de un local",
       tags: ["Locales"],
+      description: "Actualización de un local existente",
       security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "string" },
+        },
+      },
+      body: LocalPostSchema,
       response: {
-        200: {},
+        200: {
+          description: "Muestra el objeto resultante del local actualizado",
+          type: "object",
+          properties: {
+            ...LocalSchema.properties,
+          },
+        },
       },
     },
-    onRequest: [fastify.authenticate, fastify.verifyAdmin],
-    handler: async function (request, reply) {},
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const localId = (request.params as { id: string }).id;
+      const updateLocal = request.body as LocalPostSchema;
+      const client = await pool.connect();
+
+      if (updateLocal.foto && Object.keys(updateLocal.foto).length > 0) {
+        try {
+          const fileBuffer = updateLocal.foto as Buffer;
+          const fileName = join(
+            process.cwd(),
+            "Resources",
+            updateLocal.nombre + ".jpg"
+          );
+          writeFileSync(fileName, fileBuffer);
+        } catch (error) {
+          console.error("Error al intentar actualizar la imagen:", error);
+          return reply
+            .status(500)
+            .send("Hubo un error al intentar actualizar la imagen");
+        }
+      }
+
+      try {
+        await client.query("BEGIN");
+
+        // Primero verificamos si el local existe
+        const localExists = await client.query(
+          "SELECT id_direccion, id_telefono FROM local WHERE id_local = $1",
+          [localId]
+        );
+
+        if (localExists.rows.length === 0) {
+          await client.query("ROLLBACK");
+          return reply.status(404).send("Local no encontrado");
+        }
+
+        const { id_direccion, id_telefono } = localExists.rows[0];
+
+        await client.query(
+          `UPDATE direccion 
+           SET numero = $1, calle = $2
+           WHERE id = $3`,
+          [updateLocal.numero, updateLocal.calle, id_direccion]
+        );
+
+        await client.query(
+          `UPDATE telefono 
+           SET numeroTel = $1
+           WHERE id = $2`,
+          [updateLocal.telefono, id_telefono]
+        );
+
+        const result = await client.query(
+          `UPDATE local 
+           SET nombre = $1
+           WHERE id_local = $2
+           RETURNING id_local`,
+          [updateLocal.nombre, localId]
+        );
+
+        await client.query("COMMIT");
+
+        return reply.status(200).send({
+          id: result.rows[0].id_local,
+          ...updateLocal,
+        });
+      } catch (error) {
+        await client.query("ROLLBACK");
+        console.error("Error en la transacción:", error);
+        return reply.status(500).send("Error al actualizar el local");
+      } finally {
+        client.release();
+      }
+    },
   });
 
   // ################################################### DELETE ##################################################
