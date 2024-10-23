@@ -1,20 +1,25 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 
 export interface authenticateFunction {
-    (request: FastifyRequest, reply: FastifyReply): Promise<void>
+  (request: FastifyRequest, reply: FastifyReply): Promise<void>;
 }
 
-declare module 'fastify' {
-    interface FastifyInstance {
-        authenticate: authenticateFunction,
-    }
+export interface verifyAdminFunction {
+  (request: FastifyRequest, reply: FastifyReply): Promise<void>;
+}
+declare module "fastify" {
+  interface FastifyInstance {
+    authenticate: authenticateFunction;
+    verifyAdmin: verifyAdminFunction;
+  }
 }
 
 declare module "@fastify/jwt" {
-    interface FastifyJWT {
-      user: {
-        id: string,
-        email: string,
-      }
-    }
+  interface FastifyJWT {
+    user: {
+      id: string;
+      email: string;
+      is_admin: boolean;
+    };
   }
+}

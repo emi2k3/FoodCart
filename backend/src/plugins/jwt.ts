@@ -17,4 +17,14 @@ export default fp<FastifyJWTOptions>(async (fastify) => {
       }
     }
   );
+
+  fastify.decorate(
+    "verifyAdmin",
+    async function (request: FastifyRequest, reply: FastifyReply) {
+      console.log("Verificando si es administrador.");
+      const usuarioToken = request.user;
+      if (!usuarioToken.is_admin)
+        throw reply.unauthorized("Tienes que ser admin para hacer eso.");
+    }
+  );
 });

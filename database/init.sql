@@ -17,6 +17,7 @@ create table if not exists direccion (
 -- Crear la tabla LOCAL
 create table if not exists local (
     id_local serial primary key,
+    nombre varchar(20) not null,
     id_telefono integer not null,
     id_direccion integer not null,
     CONSTRAINT fk_telefono FOREIGN KEY(id_telefono) REFERENCES telefono(id) on delete cascade,
@@ -45,16 +46,6 @@ CREATE TABLE if not exists usuarios_direcciones (
 alter table usuario 
     ADD CONSTRAINT fk_telefono FOREIGN KEY (id_telefono) REFERENCES telefono(id),
     ADD CONSTRAINT fk_direccion FOREIGN KEY (id_direccion) REFERENCES direccion(id);
-
--- Ahora que usuario existe, podemos añadir la clave foránea de id_usuario en direccion y telefono
-alter table telefono ADD COLUMN id_usuario integer;
-alter table direccion ADD COLUMN id_usuario integer;
-
-alter table telefono 
-    add constraint fk_usuario foreign key (id_usuario) references usuario(id) on delete cascade;
-
-alter table direccion 
-    ADD CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id) on delete cascade;
 
 create table if not exists producto (
     id serial primary key,

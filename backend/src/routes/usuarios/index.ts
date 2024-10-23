@@ -2,7 +2,7 @@ import { FastifyPluginAsync } from "fastify";
 import { UsuarioPostSchema } from "../../types/usuario.js";
 import { join } from "node:path";
 import { writeFileSync } from "node:fs";
-import { query } from "../../services/database.js";
+import { pool, query } from "../../services/database.js";
 
 const usuarioRoute: FastifyPluginAsync = async (
   fastify,
@@ -10,6 +10,7 @@ const usuarioRoute: FastifyPluginAsync = async (
 ): Promise<void> => {
   fastify.post("/", {
     schema: {
+      summary: "Crear un usuario",
       tags: ["Usuarios"],
       description: "Crear un usuario",
       body: UsuarioPostSchema,
@@ -43,39 +44,45 @@ const usuarioRoute: FastifyPluginAsync = async (
             .send("Hubo un error al intentar crear la imagen");
         }
       }
+
+      const client = await pool.connect();
+
       try {
-        if (postUsuario.apto != null || postUsuario.apto != undefined) {
-          await query(
-            `
-            WITH direccionid AS (
-              INSERT INTO direccion (numero, calle, apto) 
-              VALUES ($1, $2, $3) 
-              RETURNING id
-            ),
-            telefonoid AS (
-              INSERT INTO telefono (numeroTel) 
-              VALUES ($8) 
-              RETURNING id
-            ),
-            usuarioid AS(
-              INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
-              VALUES ($4, $5, $6, crypt($7, gen_salt('bf')), (SELECT id FROM direccionid), (SELECT id FROM telefonoid)) 
-              RETURNING id
-            ),
-            updatedireccion AS
-            (
-              UPDATE direccion SET id_usuario = (SELECT id FROM usuarioid) 
-              WHERE id = (SELECT id FROM direccionid)
-              RETURNING *
-            ),
-            updatedtelefono AS
-            (
-              UPDATE telefono SET id_usuario = (SELECT id FROM usuarioid) 
-              WHERE id = (SELECT id FROM telefonoid) 
-              RETURNING *
-            )
-            INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ((SELECT id FROM usuarioid), (SELECT id FROM direccionid));`,
-            [
+        await client.query("BEGIN");
+
+        const baseQuery = `
+          WITH direccionid AS (
+            INSERT INTO direccion (numero, calle${
+              postUsuario.apto ? ", apto" : ""
+            }) 
+            VALUES ($1, $2${postUsuario.apto ? ", $3" : ""}) 
+            RETURNING id
+          ),
+          telefonoid AS (
+            INSERT INTO telefono (numeroTel) 
+            VALUES ($${postUsuario.apto ? "8" : "7"}) 
+            RETURNING id
+          ),
+          usuarioid AS (
+            INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
+            VALUES ($${postUsuario.apto ? "4" : "3"}, $${
+          postUsuario.apto ? "5" : "4"
+        }, 
+                    $${postUsuario.apto ? "6" : "5"}, crypt($${
+          postUsuario.apto ? "7" : "6"
+        }, gen_salt('bf')), 
+                    (SELECT id FROM direccionid), (SELECT id FROM telefonoid)) 
+            RETURNING id
+          ),
+          usuario_direccion AS (
+            INSERT INTO usuarios_direcciones(usuario_id, direccion_id) 
+            VALUES ((SELECT id FROM usuarioid), (SELECT id FROM direccionid))
+            RETURNING (SELECT id FROM usuarioid) as user_id
+          )
+          SELECT user_id FROM usuario_direccion`;
+
+        const params = postUsuario.apto
+          ? [
               postUsuario.numero,
               postUsuario.calle,
               postUsuario.apto,
@@ -85,39 +92,7 @@ const usuarioRoute: FastifyPluginAsync = async (
               postUsuario.contraseña,
               postUsuario.telefono,
             ]
-          );
-        } else {
-          await query(
-            `
-            WITH direccionid AS (
-              INSERT INTO direccion (numero, calle) 
-              VALUES ($1, $2) 
-              RETURNING id
-            ),
-            telefonoid AS (
-              INSERT INTO telefono (numeroTel) 
-              VALUES ($7) 
-              RETURNING id
-            ),
-            usuarioid AS(
-              INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
-              VALUES ($3, $4, $5, crypt($6, gen_salt('bf')), (SELECT id FROM direccionid), (SELECT id FROM telefonoid)) 
-              RETURNING id
-            ),
-            updatedireccion AS
-            (
-              UPDATE direccion SET id_usuario = (SELECT id FROM usuarioid) 
-              WHERE id = (SELECT id FROM direccionid)
-              RETURNING *
-            ),
-            updatedtelefono AS
-            (
-              UPDATE telefono SET id_usuario = (SELECT id FROM usuarioid) 
-              WHERE id = (SELECT id FROM telefonoid) 
-              RETURNING *
-            )
-            INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ((SELECT id FROM usuarioid), (SELECT id FROM direccionid));`,
-            [
+          : [
               postUsuario.numero,
               postUsuario.calle,
               postUsuario.nombre,
@@ -125,38 +100,29 @@ const usuarioRoute: FastifyPluginAsync = async (
               postUsuario.email,
               postUsuario.contraseña,
               postUsuario.telefono,
-            ]
-          );
-        }
-        // telefonoId = await query("INSERT INTO telefono (numeroTel) VALUES ($1) RETURNING id",
-        //   [postUsuario.telefono]);
-        // usuarioId = await query(`INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono)
-        //   VALUES ($1, $2, $3, crypt($4, gen_salt('bf')), $5, $6) RETURNING id`,
-        //   [postUsuario.nombre, postUsuario.apellido, postUsuario.email, postUsuario.contraseña, direccionId.rows[0].id, telefonoId.rows[0].id]);
+            ];
 
-        // await query("UPDATE direccion SET id_usuario = $1 WHERE id = $2",
-        //   [usuarioId.rows[0].id, direccionId.rows[0].id]);
-
-        // await query("UPDATE telefono SET id_usuario = $1 WHERE id = $2",
-        //   [usuarioId.rows[0].id, telefonoId.rows[0].id]);
-
-        // await query(`INSERT INTO usuarios_direcciones(usuario_id, direccion_id) VALUES ($1, $2)`,
-        //   [usuarioId.rows[0].id, direccionId.rows[0].id]);
+        await client.query(baseQuery, params);
+        await client.query("COMMIT");
 
         return reply.status(201).send("Se creó correctamente el usuario");
       } catch (error) {
+        await client.query("ROLLBACK");
         console.error("Error al intentar crear al usuario:", error);
         return reply
           .status(500)
           .send("Hubo un error al intentar crear al usuario.");
+      } finally {
+        client.release();
       }
     },
   });
 
   fastify.get("/", {
     schema: {
-      description: "Obtener un usuario",
+      summary: "Obtener todos los usuarios",
       tags: ["Usuarios"],
+      description: "Obtener todos los usuarios",
       security: [{ BearerAuth: [] }],
       response: {
         200: {},
@@ -173,6 +139,7 @@ const usuarioRoute: FastifyPluginAsync = async (
   fastify.put("/:id", {
     onRequest: [fastify.authenticate],
     schema: {
+      summary: "Editar un usuario por su id",
       tags: ["Usuarios"],
       description: "Editar un usuario",
       body: UsuarioPostSchema,
@@ -273,10 +240,10 @@ const usuarioRoute: FastifyPluginAsync = async (
   fastify.delete("/:id", {
     onRequest: [fastify.authenticate],
     schema: {
-      description: "Borrar un usuario",
+      summary: "Borrar un usuario por su id",
       tags: ["Usuarios"],
       security: [{ BearerAuth: [] }],
-      summary: "Borrar un usuario",
+      description: "Borrar un usuario",
       params: {
         type: "object",
         properties: {
