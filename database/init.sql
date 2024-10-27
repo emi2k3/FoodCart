@@ -64,3 +64,18 @@ create table if not exists producto (
     CONSTRAINT precio_positivo CHECK (precio_unidad > 0)
 ); 
 
+create table if not exists pedido (
+    id_pedido serial primary key,
+    fecha_hora timestamp default current_timestamp,
+    estado varchar(15) CHECK (estado IN ('PENDIENTE', 'CONFIRMADO', 'EN_PREPARACION', 'LISTO', 'EN_CAMINO', 'ENTREGADO', 'CANCELADO')),
+    importe_total numeric(10,2) CHECK (importe_total >= 0),
+    id_local integer not null,
+    id_usuario integer not null,
+    id_producto integer not null,
+    CONSTRAINT fk_local FOREIGN KEY (id_local) 
+        REFERENCES local(id_local) ON DELETE RESTRICT,
+    CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) 
+        REFERENCES usuario(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_producto FOREIGN KEY (id_producto) 
+        REFERENCES producto(id_producto) ON DELETE RESTRICT
+);
