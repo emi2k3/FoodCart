@@ -320,16 +320,34 @@ const productosRoute: FastifyPluginAsync = async (
       const id_pedido = (request.params as { id_pedido: string }).id_pedido;
 
       try {
-        const result = await query(
-          "DELETE FROM pedido WHERE id_pedido = $1 RETURNING *",
+        const pedidoExistente = await query(
+          "SELECT estado FROM pedido WHERE id_pedido = $1",
           [id_pedido]
         );
 
-        if (result.rows.length === 0) {
-          return reply.status(404).send({ error: "Pedido no encontrado" });
+        if (pedidoExistente.rows.length === 0) {
+          return reply.status(404).send({
+            error: "Pedido no encontrado",
+          });
         }
 
-        reply.code(204).send();
+        if (pedidoExistente.rows[0].estado === "CANCELADO") {
+          await query("DELETE FROM pedido WHERE id_pedido = $1", [id_pedido]);
+          return reply.code(204).send();
+        }
+
+        if (pedidoExistente.rows[0].estado === "PENDIENTE") {
+          await query(
+            "UPDATE pedido SET estado = 'CANCELADO' WHERE id_pedido = $1 RETURNING *",
+            [id_pedido]
+          );
+          return reply.code(204).send();
+        }
+
+        return reply.status(400).send({
+          error:
+            "Solo se pueden eliminar pedidos en estado PENDIENTE o CANCELADO",
+        });
       } catch (error) {
         return reply.status(500).send(error);
       }
