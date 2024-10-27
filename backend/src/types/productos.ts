@@ -1,7 +1,7 @@
 import { Static, Type } from "@sinclair/typebox";
 
 export const IdProductoSchema = Type.Object({
-  id: Type.Integer({
+  id_producto: Type.Integer({
     description: "Identificador único del producto",
   }),
 });
@@ -9,6 +9,9 @@ export type IdProductoType = Static<typeof IdProductoSchema>;
 
 export const productoSchema = Type.Object(
   {
+    id_producto: Type.Integer({
+      description: "Identificador del producto",
+    }),
     nombre: Type.String({
       minLength: 3,
       maxLength: 20,
@@ -25,9 +28,23 @@ export const productoSchema = Type.Object(
     precio_unidad: Type.Number({
       examples: [300],
     }),
-    foto: Type.Optional(Type.Object({})),
+    id_categoria: Type.Integer({
+      description: "Identificador de la categoría",
+    }),
+    foto: Type.Optional(
+      Type.Union([Type.Null(), Type.Object({}), Type.String()])
+    ),
   },
   { additionalProperties: false }
 );
 
-export type productoSchema = Static<typeof productoSchema>;
+export type productoSchemaType = Static<typeof productoSchema>;
+
+export const productoPost = Type.Pick(productoSchema, [
+  "nombre",
+  "descripcion",
+  "precio_unidad",
+  "id_categoria",
+  "foto",
+]);
+export type productoPostType = Static<typeof productoPost>;

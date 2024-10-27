@@ -1,6 +1,13 @@
 import { FastifyPluginAsync } from "fastify";
-import { IdProductoSchema, productoSchema } from "../../types/productos.js";
+import {
+  IdProductoSchema,
+  productoPost,
+  productoPostType,
+  productoSchema,
+} from "../../types/productos.js";
 import { query } from "../../services/database.js";
+import { writeFileSync } from "fs";
+import { join } from "path";
 
 const productosRoute: FastifyPluginAsync = async (
   fastify,
@@ -24,12 +31,13 @@ const productosRoute: FastifyPluginAsync = async (
           },
           examples: [
             {
-              id: 0,
+              id_producto: 0,
               nombre: "Hamburgesa Triple",
-              descripción:
+              descripcion:
                 "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
               precio_unidad: 500,
-              foto: {},
+              id_categoria: 1,
+              foto: "/ruta/imagen.jpg",
             },
           ],
         },
@@ -67,36 +75,64 @@ const productosRoute: FastifyPluginAsync = async (
         },
         required: ["id_producto"],
       },
-      body: productoSchema,
+      body: productoPost,
       response: {
         200: {
           description:
             "Muestra los cambios que tiene las propiedades del producto.",
           type: "object",
           properties: {
-            ...productoSchema.properties,
+            ...productoPost.properties,
           },
         },
       },
     },
     onRequest: [fastify.authenticate],
     handler: async function (request, reply) {
-      const bodyProducto: productoSchema = request.body as productoSchema;
+      const bodyProducto: productoPostType = request.body as productoPostType;
       const id_producto = (request.params as { id_producto: string })
         .id_producto;
 
       try {
-        await query(
-          ` UPDATE producto SET 
-            nombre=$1,descripcion=$2,precio_unidad=$3 WHERE id=$4`,
+        if (bodyProducto.foto && Object.keys(bodyProducto.foto).length > 0) {
+          const fileBuffer = bodyProducto.foto as unknown as Buffer;
+          const fileName = `${bodyProducto.nombre.replace(
+            /\s+/g,
+            "_"
+          )}_${Date.now()}.jpg`;
+          const filePath = join(process.cwd(), "Resources", fileName);
+          writeFileSync(filePath, fileBuffer);
+          // var fileUrl = `/Resources/${fileName}`;
+        }
+
+        //para que no funcione como un post verificamos que el producto exista
+        const existingProduct = await query(
+          "SELECT * FROM producto WHERE id_producto = $1",
+          [id_producto]
+        );
+
+        if (existingProduct.rows.length === 0) {
+          return reply.status(404).send({ error: "Producto no encontrado" });
+        }
+
+        const result = await query(
+          `UPDATE producto SET
+            nombre = $1,
+            descripcion = $2,
+            precio_unidad = $3,
+            id_categoria = $4
+          WHERE id_producto = $5
+          RETURNING *`,
           [
             bodyProducto.nombre,
             bodyProducto.descripcion,
             bodyProducto.precio_unidad,
+            bodyProducto.id_categoria,
             id_producto,
           ]
         );
-        reply.code(200).send(bodyProducto);
+
+        reply.code(200).send(result.rows[0]);
       } catch (error) {
         return reply.status(500).send(error);
       }
@@ -137,7 +173,9 @@ const productosRoute: FastifyPluginAsync = async (
         .id_producto;
 
       try {
-        await query("DELETE FROM producto WHERE id = $1", [id_producto]);
+        await query("DELETE FROM producto WHERE id_producto = $1", [
+          id_producto,
+        ]);
       } catch (error) {
         return reply.status(500).send(error);
       }
@@ -153,30 +191,49 @@ const productosRoute: FastifyPluginAsync = async (
       tags: ["Productos"],
       description: "Creación de un producto ",
       security: [{ BearerAuth: [] }],
-      body: productoSchema,
+      body: productoPost,
       response: {
         201: {
           description: "Muestra el objeto resultante del producto creado",
           type: "object",
           properties: {
-            ...productoSchema.properties,
+            ...productoPost.properties,
           },
         },
       },
     },
     onRequest: [fastify.authenticate],
     handler: async function (request, reply) {
-      const bodyProducto: productoSchema = request.body as productoSchema;
+      const bodyProducto: productoPostType = request.body as productoPostType;
+
       try {
-        await query(
-          `INSERT INTO producto(nombre,descripcion,precio_unidad) VALUES($1,$2,$3)`,
+        if (bodyProducto.foto && Object.keys(bodyProducto.foto).length > 0) {
+          const fileBuffer = bodyProducto.foto as unknown as Buffer;
+          const fileName = `${bodyProducto.nombre.replace(
+            /\s+/g,
+            "_"
+          )}_${Date.now()}.jpg`;
+          const filePath = join(process.cwd(), "Resources", fileName);
+
+          writeFileSync(filePath, fileBuffer);
+          //var fileUrl = `/Resources/${fileName}`;
+        }
+
+        const result = await query(
+          `INSERT INTO producto(
+            nombre,
+            descripcion,
+            precio_unidad,
+            id_categoria
+          ) VALUES($1,$2,$3,$4) RETURNING *`,
           [
             bodyProducto.nombre,
             bodyProducto.descripcion,
             bodyProducto.precio_unidad,
+            bodyProducto.id_categoria,
           ]
         );
-        reply.code(201).send(bodyProducto);
+        reply.code(201).send(result.rows[0]);
       } catch (error) {
         return reply.status(500).send(error);
       }
