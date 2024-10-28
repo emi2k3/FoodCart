@@ -75,7 +75,7 @@ const usuarioRoute: FastifyPluginAsync = async (
             RETURNING id
           ),
           usuario_direccion AS (
-            INSERT INTO usuarios_direcciones(usuario_id, direccion_id) 
+            INSERT INTO usuarios_direcciones(id_usuario, id_direccion) 
             VALUES ((SELECT id FROM usuarioid), (SELECT id FROM direccionid))
             RETURNING (SELECT id FROM usuarioid) as user_id
           )

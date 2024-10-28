@@ -30,7 +30,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       };
 
       const checkResult = await query(
-        "SELECT id FROM usuario WHERE email = $1 AND contraseña = crypt($2, contraseña)",
+        "SELECT id,admin FROM usuario WHERE email = $1 AND contraseña = crypt($2, contraseña)",
         [email, contraseña]
       );
       const rows = checkResult.rows;
@@ -39,10 +39,12 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       }
 
       const id_usuario = rows[0].id;
+      const isAdmin = rows[0].admin;
       const token = fastify.jwt.sign({
         email,
         id: id_usuario,
         expiresIn: "3h",
+        isAdmin: isAdmin,
       });
       reply.send({ token });
     },
