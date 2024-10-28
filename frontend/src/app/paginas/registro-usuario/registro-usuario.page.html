@@ -1,8 +1,10 @@
 <section class="bg-gray-50 min-h-screen flex items-center justify-center">
   <!-- Contenedor del registro -->
-  <div class="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5">
+  <div
+    class="bg-gray-100 flex flex-col md:flex-row rounded-2xl shadow-lg max-w-3xl p-5"
+  >
     <!-- Aca va el form -->
-    <div class="md:w-1/2 px-8">
+    <div class="w-full px-8">
       <h2 class="font-bold text-2xl text-slate-800 text-center">Registro</h2>
       <form
         id="formregister"
@@ -234,10 +236,10 @@
           [(ngModel)]="confirmarContrasena"
           #confirmarPassControl="ngModel"
           [ngClass]="{
-          'border-red-500 bg-red-50' : confirmarPassControl.invalid && confirmarPassControl.touched,
-          'border-gray-300' : !confirmarPassControl.touched,
-          'border-green-500 bg-green-50' : confirmarPassControl.valid && confirmarPassControl.touched
-        }"
+            'border-red-500 bg-red-50' : confirmarPassControl.invalid && confirmarPassControl.touched,
+            'border-gray-300' : !confirmarPassControl.touched,
+            'border-green-500 bg-green-50' : confirmarPassControl.valid && confirmarPassControl.touched
+          }"
         />
         <label
           *ngIf="confirmarPassControl.errors?.['required'] && confirmarPassControl.touched"
@@ -293,14 +295,6 @@
           Iniciar Sesión
         </button>
       </div>
-    </div>
-    <!-- Logo :) -->
-    <div class="w-1/2 md:block hidden">
-      <img
-        class="rounded-2xl w-full h-full"
-        src="assets/logo.jpeg"
-        alt="Logo"
-      />
     </div>
   </div>
 </section>
