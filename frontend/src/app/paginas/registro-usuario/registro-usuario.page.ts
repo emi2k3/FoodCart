@@ -3,7 +3,7 @@ import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
-
+import { UsuarioRegister } from '../../interfaces/usuario';
 @Component({
   selector: 'app-registro-usuario',
   standalone: true,
@@ -12,19 +12,40 @@ import { NgClass, NgIf } from '@angular/common';
   styleUrl: './registro-usuario.page.css',
 })
 export class RegistroUsuarioPage {
+  nombre: string = '';
+  apellido: string = '';
   email: string = '';
+  telefono: string = '';
+  calle: string = '';
+  numero: string = '';
+  apto: string = '';
   password: string = '';
-  register?: Promise<any>;
-
+  repetirContraseña: string = '';
+  foto: object = {};
+  confirmarContrasena: string = '';
+  registerUser?: UsuarioRegister;
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
-  async onSubmit() {
-    this.register = await this.authService.registro(
-      JSON.stringify({ email: this.email, contraseña: this.password }),
-    );
 
-    if (this.register != undefined || this.register != null) {
+  async onSubmit() {
+    this.registerUser = {
+      nombre: this.nombre,
+      apellido: this.apellido,
+      email: this.email,
+      telefono: this.telefono,
+      calle: this.calle,
+      numero: this.numero,
+      apto: this.apto,
+      contraseña: this.password,
+      repetirContraseña: this.repetirContraseña,
+      foto: this.foto,
+    };
+    await this.authService.registro(JSON.stringify(this.registerUser));
+    if (this.registerUser != undefined || this.registerUser != null) {
       this.router.navigate(['auth/login']);
     }
+  }
+  redirectToLogin() {
+    this.router.navigate(['auth/login']);
   }
 }
