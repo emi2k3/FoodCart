@@ -32,14 +32,15 @@ create table if not exists usuario (
     email varchar(50) not null unique,
     id_direccion integer not null,
     id_telefono integer not null,
-    contraseña varchar(225) not null
+    contraseña varchar(225) not null,
+    admin boolean not null default FALSE
 );
 
 CREATE TABLE if not exists usuarios_direcciones (
-    usuario_id INT,
-    CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id) on delete cascade,
-    direccion_id INT,
-    CONSTRAINT fk_direccion FOREIGN KEY (direccion_id) REFERENCES direccion(id) on delete cascade
+    id_usuario INT,
+    CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id) on delete cascade,
+    id_direccion INT,
+    CONSTRAINT fk_direccion FOREIGN KEY (id_direccion) REFERENCES direccion(id) on delete cascade
 );
 
 -- Alterar tabla usuario para añadir claves foráneas a direccion y telefono
