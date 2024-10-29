@@ -21,6 +21,7 @@
           class="p-2 rounded-xl border w-full"
           placeholder="Nombre"
           required
+          pattern="^[a-zA-Z]+$"
           [(ngModel)]="nombre"
           #nombreCntrl="ngModel"
           [ngClass]="{
@@ -35,6 +36,12 @@
           class="text-red-500 text-sm"
           >Tiene que colocar su nombre.</label
         >
+        <label
+          *ngIf="nombreCntrl.errors?.['pattern'] && nombreCntrl.touched"
+          for="nombre"
+          class="text-red-500 text-sm"
+          >Su nombre no puede tener números.</label
+        >
 
         <!-- Apellido -->
         <label class="mt-5">Apellido</label>
@@ -42,6 +49,7 @@
           type="text"
           name="apellido"
           id="apellido"
+          pattern="^[a-zA-Z]+$"
           class="p-2 rounded-xl border w-full"
           placeholder="Apellido"
           required
@@ -59,6 +67,12 @@
           class="text-red-500 text-sm"
           >Tiene que colocar su apellido.</label
         >
+        <label
+          *ngIf="nombreCntrl.errors?.['pattern'] && nombreCntrl.touched"
+          for="nombre"
+          class="text-red-500 text-sm"
+          >Su apellido no puede tener números.</label
+        >
 
         <!-- Email -->
         <label class="mt-5">Email</label>
@@ -67,7 +81,7 @@
           name="email"
           id="email"
           class="p-2 rounded-xl border w-full"
-          placeholder="emilio.rodriguez@example.com"
+          placeholder="francisco.lima@example.com"
           email
           required
           [(ngModel)]="email"
@@ -100,6 +114,7 @@
           class="p-2 rounded-xl border w-full"
           placeholder="099471882"
           required
+          pattern="^\d+$"
           [(ngModel)]="telefono"
           #telefonoCntrl="ngModel"
           [ngClass]="{
@@ -113,6 +128,12 @@
           for="telefono"
           class="text-red-500 text-sm"
           >Tiene que colocar su teléfono.</label
+        >
+        <label
+          *ngIf="telefonoCntrl.errors?.['pattern'] && telefonoCntrl.touched"
+          for="telefono"
+          class="text-red-500 text-sm"
+          >Su telefono solo puede tener números.</label
         >
 
         <!-- Calle -->
@@ -148,6 +169,7 @@
           class="p-2 rounded-xl border w-full"
           placeholder="123"
           required
+          maxlength="10"
           [(ngModel)]="numero"
           #numeroCntrl="ngModel"
           [ngClass]="{
@@ -171,20 +193,19 @@
           id="apto"
           class="p-2 rounded-xl border w-full"
           placeholder="A11"
-          required
+          maxlength="5"
           [(ngModel)]="apto"
           #aptoCntrl="ngModel"
           [ngClass]="{
             'border-red-500 bg-red-50': aptoCntrl.invalid && aptoCntrl.touched,
             'border-gray-300': !aptoCntrl.touched,
-            'border-green-500 bg-green-50': aptoCntrl.valid && aptoCntrl.touched
+            'border-blue-500 bg-blue-50': aptoCntrl.valid && aptoCntrl.touched
           }"
         />
         <label
-          *ngIf="aptoCntrl.errors?.['required'] && aptoCntrl.touched"
-          for="apto"
+          *ngIf="aptoCntrl.errors?.['maxlength'] && aptoCntrl.touched"
           class="text-red-500 text-sm"
-          >Tiene que colocar su apto.</label
+          >Máximo de 5 caracteres.</label
         >
 
         <!-- Contraseña -->
@@ -195,9 +216,11 @@
           id="contraseña"
           placeholder="Contraseña123!"
           class="p-2 rounded-xl border w-full"
-          minlength="5"
+          minlength="8"
           maxlength="20"
           required
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$"
+          (input)="checkInput()"
           [(ngModel)]="password"
           #passControl="ngModel"
           [ngClass]="{
@@ -209,17 +232,23 @@
         <label
           *ngIf="passControl.errors?.['required'] && passControl.touched"
           class="text-red-500 text-sm"
-          >Necesita ingresar su contraseña</label
+          >Necesita ingresar su contraseña.</label
         >
         <label
           *ngIf="passControl.errors?.['minlength'] && passControl.touched"
           class="text-red-500 text-sm"
-          >Su contraseña debe ser más larga</label
+          >Su contraseña debe ser más larga.</label
         >
         <label
           *ngIf="passControl.errors?.['maxlength'] && passControl.touched"
           class="text-red-500 text-sm"
-          >Su contraseña debe ser más corta</label
+          >Su contraseña debe ser más corta.</label
+        >
+        <label
+          *ngIf="passControl.errors?.['pattern'] && passControl.touched"
+          class="text-red-500 text-sm inline-block w-auto"
+          >Su contraseña debe contener una minúscula y mayúscula, un número y
+          caracter especial.</label
         >
 
         <!-- Confirmar Contraseña -->
@@ -230,33 +259,47 @@
           id="confirmarContrasena"
           placeholder="Contraseña123!"
           class="p-2 rounded-xl border w-full"
-          minlength="5"
+          minlength="8"
           maxlength="20"
+          pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$"
+          (input)="checkInput()"
           required
           [(ngModel)]="confirmarContrasena"
           #confirmarPassControl="ngModel"
           [ngClass]="{
-            'border-red-500 bg-red-50' : confirmarPassControl.invalid && confirmarPassControl.touched,
+            'border-red-500 bg-red-50' : confirmarPassControl.touched && (!confirmarPassControl.valid || !this.contraigual),
             'border-gray-300' : !confirmarPassControl.touched,
-            'border-green-500 bg-green-50' : confirmarPassControl.valid && confirmarPassControl.touched
+            'border-green-500 bg-green-50' : confirmarPassControl.valid && confirmarPassControl.touched && this.contraigual,
           }"
         />
         <label
           *ngIf="confirmarPassControl.errors?.['required'] && confirmarPassControl.touched"
           class="text-red-500 text-sm"
-          >Necesita confirmar su contraseña</label
+          >Necesita confirmar su contraseña.</label
         >
         <label
           *ngIf="confirmarPassControl.errors?.['minlength'] && confirmarPassControl.touched"
           class="text-red-500 text-sm"
-          >Su contraseña debe ser más larga</label
+          >Su contraseña debe ser más larga.</label
         >
         <label
           *ngIf="confirmarPassControl.errors?.['maxlength'] && confirmarPassControl.touched"
           class="text-red-500 text-sm"
-          >Su contraseña debe ser más corta</label
+          >Su contraseña debe ser más corta.</label
         >
-
+        <label
+          *ngIf="contraigual==false && confirmarPassControl.touched"
+          class="text-red-500 text-sm"
+          >Su contraseña debe ser igual.</label
+        >
+        <!-- <label class="mt-5">Foto:</label>
+        <input
+          type="file"
+          name="Foto"
+          id="Foto"
+          class="p-2 rounded-xl border w-full"
+          [(ngModel)]="foto"
+        /> -->
         <button
           type="submit"
           [disabled]="formregister.invalid"
@@ -266,25 +309,7 @@
           Registrarse
         </button>
       </form>
-      <!-- Divisor -->
-      <div class="mt-8 grid grid-cols-3 items-center text-gray-500">
-        <hr class="border-gray-500" />
-        <p class="text-center text-xl">O</p>
-        <hr class="border-gray-500" />
-      </div>
-      <button
-        type="submit"
-        id="boton"
-        class="text-slate-800 rounded-xl py-2 bg-white w-full mt-5 flex justify-center items-center text-sm hover:scale-110 duration-300"
-      >
-        <img
-          src="assets/icons8-google-logo-48.png"
-          width="20px"
-          height="25px"
-          class="mr-3"
-        />
-        Registrarse con Google
-      </button>
+
       <hr class="border-gray-300 mt-4" />
       <div class="text-sm flex justify-between items-center mt-3">
         <p>¿Ya tienes una cuenta?</p>

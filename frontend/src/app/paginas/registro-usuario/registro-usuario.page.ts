@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
 import { UsuarioRegister } from '../../interfaces/usuario';
 @Component({
@@ -11,7 +11,16 @@ import { UsuarioRegister } from '../../interfaces/usuario';
   templateUrl: './registro-usuario.page.html',
   styleUrl: './registro-usuario.page.css',
 })
-export class RegistroUsuarioPage {
+export class RegistroUsuarioPage implements OnInit {
+  ngOnInit(): void {
+    const queryString = window.location.search;
+    if (queryString != null) {
+      const UrlParams = new URLSearchParams(queryString);
+      this.nombre = UrlParams.get('given_name') ?? '';
+      this.apellido = UrlParams.get('family_name') ?? '';
+      this.email = UrlParams.get('email') ?? '';
+    }
+  }
   nombre: string = '';
   apellido: string = '';
   email: string = '';
@@ -20,9 +29,9 @@ export class RegistroUsuarioPage {
   numero: string = '';
   apto: string = '';
   password: string = '';
-  repetirContraseña: string = '';
   foto: object = {};
   confirmarContrasena: string = '';
+  contraigual: boolean = false;
   registerUser?: UsuarioRegister;
   private authService: AuthService = inject(AuthService);
   private router: Router = inject(Router);
@@ -37,12 +46,25 @@ export class RegistroUsuarioPage {
       numero: this.numero,
       apto: this.apto,
       contraseña: this.password,
-      repetirContraseña: this.repetirContraseña,
+      repetirContraseña: this.confirmarContrasena,
       foto: this.foto,
     };
-    await this.authService.registro(JSON.stringify(this.registerUser));
-    if (this.registerUser != undefined || this.registerUser != null) {
+    let response = await this.authService.registro(
+      JSON.stringify(this.registerUser),
+    );
+    if (response != null) {
       this.router.navigate(['auth/login']);
+    } else {
+      alert(
+        'Hubo un error al intentar registrarlo, porfavor pruebe con otros datos.',
+      );
+    }
+  }
+  checkInput() {
+    if (this.confirmarContrasena == this.password) {
+      this.contraigual = true;
+    } else {
+      this.contraigual = false;
     }
   }
   redirectToLogin() {
