@@ -52,7 +52,13 @@ export class FetchService {
         method: 'GET',
         headers: this.getHeaders(),
       });
-      const data = await response.json();
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json(); //Por si es un objeto.
+      } else {
+        data = await response.text(); //Cualquier otro mensaje.
+      }
       if (response.ok) {
         return data;
       } else if (response.status == 401) {

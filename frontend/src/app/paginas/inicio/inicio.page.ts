@@ -13,7 +13,6 @@ import { NgFor } from '@angular/common';
 export class InicioPage implements OnInit {
   productos: any[] = [];
   private cargarTabla: GetProductosService = inject(GetProductosService);
-
   ngOnInit(): void {
     this.cargarTabla.getProductos().then((data) => {
       console.log(data);

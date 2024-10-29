@@ -13,4 +13,12 @@ export class GetProductosService {
     }
     return response;
   }
+
+  async getProductosByCategoria(id_categoria: string) {
+    const response = await this.apiService.get(`/productos/${id_categoria}`);
+    if (response == undefined) {
+      return undefined;
+    }
+    return response;
+  }
 }
