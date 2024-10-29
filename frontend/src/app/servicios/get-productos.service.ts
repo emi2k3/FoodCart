@@ -7,7 +7,7 @@ import { FetchService } from './fetch.service';
 export class GetProductosService {
   private apiService: FetchService = inject(FetchService);
   async getProductos() {
-    const response = await this.apiService.get('/productos/');
+    const response = await this.apiService.get('/productos');
     if (response == undefined) {
       return undefined;
     }
