@@ -67,7 +67,7 @@ const googleRoutes: FastifyPluginAsync = async (
       const payload = {
         id: res.rows[0].id,
         email: res.rows[0].email,
-        isAdmin: res.rows[0].isAdmin,
+        isAdmin: res.rows[0].admin,
         expiresIn: "3h",
       };
 
