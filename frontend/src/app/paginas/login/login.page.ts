@@ -32,4 +32,7 @@ export class LoginPage {
       this.loginOkay = false;
     }
   }
+  async onClick() {
+    window.location.href = 'https://localhost/backend/auth/login/google';
+  }
 }
