@@ -32,7 +32,8 @@ export class LoginPage {
       this.loginOkay = false;
     }
   }
-  async onClick() {
+
+  redirectToGoogle() {
     window.location.href = 'https://localhost/backend/auth/login/google';
   }
 }
