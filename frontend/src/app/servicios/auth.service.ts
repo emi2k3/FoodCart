@@ -28,5 +28,18 @@ export class AuthService {
   isValidUser(): boolean {
     return !!localStorage.getItem('token');
   }
+  isAdmin(): boolean {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const admin = JSON.parse(atob(token.split('.')[1]));
+        return admin.isAdmin === true;
+      }
+      return false;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  }
   constructor() {}
 }

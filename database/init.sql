@@ -80,3 +80,10 @@ create table if not exists pedido (
     CONSTRAINT fk_producto FOREIGN KEY (id_producto) 
         REFERENCES producto(id_producto) ON DELETE RESTRICT
 );
+
+
+INSERT INTO telefono (numeroTel) VALUES('099482111');
+INSERT INTO direccion (numero,calle) VALUES('123','vibaracha');
+
+INSERT INTO usuario (nombre,apellido,email,id_direccion,id_telefono,contraseña) VALUES('ad','min','admin@example.com',1,1,crypt('Contraseña123!', gen_salt('bf')));
+UPDATE usuario SET admin=true WHERE id=1;
