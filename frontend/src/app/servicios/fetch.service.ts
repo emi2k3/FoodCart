@@ -65,5 +65,30 @@ export class FetchService {
     }
   }
 
+  async delete<T = any>(url: string): Promise<T> {
+    try {
+      const response = await fetch(`${this.baseurl}${url}`, {
+        method: 'DELETE',
+        headers: this.getHeaders(),
+      });
+      let data;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json(); //Por si es un objeto.
+      } else {
+        data = await response.text(); //Cualquier otro mensaje.
+      }
+      if (response.ok) {
+        return data;
+      } else if (response.status == 401) {
+        throw new Error('Usuario no verificado.');
+      } else {
+        throw new Error(data);
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   constructor() {}
 }
