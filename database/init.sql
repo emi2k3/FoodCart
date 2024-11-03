@@ -20,7 +20,7 @@ create table if not exists local (
     nombre varchar(20) not null,
     id_telefono integer not null,
     id_direccion integer not null,
-    foto varchar(255) null,
+    foto boolean null,
     CONSTRAINT fk_telefono FOREIGN KEY(id_telefono) REFERENCES telefono(id) on delete cascade,
     CONSTRAINT fk_direccion FOREIGN KEY(id_direccion) REFERENCES direccion(id) on delete cascade
 );
@@ -34,7 +34,7 @@ create table if not exists usuario (
     id_direccion integer not null,
     id_telefono integer not null,
     contraseña varchar(225) not null,
-    foto varchar(255) null,
+    foto boolean null,
     admin boolean not null default FALSE
 );
 
@@ -61,7 +61,7 @@ create table if not exists producto (
     descripcion varchar(300) not null,
     precio_unidad numeric(10,2) not null,
     id_categoria integer not null,
-    foto varchar(255) null,  -- para almacenar la ruta o URL de la imagen
+    foto boolean null, 
     CONSTRAINT fk_categoria FOREIGN KEY (id_categoria) 
         REFERENCES categoria(id_categoria) ON DELETE RESTRICT,
     CONSTRAINT precio_positivo CHECK (precio_unidad > 0)

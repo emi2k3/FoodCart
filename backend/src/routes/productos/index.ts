@@ -7,7 +7,7 @@ import {
 } from "../../types/productos.js";
 import { query } from "../../services/database.js";
 import { writeFileSync } from "fs";
-import { join } from "path";
+import { extname, join } from "node:path";
 
 const productosRoute: FastifyPluginAsync = async (
   fastify,
@@ -268,34 +268,46 @@ const productosRoute: FastifyPluginAsync = async (
     onRequest: [fastify.authenticate],
     handler: async function (request, reply) {
       const bodyProducto: productoPostType = request.body as productoPostType;
+      var tieneFoto: boolean = false;
+
+      if (bodyProducto.foto && Object.keys(bodyProducto.foto).length > 0) {
+        tieneFoto = true;
+      } else {
+        tieneFoto = false;
+      }
+
+      const result = await query(
+        `INSERT INTO producto(
+          nombre,
+          descripcion,
+          precio_unidad,
+          id_categoria, 
+          foto
+        ) VALUES($1,$2,$3,$4,$5) RETURNING *`,
+        [
+          bodyProducto.nombre,
+          bodyProducto.descripcion,
+          bodyProducto.precio_unidad,
+          bodyProducto.id_categoria,
+          tieneFoto,
+        ]
+      );
 
       try {
-        if (bodyProducto.foto && Object.keys(bodyProducto.foto).length > 0) {
-          const fileBuffer = bodyProducto.foto as unknown as Buffer;
-          const fileName = `${bodyProducto.nombre.replace(
-            /\s+/g,
-            "_"
-          )}_${Date.now()}.jpg`;
-          const filePath = join(process.cwd(), "Resources", fileName);
+        if (tieneFoto) {
+          const fileBuffer = bodyProducto.foto as Buffer;
+          const filename = result.rows[0].id_producto + ".jpg";
+          const filePath = join(
+            process.cwd(),
+            "Resources",
+            "img",
+            "usuarios",
+            filename
+          );
 
           writeFileSync(filePath, fileBuffer);
-          //var fileUrl = `/Resources/${fileName}`;
         }
 
-        const result = await query(
-          `INSERT INTO producto(
-            nombre,
-            descripcion,
-            precio_unidad,
-            id_categoria
-          ) VALUES($1,$2,$3,$4) RETURNING *`,
-          [
-            bodyProducto.nombre,
-            bodyProducto.descripcion,
-            bodyProducto.precio_unidad,
-            bodyProducto.id_categoria,
-          ]
-        );
         reply.code(201).send(result.rows[0]);
       } catch (error) {
         return reply.status(500).send(error);

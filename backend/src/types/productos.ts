@@ -31,9 +31,7 @@ export const productoSchema = Type.Object(
     id_categoria: Type.Integer({
       description: "Identificador de la categoría",
     }),
-    foto: Type.Optional(
-      Type.Union([Type.Null(), Type.Object({}), Type.String()])
-    ),
+    foto: Type.Object({}, { additionalProperties: false }),
   },
   { additionalProperties: false }
 );
