@@ -25,6 +25,18 @@
         >
           Agregar al Carrito
         </button>
+        <button
+          class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
+          *ngIf="this.isAdmin==true"
+        >
+          Eliminar producto
+        </button>
+        <button
+          *ngIf="this.isAdmin==true"
+          class="bg-yellow-600 text-white px-3 py-1 rounded-md hover:bg-yellow-700"
+        >
+          Editar producto
+        </button>
       </div>
     </div>
   </div>
