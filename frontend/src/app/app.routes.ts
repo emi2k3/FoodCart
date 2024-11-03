@@ -6,6 +6,7 @@ import { BebidasPage } from './paginas/bebidas/bebidas.page';
 import { ComidasPage } from './paginas/comidas/comidas.page';
 import { AboutUsPage } from './paginas/about-us/about-us.page';
 import { checkTokenGuard } from './guardia/check-token.guard';
+import { PostProductoPage } from './paginas/post-producto/post-producto.page';
 
 export const routes: Routes = [
   {
@@ -41,5 +42,10 @@ export const routes: Routes = [
     component: AboutUsPage,
     title: 'aboutUs',
     canActivate: [checkTokenGuard],
+  },
+  {
+    path: 'productos/ingresar',
+    component: PostProductoPage,
+    title: 'crear',
   },
 ];

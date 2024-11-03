@@ -87,3 +87,5 @@ INSERT INTO direccion (numero,calle) VALUES('123','vibaracha');
 
 INSERT INTO usuario (nombre,apellido,email,id_direccion,id_telefono,contraseña) VALUES('ad','min','admin@example.com',1,1,crypt('Contraseña123!', gen_salt('bf')));
 UPDATE usuario SET admin=true WHERE id=1;
+
+INSERT INTO categoria (nombre) VALUES('COMIDA');
