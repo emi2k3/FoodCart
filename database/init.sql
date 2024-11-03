@@ -20,6 +20,7 @@ create table if not exists local (
     nombre varchar(20) not null,
     id_telefono integer not null,
     id_direccion integer not null,
+    foto varchar(255) null,
     CONSTRAINT fk_telefono FOREIGN KEY(id_telefono) REFERENCES telefono(id) on delete cascade,
     CONSTRAINT fk_direccion FOREIGN KEY(id_direccion) REFERENCES direccion(id) on delete cascade
 );
@@ -33,6 +34,7 @@ create table if not exists usuario (
     id_direccion integer not null,
     id_telefono integer not null,
     contraseña varchar(225) not null,
+    foto varchar(255) null,
     admin boolean not null default FALSE
 );
 
