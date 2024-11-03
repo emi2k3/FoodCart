@@ -5,22 +5,32 @@
     <a class="flex items-center space-x-3 rtl:space-x-reverse">
       <img src="assets/logo.jpeg" class="h-20" alt="FoodCart Logo" />
       <span
-        class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-        >FoodCart</span
+        class="self-center text-2xl font-semibold whitespace-nowrap text-black dark:text-white"
       >
+        FoodCart
+      </span>
     </a>
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
       <a href="#" class="text-lg hover:text-gray-700 flex items-center">
         <img src="assets/carrito.png" alt="Cart" class="h-7 w-7" />
       </a>
-      <a
-        href="#"
-        class="text-lg text-blue-600 dark:text-blue-500 hover:text-gray-700"
-        >Usuario</a
-      >
+      <!-- Perfil del Usuario -->
+      <div class="flex items-center space-x-3">
+        <span
+          class="text-lg text-blue-600 dark:text-blue-500 hover:text-gray-700"
+        >
+          {{ usuario.nombre }}
+        </span>
+        <img
+          src="assets/user.png"
+          alt="User Photo"
+          class="h-10 w-10 rounded-full border-2 border-gray-300"
+        />
+      </div>
     </div>
   </div>
 </nav>
+
 <nav class="bg-red-600 dark:bg-gray-700">
   <div class="max-w-[95%] px-4 py-3 mx-auto">
     <div class="flex items-center justify-between">

@@ -16,7 +16,6 @@ export class InicioPage implements OnInit {
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private authService: AuthService = inject(AuthService);
   isAdmin: boolean = false;
-
   ngOnInit(): void {
     this.cargarTabla.getProductos().then((data) => {
       console.log(data);

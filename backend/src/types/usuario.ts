@@ -2,6 +2,13 @@ import { Static, Type } from "@sinclair/typebox";
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,20}$/;
 
+export const IdUsuarioSchema = Type.Object({
+  id_usuario: Type.Integer({
+    description: "Identificador único del usuario",
+  }),
+});
+export type IdUsuario = Static<typeof IdUsuarioSchema>;
+
 export const UsuarioPostSchema = Type.Object(
   {
     nombre: Type.String({
@@ -57,3 +64,22 @@ export const UsuarioPostSchema = Type.Object(
 );
 
 export type UsuarioPostSchema = Static<typeof UsuarioPostSchema>;
+
+export const ImagenUsuarioSchema = Type.Object(
+  {
+    imagen: Type.Object(
+      {
+        type: Type.Literal("file"),
+        fieldname: Type.String(),
+        filename: Type.String(),
+        encoding: Type.String(),
+        mimetype: Type.String(),
+        file: Type.Object({}),
+        _buf: Type.Object({}),
+      },
+      { additionalProperties: false }
+    ),
+  },
+  { additionalProperties: false }
+);
+export type ImagenUsuario = Static<typeof ImagenUsuarioSchema>;

@@ -54,7 +54,70 @@ const productosRoute: FastifyPluginAsync = async (
     },
   });
 
-  // ################################################### PUT ###################################################
+  // ################################################### GET BY ID_CATEGORIA ########################################################################
+
+  fastify.get("/:id_categoria", {
+    schema: {
+      summary: "Listado de productos filtrados por categoría",
+      description: "### Implementa y valida: \n" + "- token \n" + "- params",
+      tags: ["Productos"],
+      security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        properties: {
+          id_categoria: { type: "string" },
+        },
+        required: ["id_categoria"],
+      },
+      response: {
+        200: {
+          description: "Proporciona los productos filtrados por categoría",
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              ...IdProductoSchema.properties,
+              ...productoSchema.properties,
+            },
+          },
+          examples: [
+            {
+              id_producto: 0,
+              nombre: "Hamburgesa Triple",
+              descripcion:
+                "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
+              precio_unidad: 500,
+              id_categoria: 1,
+              foto: "/ruta/imagen.jpg",
+            },
+          ],
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const id_categoria = (request.params as { id_categoria: string })
+        .id_categoria;
+
+      try {
+        const response = await query(
+          "SELECT * FROM producto WHERE id_categoria = $1",
+          [id_categoria]
+        );
+
+        if (response.rows.length === 0) {
+          return reply.status(404).send({
+            error: "No se encontraron productos para la categoría especificada",
+          });
+        }
+
+        reply.code(200).send(response.rows);
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+    },
+  });
+  // ########################################################### PUT #################################################################################
 
   fastify.put("/:id_producto", {
     schema: {
