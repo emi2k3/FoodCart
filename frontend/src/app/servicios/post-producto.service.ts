@@ -2,12 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { FetchMultipartService } from './fetch-multipart.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PostProductoService {
-  private fetchService: FetchMultipartService = inject(FetchMultipartService)
-  post(body: FormData) {
-    this.fetchService.post("productos/", body);
+  private fetchMultipartService: FetchMultipartService = inject(
+    FetchMultipartService,
+  );
+  postProducto(body: FormData) {
+    this.fetchMultipartService.post('productos/', body);
   }
-  constructor() { }
+  constructor() {}
 }

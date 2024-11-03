@@ -2,7 +2,11 @@ import { NgClass, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
+import {
+  ImageCroppedEvent,
+  ImageCropperComponent,
+  LoadedImage,
+} from 'ngx-image-cropper';
 import { PostProductoService } from '../../servicios/post-producto.service';
 
 @Component({
@@ -26,20 +30,17 @@ export class PostProductoPage {
   temporaryBlob: Blob | undefined | null = null;
   mostrarCropper: boolean = true;
 
-
-  constructor(
-    private sanitizer: DomSanitizer
-  ) {
-  }
+  constructor(private sanitizer: DomSanitizer) {}
 
   fileChangeEvent(event: Event): void {
     this.imageChangedEvent = event;
-    this.mostrarCropper = true
-
+    this.mostrarCropper = true;
   }
   imageCropped(event: ImageCroppedEvent) {
     if (event.objectUrl) {
-      this.temporaryCroppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+      this.temporaryCroppedImage = this.sanitizer.bypassSecurityTrustUrl(
+        event.objectUrl,
+      );
     }
     this.temporaryBlob = event.blob;
   }
@@ -50,14 +51,17 @@ export class PostProductoPage {
     // cropper ready
   }
   loadImageFailed() {
-    alert("No se pudo cargar la imágen, intente otra vez.")
+    alert('No se pudo cargar la imágen, intente otra vez.');
   }
   onSubmit() {
-    const formData = new FormData(document.getElementById("formPost") as HTMLFormElement);
+    const formData = new FormData(
+      document.getElementById('formPost') as HTMLFormElement,
+    );
     if (this.foto) {
-      formData.append("foto", this.foto, "imagen.webp");
+      formData.delete('foto');
+      formData.append('foto', this.foto, 'imagen.png');
     }
-    this.postProducto.post(formData);
+    this.postProducto.postProducto(formData);
   }
   cropImage() {
     this.croppedImage = this.temporaryCroppedImage;
@@ -66,4 +70,3 @@ export class PostProductoPage {
     this.temporaryCroppedImage = '';
   }
 }
-

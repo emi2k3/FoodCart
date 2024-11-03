@@ -7,7 +7,7 @@ import {
 } from "../../types/productos.js";
 import { query } from "../../services/database.js";
 import { writeFileSync } from "fs";
-import { extname, join } from "node:path";
+import { join } from "node:path";
 
 const productosRoute: FastifyPluginAsync = async (
   fastify,

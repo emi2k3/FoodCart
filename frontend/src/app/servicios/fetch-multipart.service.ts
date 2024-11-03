@@ -10,13 +10,9 @@ export class FetchMultipartService {
     if (localStorage.getItem('token')) {
       return {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-type': 'multipart/form-data',
-      };
-    } else {
-      return {
-        'Content-type': 'multipart/form-data',
       };
     }
+    return { Authorization: '' };
   }
 
   async post<T = any>(url: string, body: FormData): Promise<T> {
@@ -96,5 +92,5 @@ export class FetchMultipartService {
     }
   }
 
-  constructor() { }
+  constructor() {}
 }
