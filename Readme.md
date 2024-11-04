@@ -8,7 +8,7 @@ No es necesario iniciar sesión para usar el cropper. Simplemente sigue estos pa
 1. Dirígete a la siguiente URL:
    `https://localhost/productos/ingresar`
 
-2. Completa todos los campos en el formulario, tal como se indica en la página.
+2. Completa todos los campos en el formulario, tal como se indica en la página. (En el campo categoría, comida ya está creado por defecto)
 
 ## 🖼️ Subir y Recortar la Imagen
 - Sube una foto en el campo correspondiente del formulario.
