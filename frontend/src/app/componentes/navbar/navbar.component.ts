@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, output } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { FetchService } from '../../servicios/fetch.service';
 import { AuthService } from '../../servicios/auth.service';
@@ -16,6 +16,8 @@ export class NavbarComponent implements OnInit {
     nombre: '',
     foto: 'assets/default-user.png', // Setea una foto mientras no haya.
   };
+
+  @Output() searchValueChange = new EventEmitter<string>();
 
   constructor(
     private authservice: AuthService,
@@ -42,6 +44,6 @@ export class NavbarComponent implements OnInit {
   }
 
   onSearchValue(value: string) {
-    console.log('print del serach value');
+    this.searchValueChange.emit(value);
   }
 }

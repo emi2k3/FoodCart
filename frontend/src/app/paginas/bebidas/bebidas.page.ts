@@ -12,11 +12,20 @@ import { NgFor } from '@angular/common';
 })
 export class BebidasPage {
   bebidas: any[] = [];
+  productosFiltrados: any[] = [];
+
   private cargarTabla: GetProductosService = inject(GetProductosService);
   ngOnInit(): void {
     this.cargarTabla.getProductosByCategoria('2').then((data) => {
       console.log(data);
       this.bebidas = data;
+      this.productosFiltrados = data;
     });
+  }
+
+  actualizarFiltroDeProductos(searchValue: string) {
+    this.productosFiltrados = this.bebidas.filter((bebida) =>
+      bebida.nombre.toLowerCase().includes(searchValue.toLowerCase()),
+    );
   }
 }

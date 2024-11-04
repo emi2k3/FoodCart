@@ -1,31 +1,35 @@
-<app-navbar></app-navbar>
-<main class="max-w-7xl mx-auto p-6">
-  <div
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-  >
+<app-navbar
+  (searchValueChange)="actualizarFiltroDeProductos($event)"
+></app-navbar>
+<div class="min-h-screen bg-gray-900">
+  <main class="bg-gray-900 max-w-7xl mx-auto p-6">
     <div
-      class="bg-white p-4 rounded-lg shadow-md"
-      *ngFor="let bebida of bebidas"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
     >
-      <!--<img
-        [src]="bebida.foto"
-        alt="Product Image"
-        class="w-full h-48 object-cover rounded-md"
-      />-->
-      <h2 class="mt-2 text-lg font-semibold text-gray-800">
-        {{ bebida.nombre }}
-      </h2>
-      <p class="mt-1 text-gray-600">{{ bebida.descripcion }}</p>
-      <div class="mt-3 flex justify-between items-center">
-        <span class="text-xl font-bold text-gray-900"
-          >${{ bebida.precio_unidad }}</span
-        >
-        <button
-          class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-        >
-          Agregar al Carrito
-        </button>
+      <div
+        class="bg-white p-4 rounded-lg shadow-md"
+        *ngFor="let bebida of productosFiltrados"
+      >
+        <!--<img
+          [src]="bebida.foto"
+          alt="Product Image"
+          class="w-full h-48 object-cover rounded-md"
+        />-->
+        <h2 class="mt-2 text-lg font-semibold text-gray-800">
+          {{ bebida.nombre }}
+        </h2>
+        <p class="mt-1 text-gray-600">{{ bebida.descripcion }}</p>
+        <div class="mt-3 flex justify-between items-center">
+          <span class="text-xl font-bold text-gray-900"
+            >${{ bebida.precio_unidad }}</span
+          >
+          <button
+            class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+          >
+            Agregar al Carrito
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
+</div>

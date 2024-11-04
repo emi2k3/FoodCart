@@ -301,7 +301,7 @@ const productosRoute: FastifyPluginAsync = async (
             process.cwd(),
             "Resources",
             "img",
-            "usuarios",
+            "productos",
             filename
           );
 

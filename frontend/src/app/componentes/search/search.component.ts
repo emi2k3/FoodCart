@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -14,7 +14,6 @@ export class SearchComponent {
   number = 0;
 
   onSearch() {
-    this.searchTask.emit(this.searchValue);
     console.log('Valor actual ' + this.searchValue);
     console.log('Click ' + this.number);
     this.number += 1;
