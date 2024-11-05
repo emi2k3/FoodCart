@@ -18,6 +18,8 @@ services:
       - FACEBOOK_ID=${FACEBOOK_ID}
       - FACEBOOK_SECRET=${FACEBOOK_SECRET}
       - JWTSECRET=${JWTSECRET}
+      - user=${user}
+      - pass=${pass}
   frontend:
     image: frontend
     container_name: frontend
