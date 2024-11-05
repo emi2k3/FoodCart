@@ -36,6 +36,11 @@ export class LoginPage {
   redirectToGoogle() {
     window.location.href = 'https://localhost/backend/auth/login/google';
   }
+
+  redirectToFacebook() {
+    window.location.href = 'https://localhost/backend/auth/login/facebook';
+  }
+
   redirectToRegister() {
     this.router.navigate(['registro']);
   }
