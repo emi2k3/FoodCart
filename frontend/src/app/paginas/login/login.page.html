@@ -91,19 +91,32 @@
         <p class="text-center text-xl">O</p>
         <hr class="border-gray-500" />
       </div>
+
+      <!--- Inicio Sesión con google -->
       <button
         type="submit"
         id="boton"
         class="text-slate-800 rounded-xl py-2 bg-white w-full mt-5 flex justify-center items-center text-sm hover:scale-110 duration-300"
         (click)="redirectToGoogle()"
       >
+        <img src="assets/google.png" width="20px" height="25px" class="mr-3" />
+        Iniciar Sesión con Google
+      </button>
+
+      <!--- Inicio Sesión con facebook -->
+      <button
+        type="submit"
+        id="boton"
+        class="text-white rounded-xl py-2 bg-blue-600 w-full mt-5 flex justify-center items-center text-sm hover:scale-110 duration-300"
+        (click)="redirectToFacebook()"
+      >
         <img
-          src="assets/icons8-google-logo-48.png"
+          src="assets/facebook.png"
           width="20px"
           height="25px"
           class="mr-3"
         />
-        Iniciar Sesión con Google
+        Iniciar Sesión con Facebook
       </button>
       <hr class="border-gray-300 mt-4" />
       <div class="text-sm flex justify-between items-center mt-3">
