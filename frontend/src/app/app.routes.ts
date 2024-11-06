@@ -7,6 +7,7 @@ import { ComidasPage } from './paginas/comidas/comidas.page';
 import { AboutUsPage } from './paginas/about-us/about-us.page';
 import { checkTokenGuard } from './guardia/check-token.guard';
 import { PostProductoPage } from './paginas/post-producto/post-producto.page';
+import { checkAdminGuard } from './guardia/check-admin.guard';
 
 export const routes: Routes = [
   {
@@ -22,30 +23,31 @@ export const routes: Routes = [
   {
     path: '',
     component: InicioPage,
-    title: 'inicio',
+    title: 'Inicio',
     canActivate: [checkTokenGuard],
   },
   {
     path: 'bebidas',
     component: BebidasPage,
-    title: 'bebidas',
+    title: 'Bebidas',
     canActivate: [checkTokenGuard],
   },
   {
     path: 'comidas',
     component: ComidasPage,
-    title: 'comidas',
+    title: 'Comidas',
     canActivate: [checkTokenGuard],
   },
   {
     path: 'aboutUs',
     component: AboutUsPage,
-    title: 'aboutUs',
+    title: 'About Us',
     canActivate: [checkTokenGuard],
   },
   {
     path: 'productos/ingresar',
     component: PostProductoPage,
-    title: 'crear',
+    title: 'Ingresar Producto',
+    canActivate: [checkAdminGuard],
   },
 ];

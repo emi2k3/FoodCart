@@ -91,3 +91,5 @@ INSERT INTO usuario (nombre,apellido,email,id_direccion,id_telefono,contraseña)
 UPDATE usuario SET admin=true WHERE id=1;
 
 INSERT INTO categoria (nombre) VALUES('COMIDA');
+INSERT INTO categoria (nombre) VALUES('BEBIDA');
+INSERT INTO categoria (nombre) VALUES('ACOMPAÑAMIENTO');
