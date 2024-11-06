@@ -83,6 +83,16 @@ create table if not exists pedido (
         REFERENCES producto(id_producto) ON DELETE RESTRICT
 );
 
+create table if not exists detalle_pedido (
+	cantidad integer not null, 
+	indicaciones varchar(200) null, 
+	id_pedido integer not null, 
+	id_producto integer not null, 
+ 	CONSTRAINT fk_pedido FOREIGN KEY (id_pedido) 
+        REFERENCES pedido(id_pedido) ON DELETE RESTRICT,
+    CONSTRAINT fk_producto FOREIGN KEY (id_producto) 
+        REFERENCES producto(id_producto) ON DELETE RESTRICT
+);
 
 INSERT INTO telefono (numeroTel) VALUES('099482111');
 INSERT INTO direccion (numero,calle) VALUES('123','vibaracha');

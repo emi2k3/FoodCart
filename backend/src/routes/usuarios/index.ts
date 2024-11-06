@@ -52,8 +52,9 @@ const usuarioRoute: FastifyPluginAsync = async (
 
         const baseQuery = `
           WITH direccionid AS (
-            INSERT INTO direccion (numero, calle${postUsuario.apto ? ", apto" : ""
-          }) 
+            INSERT INTO direccion (numero, calle${
+              postUsuario.apto ? ", apto" : ""
+            }) 
             VALUES ($1, $2${postUsuario.apto ? ", $3" : ""}) 
             RETURNING id
           ),
@@ -64,10 +65,12 @@ const usuarioRoute: FastifyPluginAsync = async (
           ),
           usuarioid AS (
             INSERT INTO usuario(nombre, apellido, email, contraseña, id_direccion, id_telefono) 
-            VALUES ($${postUsuario.apto ? "4" : "3"}, $${postUsuario.apto ? "5" : "4"
-          }, 
-                    $${postUsuario.apto ? "6" : "5"}, crypt($${postUsuario.apto ? "7" : "6"
-          }, gen_salt('bf')), 
+            VALUES ($${postUsuario.apto ? "4" : "3"}, $${
+          postUsuario.apto ? "5" : "4"
+        }, 
+                    $${postUsuario.apto ? "6" : "5"}, crypt($${
+          postUsuario.apto ? "7" : "6"
+        }, gen_salt('bf')), 
                     (SELECT id FROM direccionid), (SELECT id FROM telefonoid)) 
             RETURNING id
           ),
@@ -80,29 +83,29 @@ const usuarioRoute: FastifyPluginAsync = async (
 
         const params = postUsuario.apto
           ? [
-            postUsuario.numero,
-            postUsuario.calle,
-            postUsuario.apto,
-            postUsuario.nombre,
-            postUsuario.apellido,
-            postUsuario.email,
-            postUsuario.contraseña,
-            postUsuario.telefono,
-          ]
+              postUsuario.numero,
+              postUsuario.calle,
+              postUsuario.apto,
+              postUsuario.nombre,
+              postUsuario.apellido,
+              postUsuario.email,
+              postUsuario.contraseña,
+              postUsuario.telefono,
+            ]
           : [
-            postUsuario.numero,
-            postUsuario.calle,
-            postUsuario.nombre,
-            postUsuario.apellido,
-            postUsuario.email,
-            postUsuario.contraseña,
-            postUsuario.telefono,
-          ];
+              postUsuario.numero,
+              postUsuario.calle,
+              postUsuario.nombre,
+              postUsuario.apellido,
+              postUsuario.email,
+              postUsuario.contraseña,
+              postUsuario.telefono,
+            ];
 
         await client.query(baseQuery, params);
         await client.query("COMMIT");
 
-        let recipient = postUsuario.email;
+        var recipient = postUsuario.email;
 
         fastify.mailer.sendMail({
           from: process.env.user,
