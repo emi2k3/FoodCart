@@ -8,6 +8,7 @@ import {
   LoadedImage,
 } from 'ngx-image-cropper';
 import { PostProductoService } from '../../servicios/post-producto.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-post-producto',
@@ -18,6 +19,7 @@ import { PostProductoService } from '../../servicios/post-producto.service';
 })
 export class PostProductoPage {
   private postProducto: PostProductoService = inject(PostProductoService);
+  private router: Router = inject(Router);
   nombre: string = '';
   descripcion: string = '';
   precio_unidad: number = 0;
@@ -61,7 +63,11 @@ export class PostProductoPage {
       formData.delete('foto');
       formData.append('foto', this.foto, 'imagen.png');
     }
-    this.postProducto.postProducto(formData);
+    if (this.postProducto.postProducto(formData) != null) {
+      this.router.navigate(['']);
+    } else {
+      alert('Hubo un error al crear su producto.');
+    }
   }
   cropImage() {
     this.croppedImage = this.temporaryCroppedImage;

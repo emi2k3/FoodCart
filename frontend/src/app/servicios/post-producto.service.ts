@@ -9,7 +9,12 @@ export class PostProductoService {
     FetchMultipartService,
   );
   postProducto(body: FormData) {
-    this.fetchMultipartService.post('productos/', body);
+    try {
+      return this.fetchMultipartService.post('productos/', body);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
   }
   constructor() {}
 }

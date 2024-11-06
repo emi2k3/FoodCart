@@ -21,7 +21,6 @@ export class InicioPage implements OnInit {
       console.log(data);
       this.productos = data;
       this.isAdmin = this.authService.isAdmin();
-      console.log(this.isAdmin);
     });
   }
 }
