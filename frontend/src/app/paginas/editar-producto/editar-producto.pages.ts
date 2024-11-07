@@ -9,26 +9,22 @@ import {
 } from 'ngx-image-cropper';
 import { PostProductoService } from '../../servicios/post-producto.service';
 import { Router } from '@angular/router';
-import { ProductoPost } from '../../interfaces/producto';
 
 @Component({
-  selector: 'app-post-producto',
-  templateUrl: './post-producto.page.html',
-  styleUrls: ['./post-producto.page.scss'],
-  imports: [FormsModule, NgIf, NgClass, ImageCropperComponent],
+  selector: 'editar-producto',
   standalone: true,
+  templateUrl: './editar-producto.pages.html',
+  styleUrls: ['./editar-producto.pages.scss'],
+  imports: [FormsModule, NgIf, NgClass, ImageCropperComponent],
 })
-export class PostProductoPage {
+export class EditarProductoPages {
   private postProducto: PostProductoService = inject(PostProductoService);
   private router: Router = inject(Router);
-
-  producto: ProductoPost = {
-    nombre: '',
-    descripcion: '',
-    precio_unidad: 0,
-    categoria: '',
-    foto: null,
-  };
+  nombre: string = '';
+  descripcion: string = '';
+  precio_unidad: number = 0;
+  categoria: string = '';
+  foto: Blob | undefined | null;
 
   imageChangedEvent: Event | null = null;
   croppedImage: SafeUrl = '';
@@ -63,9 +59,9 @@ export class PostProductoPage {
     const formData = new FormData(
       document.getElementById('formPost') as HTMLFormElement,
     );
-    if (this.producto.foto) {
+    if (this.foto) {
       formData.delete('foto');
-      formData.append('foto', this.producto.foto, 'imagen.png');
+      formData.append('foto', this.foto, 'imagen.png');
     }
     if (this.postProducto.postProducto(formData) != null) {
       this.router.navigate(['']);
@@ -75,7 +71,7 @@ export class PostProductoPage {
   }
   cropImage() {
     this.croppedImage = this.temporaryCroppedImage;
-    this.producto.foto = this.temporaryBlob;
+    this.foto = this.temporaryBlob;
     this.mostrarCropper = false;
     this.temporaryCroppedImage = '';
   }

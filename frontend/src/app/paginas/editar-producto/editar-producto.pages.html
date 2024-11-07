@@ -18,7 +18,7 @@
               class="p-2 rounded-xl border w-full"
               placeholder="Nombre"
               required
-              [(ngModel)]="producto.nombre"
+              [(ngModel)]="nombre"
               #nombreCntrl="ngModel"
               [ngClass]="{
             'border-red-500 bg-red-50': nombreCntrl.invalid && nombreCntrl.touched,
@@ -43,7 +43,7 @@
               class="p-2 rounded-xl border w-full"
               placeholder="Descripcion"
               required
-              [(ngModel)]="producto.descripcion"
+              [(ngModel)]="descripcion"
               #descripcionCntrl="ngModel"
               [ngClass]="{
             'border-red-500 bg-red-50': descripcionCntrl.invalid && descripcionCntrl.touched,
@@ -69,7 +69,7 @@
           class="p-2 rounded-xl border w-full"
           placeholder="300"
           required
-          [(ngModel)]="producto.precio_unidad"
+          [(ngModel)]="precio_unidad"
           #precio_unidadCntrl="ngModel"
           [ngClass]="{
             'border-red-500 bg-red-50': precio_unidadCntrl.invalid && precio_unidadCntrl.touched,
@@ -96,7 +96,7 @@
           name="id_categoria"
           id="id_categoria"
           required
-          [(ngModel)]="producto.categoria"
+          [(ngModel)]="categoria"
           #categoriaCntrl="ngModel"
           [ngClass]="{
           'border-red-500 bg-red-50': categoriaCntrl.invalid && categoriaCntrl.touched,

@@ -23,11 +23,34 @@
           <span class="text-xl font-bold text-gray-900"
             >${{ producto.precio_unidad }}</span
           >
-          <button
-            class="bg-blue-900 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-          >
-            Agregar al Carrito
-          </button>
+          <div class="space-x-2" *ngIf="authService.isAdmin()">
+            <button
+              [routerLink]="['/productos/editar', producto.id_producto]"
+              class="bg-orange-500 text-white px-3 py-2 rounded-md hover:bg-orange-700 [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]"
+            >
+              <img
+                NgOptimizedImage
+                ngSrc="assets/edit-icon.png"
+                alt="Icono"
+                class="w-5 h-5"
+                width="20"
+                height="20"
+              />
+            </button>
+            <button
+              (click)="confirmarEliminacion(producto.id_producto.toString())"
+              class="bg-red-700 text-white px-3 py-2 rounded-md hover:bg-red-900 [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]"
+            >
+              <img
+                NgOptimizedImage
+                ngSrc="assets/delete-icon.png"
+                alt="Icono"
+                class="w-5 h-5"
+                width="20"
+                height="20"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>
