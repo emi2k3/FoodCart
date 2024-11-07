@@ -1,5 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { GetProductosService } from '../../servicios/get-productos.service';
+import { CarritoService } from '../../servicios/carrito-service.service'; // Importamos el servicio de carrito.
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { NgFor } from '@angular/common';
 
@@ -8,16 +9,16 @@ import { NgFor } from '@angular/common';
   standalone: true,
   imports: [NavbarComponent, NgFor],
   templateUrl: './comidas.page.html',
-  styleUrl: './comidas.page.css',
+  styleUrls: ['./comidas.page.css'],
 })
-export class ComidasPage {
+export class ComidasPage implements OnInit {
   productos: any[] = [];
   productosFiltrados: any[] = [];
   private cargarTabla: GetProductosService = inject(GetProductosService);
+  private carritoService: CarritoService = inject(CarritoService); // Inyectamos el servicio de carrito.
 
   ngOnInit(): void {
     this.cargarTabla.getProductosByCategoria('1').then((data) => {
-      console.log(data);
       this.productos = data;
       this.productosFiltrados = data;
     });
@@ -27,5 +28,10 @@ export class ComidasPage {
     this.productosFiltrados = this.productos.filter((producto) =>
       producto.nombre.toLowerCase().includes(searchValue.toLowerCase()),
     );
+  }
+
+  // Método para agregar al carrito
+  agregarAlCarrito(producto: any) {
+    this.carritoService.agregarProducto(producto);
   }
 }

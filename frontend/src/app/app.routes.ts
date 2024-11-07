@@ -5,8 +5,9 @@ import { InicioPage } from './paginas/inicio/inicio.page';
 import { BebidasPage } from './paginas/bebidas/bebidas.page';
 import { ComidasPage } from './paginas/comidas/comidas.page';
 import { AboutUsPage } from './paginas/about-us/about-us.page';
-import { checkTokenGuard } from './guardia/check-token.guard';
 import { PostProductoPage } from './paginas/post-producto/post-producto.page';
+import { CarritoPage } from './paginas/carrito/carrito.page'; // Importamos la pagina del carrito.
+import { checkTokenGuard } from './guardia/check-token.guard';
 import { checkAdminGuard } from './guardia/check-admin.guard';
 
 export const routes: Routes = [
@@ -49,5 +50,11 @@ export const routes: Routes = [
     component: PostProductoPage,
     title: 'Ingresar Producto',
     canActivate: [checkAdminGuard],
+  },
+  {
+    path: 'carrito',
+    component: CarritoPage,
+    title: 'Carrito de Compras',
+    canActivate: [checkTokenGuard],
   },
 ];

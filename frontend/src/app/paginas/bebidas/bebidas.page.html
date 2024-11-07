@@ -10,11 +10,6 @@
         class="bg-white p-4 rounded-lg shadow-md"
         *ngFor="let bebida of productosFiltrados"
       >
-        <!--<img
-          [src]="bebida.foto"
-          alt="Product Image"
-          class="w-full h-48 object-cover rounded-md"
-        />-->
         <h2 class="mt-2 text-lg font-semibold text-gray-800">
           {{ bebida.nombre }}
         </h2>
@@ -25,6 +20,7 @@
           >
           <button
             class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+            (click)="agregarAlCarrito(bebida)"
           >
             Agregar al Carrito
           </button>

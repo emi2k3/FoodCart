@@ -7,11 +7,6 @@
       class="bg-white p-4 rounded-lg shadow-md"
       *ngFor="let producto of productos"
     >
-      <!--<img
-        [src]="producto.foto"
-        alt="Product Image"
-        class="w-full h-48 object-cover rounded-md"
-      />-->
       <h2 class="mt-2 text-lg font-semibold text-gray-800">
         {{ producto.nombre }}
       </h2>
@@ -22,18 +17,19 @@
         >
         <button
           class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+          (click)="agregarAlCarrito(producto)"
         >
           Agregar al Carrito
         </button>
         <button
           class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
-          *ngIf="this.isAdmin==true"
+          *ngIf="isAdmin"
         >
           Eliminar producto
         </button>
         <button
-          *ngIf="this.isAdmin==true"
           class="bg-yellow-600 text-white px-3 py-1 rounded-md hover:bg-yellow-700"
+          *ngIf="isAdmin"
         >
           Editar producto
         </button>

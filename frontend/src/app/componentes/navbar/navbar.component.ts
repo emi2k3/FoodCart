@@ -1,15 +1,16 @@
-import { Component, EventEmitter, OnInit, Output, output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { FetchService } from '../../servicios/fetch.service';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [SearchComponent],
+  imports: [SearchComponent, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
   usuario = {
@@ -18,15 +19,12 @@ export class NavbarComponent implements OnInit {
   };
 
   @Output() searchValueChange = new EventEmitter<string>();
-
-  constructor(
-    private authservice: AuthService,
-    private fetchService: FetchService,
-    private router: Router,
-  ) {}
+  private authService: AuthService = inject(AuthService);
+  private fetchService: FetchService = inject(FetchService);
+  private router: Router = inject(Router);
 
   async ngOnInit() {
-    if (this.authservice.isValidUser()) {
+    if (this.authService.isValidUser()) {
       try {
         const userData = await this.fetchService.get('/usuarios');
         this.usuario.nombre = userData.nombre || 'Usuario';
@@ -38,9 +36,9 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.authservice.Logut();
+    this.authService.Logut();
     localStorage.removeItem('token');
-    this.router.navigate(['/']);
+    this.router.navigate(['/auth/login']);
   }
 
   onSearchValue(value: string) {

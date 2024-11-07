@@ -10,11 +10,6 @@
         class="bg-white p-4 rounded-lg shadow-md"
         *ngFor="let producto of productosFiltrados"
       >
-        <!--<img
-          [src]="producto.foto"
-          alt="Product Image"
-          class="w-full h-48 object-cover rounded-md"
-        />-->
         <h2 class="mt-2 text-lg font-semibold text-gray-800">
           {{ producto.nombre }}
         </h2>
@@ -24,7 +19,8 @@
             >${{ producto.precio_unidad }}</span
           >
           <button
-            class="bg-blue-900 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+            class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+            (click)="agregarAlCarrito(producto)"
           >
             Agregar al Carrito
           </button>
