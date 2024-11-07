@@ -1,34 +1,24 @@
-<app-navbar
-  (searchValueChange)="actualizarFiltroDeProductos($event)"
-></app-navbar>
+<app-navbar (searchValueChange)="actualizarFiltroDeProductos($event)"></app-navbar>
 <div class="min-h-screen bg-gray-900">
   <main class="bg-gray-900 max-w-7xl mx-auto p-6">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-    >
-      <div
-        class="bg-white p-4 rounded-lg shadow-md"
-        *ngFor="let producto of productosFiltrados"
-      >
-        <!--<img
-          [src]="producto.foto"
-          alt="Product Image"
-          class="w-full h-48 object-cover rounded-md"
-        />-->
-        <h2 class="mt-2 text-lg font-semibold text-gray-800">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ">
+      <div class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
+        *ngFor="let producto of productosFiltrados">
+        <img src="/assets/logo.jpeg" alt="Product Image" class="w-full h-48 object-cover rounded-md">
+        <h2 class="mt-2 text-lg font-semibold text-gray-800 ">
           {{ producto.nombre }}
+
         </h2>
-        <p class="mt-1 text-gray-600">{{ producto.descripcion }}</p>
-        <div class="mt-3 flex justify-between items-center">
-          <span class="text-xl font-bold text-gray-900"
-            >${{ producto.precio_unidad }}</span
-          >
-          <button
-            class="bg-blue-900 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-          >
+        <div
+          class="absolute h-full w-full bg-black/20 flex flex-col items-center justify-center inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <button class="bg-blue-900 text-white px-5 py-2 rounded-md hover:bg-blue-700 duration-300">
             Agregar al Carrito
           </button>
+          <button class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300">
+            Ver detalles
+          </button>
         </div>
+
       </div>
     </div>
   </main>

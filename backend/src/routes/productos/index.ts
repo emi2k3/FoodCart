@@ -4,6 +4,7 @@ import {
   productoPost,
   productoPostType,
   productoSchema,
+  productoGet,
 } from "../../types/productos.js";
 import { query } from "../../services/database.js";
 import { writeFileSync } from "fs";
@@ -77,7 +78,7 @@ const productosRoute: FastifyPluginAsync = async (
             type: "object",
             properties: {
               ...IdProductoSchema.properties,
-              ...productoSchema.properties,
+              ...productoGet.properties,
             },
           },
           examples: [
@@ -98,7 +99,7 @@ const productosRoute: FastifyPluginAsync = async (
     handler: async function (request, reply) {
       const id_categoria = (request.params as { id_categoria: string })
         .id_categoria;
-
+      // const fs = require('fs');
       try {
         const response = await query(
           "SELECT * FROM producto WHERE id_categoria = $1",
@@ -110,7 +111,17 @@ const productosRoute: FastifyPluginAsync = async (
             error: "No se encontraron productos para la categoría especificada",
           });
         }
+        // response.rows.forEach(element => {
+        //   if (element.foto) {
+        //     let filePath = join(process.cwd(), 'Resources', 'img', 'productos', `${element.id_producto}.png`);
+        //     let fileBuffer = fs.readFileSync(filePath);
+        //     if (fs.existsSync(filePath)) {
+        //       let base64Image = `data:image/png;base64,${fileBuffer.toString('base64')}`;
+        //     }
+        //   }
 
+        // });
+        console.log(response.rows);
         reply.code(200).send(response.rows);
       } catch (error) {
         return reply.status(500).send(error);
