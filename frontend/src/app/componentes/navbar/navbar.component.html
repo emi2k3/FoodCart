@@ -12,10 +12,7 @@
       </span>
     </a>
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
-      <a
-        routerLink="/carrito"
-        class="text-lg hover:text-gray-700 flex items-center"
-      >
+      <a href="/carrito" class="text-lg hover:text-gray-700 flex items-center">
         <img src="assets/carrito.png" alt="Cart" class="h-7 w-7" />
       </a>
       <!-- Perfil del Usuario -->
@@ -24,7 +21,7 @@
           {{ usuario.nombre }}
         </span>
         <img
-          src="{{ usuario.foto }}"
+          src="assets/user.png"
           alt="User Photo"
           class="h-10 w-10 rounded-full border-2 border-gray-300"
         />
@@ -45,7 +42,7 @@
       <ul class="flex items-center space-x-8 rtl:space-x-reverse">
         <li>
           <a
-            routerLink="/comidas"
+            href="/comidas"
             class="text-white font-bold text-base hover:text-blue-950"
             aria-current="page"
           >
@@ -54,7 +51,7 @@
         </li>
         <li>
           <a
-            routerLink="/bebidas"
+            href="/bebidas"
             class="text-white font-bold text-base hover:text-blue-950"
           >
             Bebidas
@@ -62,7 +59,7 @@
         </li>
         <li>
           <a
-            routerLink="/aboutUs"
+            href="/aboutUs"
             class="text-white font-bold text-base hover:text-blue-950"
           >
             About Us

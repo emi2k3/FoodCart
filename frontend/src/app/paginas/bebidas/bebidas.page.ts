@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { GetProductosService } from '../../servicios/get-productos.service';
-import { CarritoService } from '../../servicios/carrito-service.service'; // Importamos el servicio del carrito.
+import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio de carrito
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { NgFor } from '@angular/common';
 
@@ -9,13 +9,13 @@ import { NgFor } from '@angular/common';
   standalone: true,
   imports: [NavbarComponent, NgFor],
   templateUrl: './bebidas.page.html',
-  styleUrls: ['./bebidas.page.css'],
+  styleUrl: './bebidas.page.css',
 })
 export class BebidasPage implements OnInit {
   bebidas: any[] = [];
   productosFiltrados: any[] = [];
   private cargarTabla: GetProductosService = inject(GetProductosService);
-  private carritoService: CarritoService = inject(CarritoService); // Inyectamos el servicio del carrito.
+  private carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio de carrito
 
   ngOnInit(): void {
     this.cargarTabla.getProductosByCategoria('2').then((data) => {

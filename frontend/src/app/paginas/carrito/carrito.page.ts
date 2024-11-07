@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CarritoService } from '../../servicios/carrito-service.service';
 import { AuthService } from '../../servicios/auth.service';
-import { NgFor, NgIf } from '@angular/common';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-carrito',
