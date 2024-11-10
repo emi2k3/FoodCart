@@ -20,14 +20,23 @@ export class InicioPage implements OnInit {
   isAdmin: boolean = false;
 
   ngOnInit(): void {
-    this.cargarTabla.getProductos().then((data) => {
-      this.productos = data;
-      this.isAdmin = this.authService.isAdmin();
-    });
+    this.cargarTabla
+      .getProductos()
+      .then((data) => {
+        this.productos = data;
+        this.isAdmin = this.authService.isAdmin();
+      })
+      .catch((error) => {
+        console.error('Error al cargar productos:', error); // Log para capturar errores
+      });
   }
 
-  // Método para agregar al carrito
   agregarAlCarrito(producto: any) {
+    console.log('Producto agregado al carrito:', producto); // Log para verificar el producto agregado
     this.carritoService.agregarProducto(producto);
+    console.log(
+      'Estado del carrito tras agregar producto:',
+      this.carritoService.obtenerProductos(),
+    ); // Log para verificar estado del carrito
   }
 }

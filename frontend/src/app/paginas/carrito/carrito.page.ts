@@ -20,21 +20,37 @@ export class CarritoPage implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    this.productosEnCarrito = this.carritoService.obtenerProductos();
+    this.cargarProductosDelCarrito();
     this.isAdmin = this.authService.isAdmin();
   }
 
-  // Método para calcular el total
-  getTotal() {
-    return this.productosEnCarrito.reduce(
-      (total, producto) => total + producto.precio * producto.cantidad,
-      0,
+  cargarProductosDelCarrito() {
+    this.productosEnCarrito = this.carritoService.obtenerProductos();
+    console.log(
+      'Productos en el carrito después de cargar:',
+      this.productosEnCarrito,
     );
   }
 
-  // Método para eliminar un producto del carrito
+  getTotal() {
+    const total = this.productosEnCarrito.reduce((total, producto) => {
+      const precio = parseFloat(producto.precio_unidad);
+      console.log('Precio del producto:', precio);
+      if (isNaN(precio)) {
+        console.error(
+          `Precio inválido para el producto ${producto.nombre}:`,
+          producto.precio_unidad,
+        );
+        return total;
+      }
+      return total + precio * producto.cantidad;
+    }, 0);
+    console.log('Total del carrito:', total);
+    return total.toFixed(2);
+  }
+
   eliminarDelCarrito(idProducto: string) {
     this.carritoService.eliminarProducto(idProducto);
-    this.productosEnCarrito = this.carritoService.obtenerProductos();
+    this.cargarProductosDelCarrito();
   }
 }
