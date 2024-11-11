@@ -7,18 +7,30 @@ import { FetchService } from './fetch.service';
 export class GetProductosService {
   private apiService: FetchService = inject(FetchService);
   async getProductos() {
-    const response = await this.apiService.get('/productos');
-    if (response == undefined) {
-      return undefined;
+    try {
+      const response = await this.apiService.get('/productos');
+      return response
+    } catch (error) {
+      console.log(error);
     }
-    return response;
   }
 
   async getProductosByCategoria(id_categoria: string) {
-    const response = await this.apiService.get(`/productos/${id_categoria}`);
-    if (response == undefined) {
-      return undefined;
+    try {
+      const response = await this.apiService.get(`/productos/categoria/${id_categoria}`);
+      return response;
+    } catch (error) {
+      console.log(error)
     }
-    return response;
+  }
+
+  async getProductosById(id_producto: string) {
+    try {
+      const response = await this.apiService.get(`/productos/${id_producto}`);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 }

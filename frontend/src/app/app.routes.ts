@@ -8,6 +8,7 @@ import { AboutUsPage } from './paginas/about-us/about-us.page';
 import { checkTokenGuard } from './guardia/check-token.guard';
 import { PostProductoPage } from './paginas/post-producto/post-producto.page';
 import { checkAdminGuard } from './guardia/check-admin.guard';
+import { VerDetallesPage } from './paginas/ver-detalles/ver-detalles.page';
 
 export const routes: Routes = [
   {
@@ -49,5 +50,11 @@ export const routes: Routes = [
     component: PostProductoPage,
     title: 'Ingresar Producto',
     canActivate: [checkAdminGuard],
+  },
+  {
+    path: 'producto/detalles',
+    component: VerDetallesPage,
+    title: 'Detalles Producto',
+    canActivate: [checkTokenGuard],
   },
 ];

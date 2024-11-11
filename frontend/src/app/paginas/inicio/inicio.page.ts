@@ -4,6 +4,7 @@ import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { GetProductosService } from '../../servicios/get-productos.service';
 import { NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../servicios/auth.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'inicio',
   standalone: true,
@@ -16,11 +17,23 @@ export class InicioPage implements OnInit {
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private authService: AuthService = inject(AuthService);
   isAdmin: boolean = false;
+  productosFiltrados: any[] = [];
+  private router: Router = inject(Router);
+
   ngOnInit(): void {
     this.cargarTabla.getProductos().then((data) => {
       console.log(data);
       this.productos = data;
       this.isAdmin = this.authService.isAdmin();
     });
+    console.log(this.isAdmin);
+  }
+  actualizarFiltroDeProductos(searchValue: string) {
+    this.productosFiltrados = this.productos.filter((producto) =>
+      producto.nombre.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+  }
+  onDetalles(idProducto: string) {
+    this.router.navigate(['producto/detalles/'], { queryParams: { id: idProducto } })
   }
 }
