@@ -3,7 +3,7 @@
   <main class="bg-gray-900 max-w-7xl mx-auto p-6">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40">
       <div class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
-        *ngFor="let producto of productos">
+        *ngFor="let producto of productosFiltrados">
         <img src="/assets/logo.jpeg" alt="Product Image" class="w-full h-48 object-cover rounded-md" />
         <h2 class="mt-2 text-lg font-semibold text-gray-800">
           {{ producto.nombre }}

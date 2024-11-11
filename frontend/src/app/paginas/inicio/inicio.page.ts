@@ -22,11 +22,10 @@ export class InicioPage implements OnInit {
 
   ngOnInit(): void {
     this.cargarTabla.getProductos().then((data) => {
-      console.log(data);
       this.productos = data;
+      this.productosFiltrados = data;
       this.isAdmin = this.authService.isAdmin();
     });
-    console.log(this.isAdmin);
   }
   actualizarFiltroDeProductos(searchValue: string) {
     this.productosFiltrados = this.productos.filter((producto) =>
