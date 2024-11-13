@@ -11,20 +11,21 @@ import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-comidas',
-  imports: [NavbarComponent, NgFor, RouterLink, NgIf, NgOptimizedImage],
+  standalone: true,
+  imports: [NavbarComponent, NgFor, RouterLink, NgIf],
   templateUrl: './comidas.page.html',
   styleUrl: './comidas.page.css',
 })
 export class ComidasPage {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
+  isAdmin: boolean = false;
+  authService: AuthService = inject(AuthService);
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
-  isAdmin: boolean = false;
-  private authService: AuthService = inject(AuthService);
   private deleteProduct: DeleteProductoService = inject(DeleteProductoService);
 
-ngOnInit(): void {
+  ngOnInit(): void {
     this.cargarProductos();
   }
 
@@ -43,7 +44,10 @@ ngOnInit(): void {
   }
 
   onDetalles(idProducto: string) {
-    this.router.navigate(['producto/detalles/'], { queryParams: { id: idProducto } })
+    this.router.navigate(['producto/detalles/'], {
+      queryParams: { id: idProducto },
+    });
+  }
 
   confirmarEliminacion(productoId: string): void {
     console.log(productoId);

@@ -8,26 +8,27 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './ver-detalles.page.html',
   styleUrls: ['./ver-detalles.page.scss'],
   imports: [NavbarComponent],
-  standalone: true
-
+  standalone: true,
 })
 export class VerDetallesPage implements OnInit {
   private cargarProducto: GetProductosService = inject(GetProductosService);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   producto: any;
-  constructor() { }
+  constructor() {}
 
   async ngOnInit() {
     if (this.activatedRoute.snapshot.queryParams['id']) {
-      this.producto = await this.cargarProducto.getProductosById(this.activatedRoute.snapshot.queryParams['id'])
-    }
-    else {
+      this.producto = await this.cargarProducto.getProductoById(
+        this.activatedRoute.snapshot.queryParams['id'],
+      );
+    } else {
       this.router.navigate(['']);
     }
   }
   onDetalles(idProducto: string) {
-    this.router.navigate(['producto/detalles/'], { queryParams: { id: idProducto } })
+    this.router.navigate(['producto/detalles/'], {
+      queryParams: { id: idProducto },
+    });
   }
-
 }

@@ -58,6 +58,7 @@ export const routes: Routes = [
     title: 'Detalles Producto',
     canActivate: [checkTokenGuard],
   },
+  {
     path: 'productos/editar/:id',
     component: EditarProductoPages,
     title: 'Editar Producto',

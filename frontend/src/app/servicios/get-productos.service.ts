@@ -11,7 +11,7 @@ export class GetProductosService {
   async getProductos() {
     try {
       const response = await this.apiService.get('/productos');
-      return response
+      return response;
     } catch (error) {
       console.log(error);
     }
@@ -19,17 +19,19 @@ export class GetProductosService {
 
   async getProductosByCategoria(id_categoria: string) {
     try {
-      const response = await this.apiService.get(`/productos/categoria/${id_categoria}`);
+      const response = await this.apiService.get(
+        `/productos/categoria/${id_categoria}`,
+      );
       return response;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
-  async getProductosById(id_producto: string) {
+  async getProductoById(id_producto: string) {
     try {
       const response = await this.apiService.get(`/productos/${id_producto}`);
-      return response;
+      return response[0];
     } catch (error) {
       console.log(error);
     }
