@@ -1,11 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { FetchService } from './fetch.service';
+import { Producto } from '../interfaces/producto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GetProductosService {
   private apiService: FetchService = inject(FetchService);
+
   async getProductos() {
     try {
       const response = await this.apiService.get('/productos');
@@ -31,6 +33,5 @@ export class GetProductosService {
     } catch (error) {
       console.log(error);
     }
-
   }
 }

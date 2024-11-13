@@ -17,18 +17,20 @@
             id="verDetalles" name="verDetalles" type="button" (click)="onDetalles(producto.id_producto)">
             Ver detalles
           </button>
-          <button *ngIf="this.isAdmin==true"
-            class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300">
-            Añadir producto
           </button>
-          <button class="bg-red-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-red-700 duration-300"
-            *ngIf="this.isAdmin==true">
-            Eliminar producto
-          </button>
-          <button *ngIf="this.isAdmin==true"
-            class="bg-yellow-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-yellow-600 duration-300">
-            Editar producto
-          </button>
+          <div *ngIf="authService.isAdmin()">
+            <button
+              [routerLink]="['/productos/editar', producto.id_producto]"
+              class="bg-orange-600 ext-white px-5 py-2 rounded-md hover:bg-orange-800 duration-300"
+            >
+              <img src="assets/edit-icon.png" alt="Icono" class="w-5 h-5" />
+            </button>
+            <button
+              (click)="confirmarEliminacion(producto.id_producto.toString())"
+              class="bg-red-800 text-white px-5 py-2 mt-5 rounded-md hover:bg-red-900 duration-300"
+            >
+              <img src="assets/delete-icon.png" alt="Icono" class="w-5 h-5" />
+            </button>
         </div>
       </div>
     </div>

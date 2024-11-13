@@ -38,7 +38,7 @@ const productosRoute: FastifyPluginAsync = async (
                 "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
               precio_unidad: 500,
               id_categoria: 1,
-              foto: "/ruta/imagen.jpg",
+              foto: true,
             },
           ],
         },
@@ -89,7 +89,7 @@ const productosRoute: FastifyPluginAsync = async (
                 "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
               precio_unidad: 500,
               id_categoria: 1,
-              foto: "/ruta/imagen.jpg",
+              foto: true,
             },
           ],
         },
@@ -127,6 +127,71 @@ const productosRoute: FastifyPluginAsync = async (
       }
     },
   });
+
+  // ######################################################### GET BY ID_PRODUCTO ####################################################################
+
+  fastify.get("/:id_producto", {
+    schema: {
+      summary: "Listado de productos filtrados por categoría",
+      description: "### Implementa y valida: \n" + "- token \n" + "- params",
+      tags: ["Productos"],
+      security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        properties: {
+          id_producto: { type: "string" },
+        },
+        required: ["id_producto"],
+      },
+      response: {
+        200: {
+          description: "Proporciona los productos filtrados por categoría",
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              ...IdProductoSchema.properties,
+              ...productoSchema.properties,
+            },
+          },
+          examples: [
+            {
+              id_producto: 0,
+              nombre: "Hamburgesa Triple",
+              descripcion:
+                "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
+              precio_unidad: 500,
+              id_categoria: 1,
+              foto: true,
+            },
+          ],
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const id_producto = (request.params as { id_producto: string })
+        .id_producto;
+
+      try {
+        const response = await query(
+          "SELECT * FROM producto WHERE id_producto = $1",
+          [id_producto]
+        );
+
+        if (response.rows.length === 0) {
+          return reply.status(404).send({
+            error: "No se encontro el producto con el id especificado",
+          });
+        }
+
+        reply.code(200).send(response.rows);
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+    },
+  });
+
   // ########################################################### PUT #################################################################################
 
   fastify.put("/:id_producto", {
