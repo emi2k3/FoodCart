@@ -120,7 +120,7 @@
         <input
           type="file"
           name="foto"
-          id="Foto"
+          id="foto"
           class="p-2 rounded-xl border w-full"
           (change)="fileChangeEvent($event)"
         />
@@ -148,11 +148,10 @@
           id="crear"
           name="crear"
           [disabled]="formPost.invalid"
-          id="boton"
           class="bg-slate-800 rounded-xl text-white py-2 hover:scale-110 duration-300"
           (click)="onSubmit()"
         >
-          Crear
+          Editar
         </button>
         <img [src]="croppedImage" class="mt-4 rounded" />
       </form>

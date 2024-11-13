@@ -29,7 +29,6 @@ export class ComidasPage {
 
   cargarProductos(): void {
     this.cargarTabla.getProductosByCategoria('1').then((data) => {
-      console.log(data);
       this.productos = data;
       this.productosFiltrados = data;
     });
@@ -51,8 +50,12 @@ export class ComidasPage {
     }
   }
 
-  eliminarProducto(productoId: string): void {
-    this.deleteProduct.deleteProducto(productoId);
-    this.cargarProductos();
+  async eliminarProducto(productoId: string): Promise<void> {
+    try {
+      await this.deleteProduct.deleteProducto(productoId);
+      this.cargarProductos();
+    } catch (error) {
+      console.error('Error eliminando el producto:', error);
+    }
   }
 }
