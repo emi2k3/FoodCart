@@ -4,6 +4,7 @@ import {
   productoPost,
   productoPostType,
   productoSchema,
+  productoGet,
 } from "../../types/productos.js";
 import { query } from "../../services/database.js";
 import { writeFileSync } from "fs";
@@ -77,7 +78,7 @@ const productosRoute: FastifyPluginAsync = async (
             type: "object",
             properties: {
               ...IdProductoSchema.properties,
-              ...productoSchema.properties,
+              ...productoGet.properties,
             },
           },
           examples: [
@@ -98,7 +99,7 @@ const productosRoute: FastifyPluginAsync = async (
     handler: async function (request, reply) {
       const id_categoria = (request.params as { id_categoria: string })
         .id_categoria;
-
+      // const fs = require('fs');
       try {
         const response = await query(
           "SELECT * FROM producto WHERE id_categoria = $1",
@@ -110,7 +111,16 @@ const productosRoute: FastifyPluginAsync = async (
             error: "No se encontraron productos para la categoría especificada",
           });
         }
+        // response.rows.forEach(element => {
+        //   if (element.foto) {
+        //     let filePath = join(process.cwd(), 'Resources', 'img', 'productos', `${element.id_producto}.png`);
+        //     let fileBuffer = fs.readFileSync(filePath);
+        //     if (fs.existsSync(filePath)) {
+        //       let base64Image = `data:image/png;base64,${fileBuffer.toString('base64')}`;
+        //     }
+        //   }
 
+        // });
         reply.code(200).send(response.rows);
       } catch (error) {
         return reply.status(500).send(error);
@@ -374,6 +384,76 @@ const productosRoute: FastifyPluginAsync = async (
         }
 
         reply.code(201).send(result.rows[0]);
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+    },
+  });
+
+  // ################################################### GET BY ID_PRODUCTO ########################################################################
+
+  fastify.get("/:id_producto", {
+    schema: {
+      summary: "Conseguir un producto por su id.",
+      description: "### Implementa y valida: \n" + "- token \n" + "- params",
+      tags: ["Productos"],
+      security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        properties: {
+          id_producto: { type: "string" },
+        },
+        required: ["id_producto"],
+      },
+      response: {
+        200: {
+          description: "Proporciona los productos filtrados por categoría",
+          type: "object",
+          properties: {
+            ...IdProductoSchema.properties,
+            ...productoGet.properties,
+          },
+          example:
+          {
+            id_producto: 0,
+            nombre: "Hamburgesa Triple",
+            descripcion:
+              "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
+            precio_unidad: 500,
+            id_categoria: 1,
+            foto: "/ruta/imagen.jpg",
+          },
+
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const id_producto = (request.params as { id_producto: string })
+        .id_producto;
+      // const fs = require('fs');
+      try {
+        const response = await query(
+          "SELECT * FROM producto WHERE id_producto = $1",
+          [id_producto]
+        );
+
+        if (response.rows.length === 0) {
+          return reply.status(404).send({
+            error: "No se encontro el producto con la id especificada.",
+          });
+        }
+        // response.rows.forEach(element => {
+        //   if (element.foto) {
+        //     let filePath = join(process.cwd(), 'Resources', 'img', 'productos', `${element.id_producto}.png`);
+        //     let fileBuffer = fs.readFileSync(filePath);
+        //     if (fs.existsSync(filePath)) {
+        //       let base64Image = `data:image/png;base64,${fileBuffer.toString('base64')}`;
+        //     }
+        //   }
+
+        // });
+        reply.code(200).send(response.rows[0]);
       } catch (error) {
         return reply.status(500).send(error);
       }

@@ -41,5 +41,5 @@ export class AuthService {
       return false;
     }
   }
-  constructor() {}
+  constructor() { }
 }

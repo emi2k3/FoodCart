@@ -11,32 +11,27 @@ export class GetProductosService {
   async getProductos() {
     try {
       const response = await this.apiService.get('/productos');
-      return response;
+      return response
     } catch (error) {
-      console.error('Error al obtener productos:', error);
-      return undefined;
+      console.log(error);
     }
   }
 
   async getProductosByCategoria(id_categoria: string) {
     try {
-      const response = await this.apiService.get(
-        `/productos/categoria/${id_categoria}`,
-      );
+      const response = await this.apiService.get(`/productos/categoria/${id_categoria}`);
       return response;
     } catch (error) {
-      console.error('Error al obtener productos por categoría:', error);
-      return undefined;
+      console.log(error)
     }
   }
 
-  async getProductoById(id_producto: string) {
+  async getProductosById(id_producto: string) {
     try {
       const response = await this.apiService.get(`/productos/${id_producto}`);
-      return response[0];
+      return response;
     } catch (error) {
-      console.error('Error al obtener el producto por ID:', error);
-      return undefined;
+      console.log(error);
     }
   }
 }
