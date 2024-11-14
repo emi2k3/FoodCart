@@ -3,14 +3,14 @@ export interface Producto {
   nombre: string;
   descripcion: string;
   precio_unidad: number;
-  categoria: string;
-  foto: Blob | undefined | null | boolean;
+  id_categoria: number;
+  foto: Blob | undefined | null;
 }
 
 export interface ProductoPost {
   nombre: string;
   descripcion: string;
   precio_unidad: number;
-  categoria: string;
+  id_categoria: number;
   foto: Blob | undefined | null;
 }

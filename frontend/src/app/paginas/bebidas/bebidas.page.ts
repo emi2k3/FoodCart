@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { GetProductosService } from '../../servicios/get-productos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
@@ -35,6 +35,8 @@ export class BebidasPage {
     );
   }
   onDetalles(idProducto: string) {
-    this.router.navigate(['producto/detalles/'], { queryParams: { id: idProducto } })
+    this.router.navigate(['producto/detalles/'], {
+      queryParams: { id: idProducto },
+    });
   }
 }

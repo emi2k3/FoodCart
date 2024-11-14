@@ -7,11 +7,11 @@ import {
   ImageCropperComponent,
   LoadedImage,
 } from 'ngx-image-cropper';
-import { PostProductoService } from '../../servicios/post-producto.service';
 import { Router } from '@angular/router';
 import { Producto } from '../../interfaces/producto';
-import { GetProductosService } from '../../servicios/get-productos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { ActivatedRoute } from '@angular/router';
+import { PutProductoService } from '../../servicios/productos/edit-producto.service';
 
 @Component({
   selector: 'editar-producto',
@@ -21,12 +21,18 @@ import { ActivatedRoute } from '@angular/router';
   imports: [FormsModule, NgIf, NgClass, ImageCropperComponent],
 })
 export class EditarProductoPages implements OnInit {
+  private putProducto: PutProductoService = inject(PutProductoService);
+  private cargarTabla: GetProductosService = inject(GetProductosService);
+  private router: Router = inject(Router);
+  private sanitizer: DomSanitizer = inject(DomSanitizer);
+  private route: ActivatedRoute = inject(ActivatedRoute);
+
   productId: string | null = null;
   producto: Producto | undefined;
   nombre: string = '';
   descripcion: string = '';
   precio_unidad: number = 0;
-  categoria: string = '';
+  categoria: number = 0;
   foto: Blob | undefined | null;
 
   imageChangedEvent: Event | null = null;
@@ -35,30 +41,16 @@ export class EditarProductoPages implements OnInit {
   temporaryBlob: Blob | undefined | null = null;
   mostrarCropper: boolean = true;
 
-  mapearCategoria: { [key: number]: string } = {
-    1: 'comida',
-    2: 'bebida',
-    3: 'acompañamiento',
-  };
-
-  private postProducto: PostProductoService = inject(PostProductoService);
-  private cargarTabla: GetProductosService = inject(GetProductosService);
-  private router: Router = inject(Router);
-  private sanitizer: DomSanitizer = inject(DomSanitizer);
-  private route: ActivatedRoute = inject(ActivatedRoute);
-
   async ngOnInit(): Promise<void> {
     this.productId = this.route.snapshot.paramMap.get('id');
     console.log(this.productId);
     if (this.productId) {
       this.producto = await this.cargarTabla.getProductoById(this.productId);
-      console.log('Producto:', this.producto);
       if (this.producto) {
-        console.log(this.producto.nombre);
         this.nombre = this.producto.nombre;
         this.descripcion = this.producto.descripcion;
         this.precio_unidad = this.producto.precio_unidad;
-        this.categoria = this.producto.categoria;
+        this.categoria = this.producto.id_categoria;
       }
     }
   }
@@ -89,22 +81,17 @@ export class EditarProductoPages implements OnInit {
     alert('No se pudo cargar la imágen, intente otra vez.');
   }
 
-  async onSubmit() {
-    const formData = new FormData();
-    formData.append('nombre', this.nombre);
-    formData.append('descripcion', this.descripcion);
-    formData.append('precio_unidad', this.precio_unidad.toString());
-    //const categoriaNombre =
-    //this.mapearCategoria[this.categoria] || 'desconocido';
-    // formData.append('categoria', categoriaNombre);
+  onSubmit() {
+    const formData = new FormData(
+      document.getElementById('formPost') as HTMLFormElement,
+    );
     if (this.foto) {
+      formData.delete('foto');
       formData.append('foto', this.foto, 'imagen.png');
     }
-
-    try {
-      await this.postProducto.postProducto(formData);
-      this.router.navigate(['']);
-    } catch (error) {
+    if (this.putProducto.putProducto(formData, this.productId!) != null) {
+      this.router.navigate(['comidas']);
+    } else {
       alert('Hubo un error al crear su producto.');
     }
   }

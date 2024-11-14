@@ -7,7 +7,7 @@ import {
   ImageCropperComponent,
   LoadedImage,
 } from 'ngx-image-cropper';
-import { PostProductoService } from '../../servicios/post-producto.service';
+import { PostProductoService } from '../../servicios/productos/post-producto.service';
 import { Router } from '@angular/router';
 import { ProductoPost } from '../../interfaces/producto';
 
@@ -26,7 +26,7 @@ export class PostProductoPage {
     nombre: '',
     descripcion: '',
     precio_unidad: 0,
-    categoria: '',
+    id_categoria: 0,
     foto: null,
   };
 

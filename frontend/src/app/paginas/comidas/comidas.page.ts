@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { GetProductosService } from '../../servicios/get-productos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../servicios/auth.service';
 import { RouterLink } from '@angular/router';
-import { DeleteProductoService } from '../../servicios/delete-producto.service';
+import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
 import { NgOptimizedImage } from '@angular/common';
 

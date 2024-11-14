@@ -1,14 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { SearchComponent } from '../../componentes/search/search.component';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
-import { GetProductosService } from '../../servicios/get-productos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
 @Component({
   selector: 'inicio',
   standalone: true,
-  imports: [SearchComponent, NavbarComponent, NgFor, NgIf],
+  imports: [NavbarComponent, NgFor, NgIf],
   templateUrl: './inicio.page.html',
   styleUrl: './inicio.page.css',
 })
@@ -33,6 +32,8 @@ export class InicioPage implements OnInit {
     );
   }
   onDetalles(idProducto: string) {
-    this.router.navigate(['producto/detalles/'], { queryParams: { id: idProducto } })
+    this.router.navigate(['producto/detalles/'], {
+      queryParams: { id: idProducto },
+    });
   }
 }

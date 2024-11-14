@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FetchService } from './fetch.service';
+import { FetchService } from '../fetch.service';
 
 @Injectable({
   providedIn: 'root',

@@ -96,7 +96,7 @@
           name="id_categoria"
           id="id_categoria"
           required
-          [(ngModel)]="producto.categoria"
+          [(ngModel)]="producto.id_categoria"
           #categoriaCntrl="ngModel"
           [ngClass]="{
           'border-red-500 bg-red-50': categoriaCntrl.invalid && categoriaCntrl.touched,
@@ -104,8 +104,8 @@
           'border-green-500 bg-green-50': categoriaCntrl.valid && categoriaCntrl.touched
         }"
         >
-          <option value="2">Bebida</option>
           <option value="1">Comida</option>
+          <option value="2">Bebida</option>
           <option value="3">Acompañamiento</option>
         </select>
         <label

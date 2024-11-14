@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
-import { GetProductosService } from '../../servicios/get-productos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 
