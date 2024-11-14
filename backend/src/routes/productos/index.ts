@@ -32,7 +32,7 @@ const productosRoute: FastifyPluginAsync = async (
           },
           examples: [
             {
-              id_producto: 0,
+              id_producto: 1,
               nombre: "Hamburgesa Triple",
               descripcion:
                 "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
@@ -83,7 +83,7 @@ const productosRoute: FastifyPluginAsync = async (
           },
           examples: [
             {
-              id_producto: 0,
+              id_producto: 1,
               nombre: "Hamburgesa Triple",
               descripcion:
                 "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
@@ -146,25 +146,22 @@ const productosRoute: FastifyPluginAsync = async (
       response: {
         200: {
           description: "Proporciona los productos filtrados por categoría",
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              ...IdProductoSchema.properties,
-              ...productoSchema.properties,
-            },
+          type: "object",
+          properties: {
+            ...IdProductoSchema.properties,
+            ...productoGet.properties,
           },
-          examples: [
-            {
-              id_producto: 0,
-              nombre: "Hamburgesa Triple",
-              descripcion:
-                "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
-              precio_unidad: 500,
-              id_categoria: 1,
-              foto: true,
-            },
-          ],
+          example:
+          {
+            id_producto: 1,
+            nombre: "Hamburgesa Triple",
+            descripcion:
+              "Tres patties de 100% carne de res con cebolla picada, ketchup, mostaza y dos fetas de queso americano.",
+            precio_unidad: 500,
+            id_categoria: 1,
+            foto: true,
+          },
+
         },
       },
     },
@@ -185,7 +182,7 @@ const productosRoute: FastifyPluginAsync = async (
           });
         }
 
-        reply.code(200).send(response.rows);
+        reply.code(200).send(response.rows[0]);
       } catch (error) {
         return reply.status(500).send(error);
       }

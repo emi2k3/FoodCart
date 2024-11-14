@@ -14,7 +14,7 @@ export const productoSchema = Type.Object(
     }),
     nombre: Type.String({
       minLength: 3,
-      maxLength: 20,
+      maxLength: 50,
       pattern: "^[^\\d]+$",
       examples: ["Hamburgesa Triple"],
     }),

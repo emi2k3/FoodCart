@@ -4,7 +4,11 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40">
       <div class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
         *ngFor="let bebida of productosFiltrados">
-        <img src="/assets/logo.jpeg" alt="Product Image" class="w-full h-48 object-cover rounded-md" />
+        <img *ngIf="bebida.foto==false" src="/assets/logo.jpeg" alt="Product Image"
+          class="w-full h-48 object-cover rounded-md" />
+        <img *ngIf="bebida.foto==true"
+          src="https://localhost/backend/Resources/img/productos/{{bebida.id_producto}}.jpg" alt="Product Image"
+          class="w-full h-48 object-cover rounded-md" />
         <h2 class="mt-2 text-lg font-semibold text-gray-800">
           {{ bebida.nombre }}
         </h2>

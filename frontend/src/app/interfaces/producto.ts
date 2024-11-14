@@ -4,7 +4,7 @@ export interface Producto {
   descripcion: string;
   precio_unidad: number;
   categoria: string;
-  foto: Blob | undefined | null;
+  foto: Blob | undefined | null | boolean;
 }
 
 export interface ProductoPost {

@@ -57,7 +57,7 @@ create table categoria (
 
 create table if not exists producto (
     id_producto serial primary key,
-    nombre varchar(20) not null,
+    nombre varchar(50) not null,
     descripcion varchar(300) not null,
     precio_unidad numeric(10,2) not null,
     id_categoria integer not null,
@@ -103,3 +103,14 @@ UPDATE usuario SET admin=true WHERE id=1;
 INSERT INTO categoria (nombre) VALUES('COMIDA');
 INSERT INTO categoria (nombre) VALUES('BEBIDA');
 INSERT INTO categoria (nombre) VALUES('ACOMPAÑAMIENTO');
+INSERT INTO producto (nombre, descripcion, precio_unidad, id_categoria, foto) 
+VALUES
+('Hamburguesa Clásica', 'Hamburguesa con carne de res, lechuga, tomate y queso cheddar', 350, 1, true),
+('Hamburguesa BBQ', 'Hamburguesa con carne de res, salsa BBQ, cebolla crujiente y queso suizo', 300, 1,true),
+('Pancho', 'Frankfurter en pan con mostaza y ketchup', 200, 1, true),
+('Pancho con Queso', 'Frankfurter con queso derretido y jalapeños', 220, 1, true),
+('Hamburguesa Doble', 'Hamburguesa doble carne con queso y bacon', 400, 1, true),
+('Hamburguesa Vegetariana', 'Hamburguesa con hamburguesa de lentejas y verduras frescas', 450, 1, true),
+('Coca-cola', 'Coca de 500ml', 70, 2, true),
+('Agua Mineral', 'Botella de agua mineral de 500ml', 50, 2, true);
+

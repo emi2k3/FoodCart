@@ -31,7 +31,7 @@ export class GetProductosService {
   async getProductoById(id_producto: string) {
     try {
       const response = await this.apiService.get(`/productos/${id_producto}`);
-      return response[0];
+      return response;
     } catch (error) {
       console.log(error);
     }
