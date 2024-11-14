@@ -9,34 +9,34 @@ Este documento detalla las historias de usuario para el desarrollo de una págin
 
 ## 🔨 Historias Básicas (Implementación Inmediata)
 
-### 1. Visualización del Menú
+### 1. Visualización del Menú (done)
 **Como** cliente, **quiero** ver el menú del carrito de comida **para** poder decidir qué ordenar.
 - Criterios de Aceptación:
   * El menú debe mostrar todos los platos disponibles
   * Cada plato debe tener una descripción y precio
   * Los platos deben estar organizados por categorías (ej. platos principales, acompañamientos, bebidas)
 
-### 2. Realización de Pedidos en Línea
+### 2. Realización de Pedidos en Línea (on it)
 **Como** cliente, **quiero** poder realizar un pedido en línea **para** ahorrar tiempo y evitar filas.
 - Criterios de Aceptación:
   * Debe haber un botón claro para añadir ítems al carrito
   * El carrito debe mostrar un resumen de los ítems seleccionados
   * Debe haber una opción para modificar o eliminar ítems del carrito
 
-### 3. Actualización del Menú
+### 3. Actualización del Menú (casi done)
 **Como** propietario del carrito, **quiero** poder actualizar el menú fácilmente **para** mantener la oferta actualizada.
 - Criterios de Aceptación:
   * Debe haber un panel de administración seguro
   * Se debe poder añadir, editar y eliminar platos del menú
   * Los cambios deben reflejarse inmediatamente en la página web
 
-### 4. Visualización de la Ubicación
+### 4. Visualización de la Ubicación (toDo)
 **Como** cliente, **quiero** ver la ubicación del carrito de comida **para** saber dónde encontrarlo.
 - Criterios de Aceptación:
   * Debe haber una sección clara con la dirección del carrito
   * Se debe incluir un mapa integrado (ej. Google Maps) para facilitar la localización
 
-### 5. Visualización de Horarios
+### 5. Visualización de Horarios (toDo)
 **Como** cliente, **quiero** ver los horarios de atención **para** saber cuándo puedo hacer mi pedido.
 - Criterios de Aceptación:
   * Los horarios deben estar claramente visibles en la página principal
@@ -65,7 +65,7 @@ Este documento detalla las historias de usuario para el desarrollo de una págin
   * Si es entrega a domicilio, debe haber una estimación del tiempo de llegada
   * El cliente debe recibir notificaciones (por ejemplo, por correo electrónico o SMS) cuando el estado del pedido cambie
 
-### 8. Registro y Login de Usuarios
+### 8. Registro y Login de Usuariosv (casi Done)
 **Como** cliente, **quiero** poder registrarme y loguearme en la página web **para** tener una experiencia personalizada y gestionar mis pedidos.
 - Criterios de Aceptación:
   * Debe haber una opción clara para registrarse como nuevo usuario
