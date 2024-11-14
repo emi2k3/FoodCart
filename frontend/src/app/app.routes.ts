@@ -9,6 +9,8 @@ import { PostProductoPage } from './paginas/post-producto/post-producto.page';
 import { CarritoPage } from './paginas/carrito/carrito.page'; // Importamos la pagina del carrito.
 import { checkTokenGuard } from './guardia/check-token.guard';
 import { checkAdminGuard } from './guardia/check-admin.guard';
+import { VerDetallesPage } from './paginas/ver-detalles/ver-detalles.page';
+import { EditarProductoPages } from './paginas/editar-producto/editar-producto.pages';
 
 export const routes: Routes = [
   {
@@ -56,5 +58,18 @@ export const routes: Routes = [
     component: CarritoPage,
     title: 'Carrito de Compras',
     canActivate: [checkTokenGuard],
+  },
+
+  {
+    path: 'producto/detalles',
+    component: VerDetallesPage,
+    title: 'Detalles Producto',
+    canActivate: [checkTokenGuard],
+  },
+  {
+    path: 'productos/editar/:id',
+    component: EditarProductoPages,
+    title: 'Editar Producto',
+    canActivate: [checkAdminGuard],
   },
 ];

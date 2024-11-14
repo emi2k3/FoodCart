@@ -1,5 +1,5 @@
 import { FastifyPluginAsync } from "fastify";
-import { UsuarioPostSchema } from "../../../types/usuario.js";
+import { IdUsuario, IdUsuarioSchema, usuarioGet, UsuarioPostSchema } from "../../../types/usuario.js";
 import { join } from "node:path";
 import { writeFileSync } from "node:fs";
 import { query } from "../../../services/database.js";
@@ -18,13 +18,7 @@ const usuarioIdRoute: FastifyPluginAsync = async (
       description: "Editar un usuario",
       body: UsuarioPostSchema,
       security: [{ BearerAuth: [] }],
-      params: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-        },
-        required: ["id"],
-      },
+      params: IdUsuarioSchema,
       response: {
         200: {
           description: "El usuario se editó correctamente",
@@ -34,9 +28,9 @@ const usuarioIdRoute: FastifyPluginAsync = async (
     handler: async function (request, reply) {
       const postUsuario = request.body as UsuarioPostSchema;
 
-      const id = (request.params as { id: string }).id;
+      const id = request.params as IdUsuario;
       const idt = request.user.id;
-      if (id != idt) {
+      if (id.id_usuario != parseInt(idt)) {
         return reply
           .status(401)
           .send({ error: "No tiene permisos para hacer esto." });
@@ -121,30 +115,73 @@ const usuarioIdRoute: FastifyPluginAsync = async (
       tags: ["Usuarios"],
       security: [{ BearerAuth: [] }],
       description: "Borrar un usuario",
-      params: {
-        type: "object",
-        properties: {
-          id: { type: "string" },
-        },
-        required: ["id"],
-      },
+      params: IdUsuarioSchema
     },
     handler: async function (request, reply) {
-      const id = (request.params as { id: string }).id;
+      const id = request.params as IdUsuario;
       const idt = request.user.id;
-      if (id != idt) {
+      if (id.id_usuario != parseInt(idt)) {
         return reply
           .status(401)
           .send({ error: "No tiene permisos para hacer esto." });
       }
       try {
-        await query("DELETE FROM usuario WHERE id = $1", [id]);
+        await query("DELETE FROM usuario WHERE id = $1", [idt]);
       } catch (error) {
         return reply.status(500).send(error);
       }
       return reply.status(204).send();
     },
   });
+
+  fastify.get("/:id_usuario", {
+    schema: {
+      summary: "Se consiguen los datos del usuario",
+      description: "### Implementa y valida: \n" + "- token \n" + "- params",
+      tags: ["Usuarios"],
+      security: [{ BearerAuth: [] }],
+      params: IdUsuarioSchema,
+      response: {
+        200: {
+          description: "Proporciona los datos del usuario",
+          type: "object",
+          properties: {
+            ...usuarioGet.properties,
+          },
+          example:
+          {
+
+            id: 1,
+            nombre: "ad",
+            apellido: "min",
+            email: "admin@example.com",
+            id_direccion: 1,
+            id_telefono: 1,
+            foto: false,
+            admin: true
+
+          },
+
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const { id_usuario } = request.params as IdUsuario;
+      const idt = request.user.id;
+      if (id_usuario != parseInt(idt)) {
+        return reply
+          .status(401)
+          .send({ error: "No tiene permisos para hacer esto." });
+      }
+      const response = await query("SELECT * from usuario WHERE id=$1", [idt]);
+
+      reply.status(200);
+      return response.rows[0];
+    },
+  });
 };
+
+
 
 export default usuarioIdRoute;

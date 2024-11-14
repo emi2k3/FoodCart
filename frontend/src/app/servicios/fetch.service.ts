@@ -6,24 +6,25 @@ import { Injectable } from '@angular/core';
 export class FetchService {
   readonly baseurl = 'https://localhost/backend/';
 
-  private getHeaders(): HeadersInit {
+  private getHeaders(method: string): HeadersInit {
+    const headers: HeadersInit = {};
+
     if (localStorage.getItem('token')) {
-      return {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        'Content-type': 'application/json',
-      };
-    } else {
-      return {
-        'Content-type': 'application/json',
-      };
+      headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
     }
+
+    if (method !== 'DELETE') {
+      headers['Content-type'] = 'application/json';
+    }
+
+    return headers;
   }
 
   async post<T = any>(url: string, body: string): Promise<T> {
     try {
       const response = await fetch(`${this.baseurl}${url}`, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('POST'),
         body: body,
       });
       let data;
@@ -49,7 +50,7 @@ export class FetchService {
     try {
       const response = await fetch(`${this.baseurl}${url}`, {
         method: 'GET',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('GET'),
       });
       let data;
       const contentType = response.headers.get('content-type');
@@ -74,22 +75,9 @@ export class FetchService {
     try {
       const response = await fetch(`${this.baseurl}${url}`, {
         method: 'DELETE',
-        headers: this.getHeaders(),
+        headers: this.getHeaders('DELETE'),
       });
-      let data;
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json(); //Por si es un objeto.
-      } else {
-        data = await response.text(); //Cualquier otro mensaje.
-      }
-      if (response.ok) {
-        return data;
-      } else if (response.status == 401) {
-        throw new Error('Usuario no verificado.');
-      } else {
-        throw new Error(data);
-      }
+      return response.text() as T;
     } catch (error) {
       throw error;
     }

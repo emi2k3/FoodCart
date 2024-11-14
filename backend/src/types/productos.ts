@@ -14,7 +14,7 @@ export const productoSchema = Type.Object(
     }),
     nombre: Type.String({
       minLength: 3,
-      maxLength: 20,
+      maxLength: 50,
       pattern: "^[^\\d]+$",
       examples: ["Hamburgesa Triple"],
     }),
@@ -46,3 +46,14 @@ export const productoPost = Type.Pick(productoSchema, [
   "foto",
 ]);
 export type productoPostType = Static<typeof productoPost>;
+
+export const productoGet = Type.Object({
+  nombre: productoSchema.properties.nombre,
+  descripcion: productoSchema.properties.descripcion,
+  precio_unidad: productoSchema.properties.precio_unidad,
+  id_categoria: productoSchema.properties.id_categoria,
+  foto: Type.Boolean({
+    description: "Indica si el producto tiene foto con un true."
+  }),
+}, { additionalProperties: false });
+export type productoGetType = Static<typeof productoGet>;
