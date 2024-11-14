@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FetchService } from './fetch.service';
+import { FetchService } from '../fetch.service';
 
 @Injectable({
   providedIn: 'root',
@@ -7,9 +7,9 @@ import { FetchService } from './fetch.service';
 export class DeleteProductoService {
   private fetchService: FetchService = inject(FetchService);
 
-  async deleteProducto(idproducto: string) {
+  async deleteProducto(id_producto: string) {
     try {
-      this.fetchService.delete('');
+      await this.fetchService.delete(`productos/${id_producto}`);
     } catch (error) {
       console.log(error);
     }

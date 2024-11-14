@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FetchMultipartService } from './fetch-multipart.service';
+import { FetchMultipartService } from '../fetch-multipart.service';
 
 @Injectable({
   providedIn: 'root',

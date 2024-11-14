@@ -7,8 +7,9 @@ import {
   ImageCropperComponent,
   LoadedImage,
 } from 'ngx-image-cropper';
-import { PostProductoService } from '../../servicios/post-producto.service';
+import { PostProductoService } from '../../servicios/productos/post-producto.service';
 import { Router } from '@angular/router';
+import { ProductoPost } from '../../interfaces/producto';
 
 @Component({
   selector: 'app-post-producto',
@@ -20,11 +21,14 @@ import { Router } from '@angular/router';
 export class PostProductoPage {
   private postProducto: PostProductoService = inject(PostProductoService);
   private router: Router = inject(Router);
-  nombre: string = '';
-  descripcion: string = '';
-  precio_unidad: number = 0;
-  categoria: string = '';
-  foto: Blob | undefined | null;
+
+  producto: ProductoPost = {
+    nombre: '',
+    descripcion: '',
+    precio_unidad: 0,
+    id_categoria: 0,
+    foto: null,
+  };
 
   imageChangedEvent: Event | null = null;
   croppedImage: SafeUrl = '';
@@ -59,9 +63,9 @@ export class PostProductoPage {
     const formData = new FormData(
       document.getElementById('formPost') as HTMLFormElement,
     );
-    if (this.foto) {
+    if (this.producto.foto) {
       formData.delete('foto');
-      formData.append('foto', this.foto, 'imagen.png');
+      formData.append('foto', this.producto.foto, 'imagen.png');
     }
     if (this.postProducto.postProducto(formData) != null) {
       this.router.navigate(['']);
@@ -71,7 +75,7 @@ export class PostProductoPage {
   }
   cropImage() {
     this.croppedImage = this.temporaryCroppedImage;
-    this.foto = this.temporaryBlob;
+    this.producto.foto = this.temporaryBlob;
     this.mostrarCropper = false;
     this.temporaryCroppedImage = '';
   }
