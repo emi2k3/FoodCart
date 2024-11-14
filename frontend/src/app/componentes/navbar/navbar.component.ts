@@ -11,24 +11,29 @@ import { FetchService } from '../../servicios/fetch.service';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service';
+
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [SearchComponent, NgIf],
+  imports: [SearchComponent, NgIf, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css',
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
   usuario = {
     nombre: '',
     foto: 'assets/default-user.png',
   };
+
   isDropdownOpen = false;
   private authservice: AuthService = inject(AuthService);
   private crudUsuarios: CRUDUsuariosService = inject(CRUDUsuariosService);
   private router: Router = inject(Router);
+  private fetchService: FetchService = inject(FetchService);
+
   @Output() searchValueChange = new EventEmitter<string>();
 
   constructor() {}
@@ -66,7 +71,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    this.authservice.Logut();
+    this.authService.Logut();
     localStorage.removeItem('token');
     this.router.navigate(['']);
     this.isDropdownOpen = false;

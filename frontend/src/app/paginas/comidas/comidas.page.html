@@ -16,7 +16,8 @@
           class="absolute h-full w-full bg-black/80 flex items-center justify-center inset-0 opacity-0 group-hover:opacity-100 transition-all duration-600">
           <div class="grid grid-cols-2 gap-4">
             <button
-              class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-900 duration-300 flex items-center justify-center">
+              class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-900 duration-300 flex items-center justify-center"
+              type="button" (click)="agregarAlCarrito(producto)">
               <img src="assets/add-to-cart.png" alt="Icono" class="w-6 h-6" />
             </button>
 
@@ -37,8 +38,13 @@
               </button>
             </ng-container>
           </div>
+
         </div>
       </div>
     </div>
   </main>
+  <button class="fixed bottom-0 right-0 m-4 p-6 bg-blue-500 text-white rounded-full" (click)="onCreate()"
+    *ngIf="this.isAdmin==true">
+    +
+  </button>
 </div>

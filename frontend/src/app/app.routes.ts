@@ -5,11 +5,13 @@ import { InicioPage } from './paginas/inicio/inicio.page';
 import { BebidasPage } from './paginas/bebidas/bebidas.page';
 import { ComidasPage } from './paginas/comidas/comidas.page';
 import { AboutUsPage } from './paginas/about-us/about-us.page';
-import { checkTokenGuard } from './guardia/check-token.guard';
 import { PostProductoPage } from './paginas/post-producto/post-producto.page';
+import { CarritoPage } from './paginas/carrito/carrito.page'; // Importamos la pagina del carrito.
+import { checkTokenGuard } from './guardia/check-token.guard';
 import { checkAdminGuard } from './guardia/check-admin.guard';
 import { VerDetallesPage } from './paginas/ver-detalles/ver-detalles.page';
 import { EditarProductoPages } from './paginas/editar-producto/editar-producto.pages';
+import { VerPedidosPage } from './paginas/ver-pedidos/ver-pedidos.page';
 
 export const routes: Routes = [
   {
@@ -53,6 +55,13 @@ export const routes: Routes = [
     canActivate: [checkAdminGuard],
   },
   {
+    path: 'carrito',
+    component: CarritoPage,
+    title: 'Carrito de Compras',
+    canActivate: [checkTokenGuard],
+  },
+
+  {
     path: 'producto/detalles',
     component: VerDetallesPage,
     title: 'Detalles Producto',
@@ -63,5 +72,11 @@ export const routes: Routes = [
     component: EditarProductoPages,
     title: 'Editar Producto',
     canActivate: [checkAdminGuard],
+  },
+  {
+    path: 'pedidos/ver',
+    component: VerPedidosPage,
+    title: 'Ver pedidos',
+    canActivate: [checkTokenGuard],
   },
 ];
