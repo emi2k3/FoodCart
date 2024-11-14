@@ -65,6 +65,25 @@ export const UsuarioPostSchema = Type.Object(
 
 export type UsuarioPostSchema = Static<typeof UsuarioPostSchema>;
 
+export const usuarioGet = Type.Object({
+  nombre: UsuarioPostSchema.properties.nombre,
+  apellido: UsuarioPostSchema.properties.apellido,
+  email: UsuarioPostSchema.properties.email,
+  id_direccion: Type.Integer({
+    description: "Identificador de la dirección del usuario",
+  }),
+  id_telefono: Type.Integer({
+    description: "Identificador de el teléfono del usuario",
+  }),
+  admin: Type.Boolean({
+    description: "Indica si el usuario es admin con un true."
+  }),
+  foto: Type.Boolean({
+    description: "Indica si el usuario tiene foto con un true."
+  }),
+}, { additionalProperties: false });
+export type usuarioGetType = Static<typeof usuarioGet>;
+
 export const ImagenUsuarioSchema = Type.Object(
   {
     imagen: Type.Object(

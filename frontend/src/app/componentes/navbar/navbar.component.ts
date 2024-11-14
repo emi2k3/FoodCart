@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output, output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, output } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { FetchService } from '../../servicios/fetch.service';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
+import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,21 +17,31 @@ export class NavbarComponent implements OnInit {
     nombre: '',
     foto: 'assets/default-user.png', // Setea una foto mientras no haya.
   };
-
+  private authservice: AuthService = inject(AuthService)
+  private crudUsuarios: CRUDUsuariosService = inject(CRUDUsuariosService)
+  private router: Router = inject(Router)
   @Output() searchValueChange = new EventEmitter<string>();
 
-  constructor(
-    private authservice: AuthService,
-    private fetchService: FetchService,
-    private router: Router,
-  ) {}
+  constructor() { }
 
   async ngOnInit() {
     if (this.authservice.isValidUser()) {
+
       try {
-        const userData = await this.fetchService.get('/usuarios');
-        this.usuario.nombre = userData.nombre || 'Usuario';
-        this.usuario.foto = userData.fotoUrl || 'assets/default-user.png';
+        const token = localStorage.getItem('token');
+        if (token) {
+          const idToken = JSON.parse(atob(token.split('.')[1]));
+          const usuarioGet = await this.crudUsuarios.getUserById(idToken.id)
+          this.usuario.nombre = `${usuarioGet.nombre}`;
+          if (usuarioGet.foto == true) {
+            this.usuario.foto = `https://localhost/backend/Resources/img/usuarios/${usuarioGet.id}.jpg`
+          }
+          else {
+            this.usuario.foto = 'assets/default-user.png'
+          }
+
+        }
+
       } catch (error) {
         console.error('Error extrayendo los datos del usuario:', error);
       }
