@@ -21,13 +21,12 @@ export class NavbarComponent implements OnInit {
   };
   private authservice: AuthService = inject(AuthService)
   private crudUsuarios: CRUDUsuariosService = inject(CRUDUsuariosService)
-  private router: Router = inject(Router)
   @Output() searchValueChange = new EventEmitter<string>();
   private authService: AuthService = inject(AuthService);
   private fetchService: FetchService = inject(FetchService);
   private router: Router = inject(Router);
 
-  constructor() {}
+  constructor() { }
 
   async ngOnInit() {
     if (this.authservice.isValidUser()) {

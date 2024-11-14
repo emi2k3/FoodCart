@@ -291,6 +291,62 @@ const productosRoute: FastifyPluginAsync = async (
     },
   });
 
+  fastify.get("/usuario/:id_usuario", {
+    schema: {
+      summary: "Obtener todos los pedidos de un usuario por su ID",
+      description: "### Implementa y valida: \n " + "- token \n - params",
+      tags: ["Pedidos"],
+      security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        properties: {
+          id_usuario: { type: "string" },
+        },
+        required: ["id_usuario"],
+      },
+      response: {
+        200: {
+          description: "Proporciona todos los productos y sus datos",
+          type: "array",
+          properties: {
+            ...PedidoSchema.properties,
+          },
+          examples: [
+            {
+              id_pedido: 1,
+              fecha_hora: "2024-10-27T15:30:00Z",
+              estado: "PENDIENTE",
+              importe_total: 1500,
+              id_local: 1,
+              id_usuario: 1,
+              id_producto: 1,
+            },
+          ],
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const id_usuario = (request.params as { id_usuario: string }).id_usuario;
+
+      try {
+        const response = await query(
+          "SELECT * FROM pedido WHERE id_usuario = $1",
+          [id_usuario]
+        );
+
+        if (response.rows.length === 0) {
+          return reply.status(404).send("Pedido no encontrado");
+        }
+
+        reply.code(200);
+        return response.rows;
+      } catch (error) {
+        return reply.status(500).send(error);
+      }
+    },
+  });
+
   fastify.delete("/:id_pedido", {
     schema: {
       summary: "Eliminación de un pedido por su id",

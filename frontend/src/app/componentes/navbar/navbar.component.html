@@ -1,13 +1,9 @@
 <!-- navbar.component.html -->
 <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900">
-  <div
-    class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4"
-  >
+  <div class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4">
     <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
       <img src="assets/logo.jpeg" class="h-20" alt="FoodCart Logo" />
-      <span
-        class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white"
-      >
+      <span class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white">
         FoodCart
       </span>
     </a>
@@ -20,16 +16,9 @@
         <span class="text-lg text-white dark:text-blue-500 hover:text-blue-400">
           {{ usuario.nombre }}
         </span>
-        <img
-          src="assets/user.png"
-          alt="User Photo"
-          class="h-10 w-10 rounded-full border-2 border-gray-300"
-        />
+        <img src="assets/user.png" alt="User Photo" class="h-10 w-10 rounded-full border-2 border-gray-300" />
       </div>
-      <button
-        (click)="logout()"
-        class="text-white font-bold text-base hover:text-blue-950"
-      >
+      <button (click)="logout()" class="text-white font-bold text-base hover:text-blue-950">
         Cerrar sesión
       </button>
     </div>
@@ -41,27 +30,22 @@
     <div class="flex items-center justify-between">
       <ul class="flex items-center space-x-8 rtl:space-x-reverse">
         <li>
-          <a
-            href="/comidas"
-            class="text-white font-bold text-base hover:text-blue-950"
-            aria-current="page"
-          >
+          <a href="/comidas" class="text-white font-bold text-base hover:text-blue-950" aria-current="page">
             Comidas
           </a>
         </li>
         <li>
-          <a
-            href="/bebidas"
-            class="text-white font-bold text-base hover:text-blue-950"
-          >
+          <a href="/bebidas" class="text-white font-bold text-base hover:text-blue-950">
             Bebidas
           </a>
         </li>
         <li>
-          <a
-            href="/aboutUs"
-            class="text-white font-bold text-base hover:text-blue-950"
-          >
+          <a href="/pedidos/ver" class="text-white font-bold text-base hover:text-blue-950">
+            Ver pedidos
+          </a>
+        </li>
+        <li>
+          <a href="/aboutUs" class="text-white font-bold text-base hover:text-blue-950">
             About Us
           </a>
         </li>

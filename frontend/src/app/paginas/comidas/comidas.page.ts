@@ -1,5 +1,5 @@
 import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio de carrito
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { NgFor, NgIf } from '@angular/common';
@@ -17,7 +17,7 @@ import { NgOptimizedImage } from '@angular/common';
   templateUrl: './comidas.page.html',
   styleUrl: './comidas.page.css',
 })
-export class ComidasPage {
+export class ComidasPage implements OnInit {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   isAdmin: boolean = false;
@@ -26,7 +26,7 @@ export class ComidasPage {
   private router: Router = inject(Router);
   private carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio de carrito
   private deleteProduct: DeleteProductoService = inject(DeleteProductoService);
-  
+
   ngOnInit(): void {
     this.cargarProductos();
   }
@@ -72,5 +72,9 @@ export class ComidasPage {
       console.error('Error eliminando el producto:', error);
     }
 
+  }
+
+  onCreate() {
+    this.router.navigate(['productos/ingresar'])
   }
 }
