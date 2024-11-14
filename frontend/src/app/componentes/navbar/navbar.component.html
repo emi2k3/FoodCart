@@ -1,8 +1,9 @@
+<!-- navbar.component.html -->
 <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900">
   <div
     class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4"
   >
-    <a class="flex items-center space-x-3 rtl:space-x-reverse">
+    <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
       <img src="assets/logo.jpeg" class="h-20" alt="FoodCart Logo" />
       <span
         class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white"
@@ -11,7 +12,7 @@
       </span>
     </a>
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
-      <a href="#" class="text-lg hover:text-gray-700 flex items-center">
+      <a href="/carrito" class="text-lg hover:text-gray-700 flex items-center">
         <img src="assets/carrito.png" alt="Cart" class="h-7 w-7" />
       </a>
       <!-- Perfil del Usuario -->
@@ -25,6 +26,12 @@
           class="h-10 w-10 rounded-full border-2 border-gray-300"
         />
       </div>
+      <button
+        (click)="logout()"
+        class="text-white font-bold text-base hover:text-blue-950"
+      >
+        Cerrar sesión
+      </button>
     </div>
   </div>
 </nav>
@@ -35,28 +42,31 @@
       <ul class="flex items-center space-x-8 rtl:space-x-reverse">
         <li>
           <a
-            href="comidas"
+            href="/comidas"
             class="text-white font-bold text-base hover:text-blue-950"
             aria-current="page"
-            >Comidas</a
           >
+            Comidas
+          </a>
         </li>
         <li>
           <a
-            href="bebidas"
+            href="/bebidas"
             class="text-white font-bold text-base hover:text-blue-950"
-            >Bebidas</a
           >
+            Bebidas
+          </a>
         </li>
         <li>
           <a
-            href="aboutUs"
+            href="/aboutUs"
             class="text-white font-bold text-base hover:text-blue-950"
-            >About us</a
           >
+            About Us
+          </a>
         </li>
       </ul>
-      <app-search (searchTask)="this.onSearchValue($event)"></app-search>
+      <app-search (searchTask)="onSearchValue($event)"></app-search>
     </div>
   </div>
 </nav>

@@ -1,3 +1,4 @@
+import { CarritoService } from '../../servicios/carrito-service.service'; 
 import { Component, inject } from '@angular/core';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
@@ -12,9 +13,12 @@ import { AuthService } from '../../servicios/auth.service';
   templateUrl: './bebidas.page.html',
   styleUrl: './bebidas.page.css',
 })
-export class BebidasPage {
+export class BebidasPage implements OnInit {
   bebidas: any[] = [];
   productosFiltrados: any[] = [];
+
+  private cargarTabla: GetProductosService = inject(GetProductosService);
+  private carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio de carrito
   isAdmin: boolean = false;
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
@@ -34,9 +38,16 @@ export class BebidasPage {
       bebida.nombre.toLowerCase().includes(searchValue.toLowerCase()),
     );
   }
+  // Método para agregar al carrito
+  agregarAlCarrito(bebida: any) {
+    console.log('Bebida agregada al carrito:', bebida); // Log para verificar la bebida agregada
+    this.carritoService.agregarProducto(bebida);
+  }
+
   onDetalles(idProducto: string) {
     this.router.navigate(['producto/detalles/'], {
       queryParams: { id: idProducto },
     });
+
   }
 }

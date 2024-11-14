@@ -21,7 +21,6 @@ export class FetchService {
   }
 
   async post<T = any>(url: string, body: string): Promise<T> {
-    console.log(body);
     try {
       const response = await fetch(`${this.baseurl}${url}`, {
         method: 'POST',
@@ -83,6 +82,4 @@ export class FetchService {
       throw error;
     }
   }
-
-  constructor() {}
 }

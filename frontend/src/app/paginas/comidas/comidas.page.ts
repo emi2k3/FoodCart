@@ -1,3 +1,4 @@
+import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio de carrito
 import { Component, inject } from '@angular/core';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
@@ -23,8 +24,9 @@ export class ComidasPage {
   authService: AuthService = inject(AuthService);
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
+  private carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio de carrito
   private deleteProduct: DeleteProductoService = inject(DeleteProductoService);
-
+  
   ngOnInit(): void {
     this.cargarProductos();
   }
@@ -42,7 +44,10 @@ export class ComidasPage {
       producto.nombre.toLowerCase().includes(searchValue.toLowerCase()),
     );
   }
-
+  // Método para agregar al carrito
+  agregarAlCarrito(producto: any) {
+    this.carritoService.agregarProducto(producto);
+  }
   onDetalles(idProducto: string) {
     this.router.navigate(['producto/detalles/'], {
       queryParams: { id: idProducto },
@@ -66,5 +71,6 @@ export class ComidasPage {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
+
   }
 }
