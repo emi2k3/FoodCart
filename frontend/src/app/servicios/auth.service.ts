@@ -22,9 +22,7 @@ export class AuthService {
       console.log(error);
     }
   }
-  Logut() {
-    localStorage.removeItem('token');
-  }
+
   isValidUser(): boolean {
     return !!localStorage.getItem('token');
   }
@@ -41,5 +39,5 @@ export class AuthService {
       return false;
     }
   }
-  constructor() { }
+  constructor() {}
 }
