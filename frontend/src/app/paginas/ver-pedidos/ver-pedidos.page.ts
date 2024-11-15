@@ -39,19 +39,9 @@ export class VerPedidosPage implements OnInit {
     }
 
   }
-  getIndicaciones(id_pedido: string) {
-    const detalle = this.detalle_pedidos.find(detalle_pedido =>
-      detalle_pedido.id_pedido == id_pedido
-    );
-    return detalle?.indicaciones || 'No hay indicaciones';
-  }
-  async cargarPedidos() {
 
+  async cargarPedidos() {
     this.pedidos = await this.getPedidos.getAllPedidos()
-    const detallesPromises = this.pedidos.map(pedido =>
-      this.getDetalle_Pedido.getDetallePedidoByID(pedido.id_pedido)
-    );
-    this.detalle_pedidos = await Promise.all(detallesPromises);
   }
   async cargarPedidosbyID(id_usuario: string) {
     this.pedidos = await this.getPedidos.getPedidoById(id_usuario)
@@ -60,7 +50,11 @@ export class VerPedidosPage implements OnInit {
     const Elemento = Eventochange.target as HTMLSelectElement;
     const estado = Elemento.value;
     pedido.estado = estado;
-    console.log(pedido);
     this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido);
+  }
+  verDetalles(id_pedido: string) {
+    this.router.navigate(['pedidos/detalles/'], {
+      queryParams: { id: id_pedido },
+    });
   }
 }

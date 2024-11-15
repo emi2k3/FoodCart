@@ -12,6 +12,7 @@ import { checkAdminGuard } from './guardia/check-admin.guard';
 import { VerDetallesPage } from './paginas/ver-detalles/ver-detalles.page';
 import { EditarProductoPages } from './paginas/editar-producto/editar-producto.pages';
 import { VerPedidosPage } from './paginas/ver-pedidos/ver-pedidos.page';
+import { VerdetallesPedidosPage } from './paginas/verdetalles-pedidos/verdetalles-pedidos.page';
 
 export const routes: Routes = [
   {
@@ -77,6 +78,12 @@ export const routes: Routes = [
     path: 'pedidos/ver',
     component: VerPedidosPage,
     title: 'Ver pedidos',
+    canActivate: [checkTokenGuard],
+  },
+  {
+    path: 'pedidos/detalles',
+    component: VerdetallesPedidosPage,
+    title: 'Ver detalles pedidos',
     canActivate: [checkTokenGuard],
   },
 ];
