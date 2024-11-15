@@ -1,11 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router'; // Importa Router
 import { FooterComponent } from '../../componentes/footer/footer.component';
+import { MapComponent } from '../../componentes/mapa/mapa.component';
 
 @Component({
   selector: 'inicio',
   standalone: true,
-  imports: [FooterComponent],
+  imports: [FooterComponent, MapComponent],
   templateUrl: './inicio.page.html',
   styleUrls: ['./inicio.page.css'],
 })
