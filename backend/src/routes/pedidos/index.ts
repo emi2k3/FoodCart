@@ -139,7 +139,7 @@ const pedidosRoute: FastifyPluginAsync = async (
         }
 
         const userExists = await query(
-          "SELECT id_usuario FROM usuario WHERE id_usuario = $1",
+          "SELECT id FROM usuario WHERE id = $1",
           [bodyPedido.id_usuario]
         );
         if (userExists.rows.length === 0) {
