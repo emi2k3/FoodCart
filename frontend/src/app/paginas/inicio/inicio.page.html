@@ -1,37 +1,122 @@
-<app-navbar (searchValueChange)="actualizarFiltroDeProductos($event)"></app-navbar>
-<div class="min-h-screen bg-gray-900 max-h-screen overflow-y-auto">
-  <main class="bg-gray-900 max-w-7xl mx-auto p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40">
-      <div class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
-        *ngFor="let producto of productosFiltrados">
-        <img src="/assets/logo.jpeg" alt="Product Image" class="w-full h-48 object-cover rounded-md" />
-        <h2 class="mt-2 text-lg font-semibold text-gray-800">
-          {{ producto.nombre }}
-        </h2>
-        <div
-          class="absolute h-full w-full bg-black/80 flex flex-col items-center justify-center inset-0 opacity-0 group-hover:opacity-100 transition-all duration-600">
-          <button class="bg-blue-900 text-white px-5 py-2 rounded-md hover:bg-blue-700 duration-300">
-            Agregar al Carrito
-          </button>
-          <button class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300"
-            id="verDetalles" name="verDetalles" type="button" (click)="onDetalles(producto.id_producto)">
-            Ver detalles
-          </button>
-          <button *ngIf="this.isAdmin==true"
-            class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300">
-            Añadir producto
-          </button>
-          <button class="bg-red-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-red-700 duration-300"
-            *ngIf="this.isAdmin==true">
-            Eliminar producto
-          </button>
-          <button *ngIf="this.isAdmin==true"
-            class="bg-yellow-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-yellow-600 duration-300">
-            Editar producto
-          </button>
+<!-- Header con botones de navegación opcional -->
+<header
+  class="w-full bg-gray-800 text-white p-4 flex justify-end space-x-4 fixed top-0 left-0 z-20"
+>
+  <button
+    class="px-4 py-2 hover:bg-gray-600 transition duration-300"
+    (click)="navegarA('comidas')"
+  >
+    Comidas
+  </button>
+  <button
+    class="px-4 py-2 hover:bg-gray-600 transition duration-300"
+    (click)="navegarA('bebidas')"
+  >
+    Bebidas
+  </button>
+  <button
+    class="px-4 py-2 hover:bg-gray-600 transition duration-300"
+    (click)="navegarA('contacto')"
+  >
+    Contáctenos
+  </button>
+</header>
 
+<div class="pt-20 max-h-screen overflow-y-auto">
+  <!-- Sección 1: Bienvenida -->
+  <section class="relative py-32 flex items-center justify-center bg-gray-100">
+    <div class="absolute inset-0 opacity-10">
+      <img
+        src="/assets/logo.jpeg"
+        alt="Logo"
+        class="w-full h-full object-cover"
+      />
+    </div>
+    <div class="relative z-10 text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-gray-800">FoodCart</h1>
+      <p class="text-xl md:text-2xl text-gray-600 mt-4">
+        TU MEJOR OPCIÓN AL MOMENTO DE PEDIR COMIDA
+      </p>
+    </div>
+  </section>
+
+  <!-- Espacio entre secciones -->
+  <div class="py-10 bg-gray-100"></div>
+
+  <!-- Sección 2: About Us -->
+  <section class="bg-gray-900 text-white py-12">
+    <div class="container mx-auto px-6">
+      <h1 class="text-4xl font-bold mb-6 border-b-2 border-gray-700 pb-2">
+        Información
+      </h1>
+      <!-- Sub-sección de características -->
+      <div class="mb-8">
+        <h2 class="text-3xl font-semibold mb-4">Funcionamiento</h2>
+        <ul class="list-disc ml-8 text-lg leading-relaxed">
+          <li class="mb-2">
+            Pedidos de alimentos en línea optimizados: Nuestra plataforma está
+            diseñada para ofrecerte la mejor experiencia de pedido desde la
+            página web o dispositivo móvil, ahorrándote tiempo y esfuerzo.
+          </li>
+          <li class="mb-2">
+            Detalles de pago precargados: Simplificamos el proceso de pago para
+            que puedas realizar tu pedido con solo unos pocos clics.
+          </li>
+          <li class="mb-2">
+            Gestión de direcciones: Guarda varias direcciones y elige tu
+            favorita al momento de pagar, facilitando tus pedidos recurrentes.
+          </li>
+          <li class="mb-2">
+            Confirmación en tiempo real: Recibe una confirmación inmediata de tu
+            pedido por parte de nuestro personal, con el tiempo estimado de
+            entrega. Sin intermediarios, sin centro de llamadas confuso, sin
+            promesas excesivas. Esto es solo entre tú y el restaurante.
+          </li>
+        </ul>
+      </div>
+      <!-- Sub-sección para personalizar -->
+      <div>
+        <h2 class="text-3xl font-semibold mb-4">Sobre Nosotros</h2>
+        <p class="text-lg leading-relaxed">
+          Foodcart comenzó como una idea a mediados de 2024. Surge como proyecto
+          final de curso de la materia "Desarrollo Web y Mobile" y se extendió
+          hasta llegar a los carritos de comida rapida de todo el departamento
+          de Salto. Sus desarrolladores, Gabriela Fares, Emilio Rodríguez y
+          Francisco Lima, son estudiantes de la Universidad Católica del Uruguay
+          en el campus Salto.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Espacio entre secciones -->
+  <div class="py-10 bg-gray-900"></div>
+
+  <!-- Sección 3: Mapa -->
+  <section class="bg-white text-gray-900 py-12">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl font-bold mb-6 text-center">
+        Entrega De Comida En Las Palmas De Gran Canaria
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Espacio para el mapa -->
+        <app-mapa></app-mapa>
+        <!-- Lista de tarifas de entrega -->
+        <div>
+          <h3 class="text-2xl font-semibold mb-4">Tarifa de entrega</h3>
+          <ul class="list-disc ml-8 text-lg leading-relaxed">
+            <li class="mb-2">[Completa aquí la tarifa de la zona 1]</li>
+            <li class="mb-2">[Completa aquí la tarifa de la zona 2]</li>
+            <li class="mb-2">[Completa aquí la tarifa de la zona 3]</li>
+            <li class="mb-2">[Completa aquí la tarifa de la zona 4]</li>
+            <li class="mb-2">[Completa aquí la tarifa de la zona 5]</li>
+            <li class="mb-2">[Completa aquí la tarifa de la zona 6]</li>
+          </ul>
         </div>
       </div>
     </div>
-  </main>
+  </section>
+
+  <!-- Footer -->
+  <app-footer></app-footer>
 </div>
