@@ -7,11 +7,12 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../servicios/auth.service';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 
 @Component({
   selector: 'bebidas',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf, RouterLink],
+  imports: [FooterComponent, NavbarComponent, NgFor, NgIf, RouterLink],
   templateUrl: './bebidas.page.html',
   styleUrl: './bebidas.page.css',
 })
@@ -69,10 +70,9 @@ export class BebidasPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
-
   }
 
   onCreate() {
-    this.router.navigate(['productos/ingresar'])
+    this.router.navigate(['productos/ingresar']);
   }
 }

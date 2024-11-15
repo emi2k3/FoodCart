@@ -2,20 +2,21 @@ import { Component, inject, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { AuthService } from '../../servicios/auth.service';
 import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 
 @Component({
   selector: 'app-ver-pedidos',
   templateUrl: './ver-pedidos.page.html',
   styleUrls: ['./ver-pedidos.page.scss'],
   standalone: true,
-  imports: [NavbarComponent]
+  imports: [FooterComponent, NavbarComponent],
 })
 export class VerPedidosPage implements OnInit {
   pedidos: any[] = [];
   isAdmin: boolean = false;
   authService: AuthService = inject(AuthService);
   getPedidos: GetPedidosService = inject(GetPedidosService);
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -25,18 +26,15 @@ export class VerPedidosPage implements OnInit {
         const idusuario = JSON.parse(atob(token.split('.')[1]));
         this.cargarPedidosbyID(idusuario.id);
       }
-    }
-    else {
+    } else {
       this.cargarPedidos();
     }
-
   }
 
   async cargarPedidos() {
-    this.pedidos = await this.getPedidos.getAllPedidos()
+    this.pedidos = await this.getPedidos.getAllPedidos();
   }
   async cargarPedidosbyID(id_usuario: string) {
-    this.pedidos = await this.getPedidos.getAllPedidos()
+    this.pedidos = await this.getPedidos.getAllPedidos();
   }
-
 }

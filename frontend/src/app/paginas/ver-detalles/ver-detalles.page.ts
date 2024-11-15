@@ -3,12 +3,13 @@ import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 
 @Component({
   selector: 'app-ver-detalles',
   templateUrl: './ver-detalles.page.html',
   styleUrls: ['./ver-detalles.page.scss'],
-  imports: [NavbarComponent, NgIf],
+  imports: [FooterComponent, NavbarComponent, NgIf],
   standalone: true,
 })
 export class VerDetallesPage implements OnInit {
@@ -16,7 +17,7 @@ export class VerDetallesPage implements OnInit {
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   producto: any;
-  constructor() { }
+  constructor() {}
 
   async ngOnInit() {
     if (this.activatedRoute.snapshot.queryParams['id']) {

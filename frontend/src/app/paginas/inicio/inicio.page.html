@@ -1,37 +1,61 @@
-<app-navbar (searchValueChange)="actualizarFiltroDeProductos($event)"></app-navbar>
-<div class="min-h-screen bg-gray-900 max-h-screen overflow-y-auto">
-  <main class="bg-gray-900 max-w-7xl mx-auto p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40">
-      <div class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
-        *ngFor="let producto of productosFiltrados">
-        <img src="/assets/logo.jpeg" alt="Product Image" class="w-full h-48 object-cover rounded-md" />
+<div class="min-h-screen flex flex-col bg-gray-900">
+  <app-navbar
+    (searchValueChange)="actualizarFiltroDeProductos($event)"
+  ></app-navbar>
+  <main class="flex-grow max-w-7xl mx-auto p-6">
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40"
+    >
+      <div
+        class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
+        *ngFor="let producto of productosFiltrados"
+      >
+        <img
+          src="/assets/logo.jpeg"
+          alt="Product Image"
+          class="w-full h-48 object-cover rounded-md"
+        />
         <h2 class="mt-2 text-lg font-semibold text-gray-800">
           {{ producto.nombre }}
         </h2>
         <div
-          class="absolute h-full w-full bg-black/80 flex flex-col items-center justify-center inset-0 opacity-0 group-hover:opacity-100 transition-all duration-600">
-          <button class="bg-blue-900 text-white px-5 py-2 rounded-md hover:bg-blue-700 duration-300">
+          class="absolute h-full w-full bg-black/80 flex flex-col items-center justify-center inset-0 opacity-0 group-hover:opacity-100 transition-all duration-600"
+        >
+          <button
+            class="bg-blue-900 text-white px-5 py-2 rounded-md hover:bg-blue-700 duration-300"
+          >
             Agregar al Carrito
           </button>
-          <button class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300"
-            id="verDetalles" name="verDetalles" type="button" (click)="onDetalles(producto.id_producto)">
+          <button
+            class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300"
+            id="verDetalles"
+            name="verDetalles"
+            type="button"
+            (click)="onDetalles(producto.id_producto)"
+          >
             Ver detalles
           </button>
-          <button *ngIf="this.isAdmin==true"
-            class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300">
+          <button
+            *ngIf="this.isAdmin==true"
+            class="bg-green-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-green-700 duration-300"
+          >
             Añadir producto
           </button>
-          <button class="bg-red-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-red-700 duration-300"
-            *ngIf="this.isAdmin==true">
+          <button
+            class="bg-red-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-red-700 duration-300"
+            *ngIf="this.isAdmin==true"
+          >
             Eliminar producto
           </button>
-          <button *ngIf="this.isAdmin==true"
-            class="bg-yellow-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-yellow-600 duration-300">
+          <button
+            *ngIf="this.isAdmin==true"
+            class="bg-yellow-900 text-white px-5 py-2 mt-5 rounded-md hover:bg-yellow-600 duration-300"
+          >
             Editar producto
           </button>
-
         </div>
       </div>
     </div>
   </main>
+  <app-footer></app-footer>
 </div>

@@ -5,11 +5,12 @@ import { GetProductosService } from '../../servicios/productos/get-productos.ser
 import { NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 
 @Component({
   selector: 'inicio',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf],
+  imports: [FooterComponent, NavbarComponent, NgFor, NgIf],
   templateUrl: './inicio.page.html',
   styleUrl: './inicio.page.css',
 })

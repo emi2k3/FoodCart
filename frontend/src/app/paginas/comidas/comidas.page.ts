@@ -9,11 +9,12 @@ import { RouterLink } from '@angular/router';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
 import { NgOptimizedImage } from '@angular/common';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 
 @Component({
   selector: 'app-comidas',
   standalone: true,
-  imports: [NavbarComponent, NgFor, RouterLink, NgIf],
+  imports: [FooterComponent, NavbarComponent, NgFor, RouterLink, NgIf],
   templateUrl: './comidas.page.html',
   styleUrl: './comidas.page.css',
 })
@@ -71,10 +72,9 @@ export class ComidasPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
-
   }
 
   onCreate() {
-    this.router.navigate(['productos/ingresar'])
+    this.router.navigate(['productos/ingresar']);
   }
 }
