@@ -1,45 +1,39 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule, NgForm } from '@angular/forms';
+import { ResetPassword } from '../../interfaces/usuario';
+import { AuthService } from '../../servicios/auth.service';
+import { FormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-restablecer-contrasena',
-  standalone: true,
-  imports: [FormsModule, NgClass, NgIf],
   templateUrl: './reestablecer-contrasena.page.html',
   styleUrls: ['./reestablecer-contrasena.page.scss'],
+  standalone: true,
+  imports: [FormsModule, NgClass, NgIf],
 })
 export class RestablecerContrasenaPage {
-  user = {
+  user: ResetPassword = {
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
   };
 
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-  ) {}
+  private authService: AuthService = inject(AuthService);
+  private router: Router = inject(Router);
 
-  onSubmit() {
+  async onSubmit() {
     if (this.user.newPassword === this.user.confirmPassword) {
-      this.http
-        .post('/api/reset-password', {
-          currentPassword: this.user.currentPassword,
-          newPassword: this.user.newPassword,
-        })
-        .subscribe(
-          () => {
-            // Redirigir a la página de login o mostrar un mensaje de éxito
-            this.router.navigate(['/login']);
-          },
-          (error) => {
-            console.error('Error al restablecer la contraseña:', error);
-            // Manejar errores aquí, mostrar un mensaje de error al usuario
-          },
-        );
+      const body = JSON.stringify({
+        currentPassword: this.user.currentPassword,
+        newPassword: this.user.newPassword,
+      });
+      try {
+        await this.authService.resetPassword(body);
+        this.router.navigate(['/login']);
+      } catch (error) {
+        console.error('Error al restablecer la contraseña:', error);
+      }
     } else {
       console.error('Las contraseñas no coinciden');
     }
