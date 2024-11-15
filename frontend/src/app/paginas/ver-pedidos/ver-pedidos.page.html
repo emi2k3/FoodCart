@@ -14,7 +14,8 @@
     </select>
     <p *ngIf="this.isAdmin==false">{{pedido.estado}}</p>
     <p>Precio:<b>{{pedido.importe_total}}</b></p>
-    <p>{{this.getIndicaciones(pedido.id_pedido)}}</p>
     <button class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
       *ngIf="this.isAdmin==false">Cancelar</button>
+    <button class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+      (click)="verDetalles(pedido.id_pedido)">Ver Detalles</button>
   </div>

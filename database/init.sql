@@ -119,6 +119,6 @@ INSERT INTO direccion (numero,calle) VALUES('450','Brasil');
 INSERT INTO local (nombre,id_telefono,id_direccion) VALUES('Barsito',2,2);
 INSERT INTO pedido (estado,importe_total,id_local,id_usuario,id_producto) VALUES('CONFIRMADO',200,1,1,3);
 INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin mostaza el pancho',1,3);
-INSERT INTO pedido (estado,importe_total,id_local,id_usuario,id_producto) VALUES('CONFIRMADO',250,1,1,3);
-INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin pan,sin mostaza, sin pancho, sinnnnnnnnnnnnnnnnn',2,3);
+INSERT INTO pedido (estado,importe_total,id_local,id_usuario,id_producto) VALUES('CONFIRMADO',220,1,1,4);
+INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin pan,sin mostaza, sin pancho, sinnnnnnnnnnnnnnnnn',2,4);
 
