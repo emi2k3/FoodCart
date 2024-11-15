@@ -31,9 +31,6 @@ export const PedidoPostSchema = Type.Object(
     id_usuario: Type.Integer({
       description: "Identificador del usuario",
     }),
-    id_producto: Type.Integer({
-      description: "Identificador del producto",
-    }),
   },
   { additionalProperties: false }
 );
@@ -70,9 +67,6 @@ export const PedidoSchema = Type.Object(
     }),
     id_usuario: Type.Integer({
       description: "Identificador del usuario",
-    }),
-    id_producto: Type.Integer({
-      description: "Identificador del producto",
     }),
   },
   { additionalProperties: false }
