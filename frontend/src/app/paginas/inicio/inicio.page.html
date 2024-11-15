@@ -22,7 +22,7 @@
   </button>
 </header>
 
-<div class="pt-20">
+<div class="pt-20 max-h-screen overflow-y-auto">
   <!-- Sección 1: Bienvenida -->
   <section class="relative py-32 flex items-center justify-center bg-gray-100">
     <div class="absolute inset-0 opacity-10">
@@ -96,15 +96,11 @@
   <section class="bg-white text-gray-900 py-12">
     <div class="container mx-auto px-6">
       <h2 class="text-4xl font-bold mb-6 text-center">
-        Entrega De Comida En el departamento de Salto, Uruguay.
+        Entrega De Comida En Las Palmas De Gran Canaria
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Espacio para el mapa -->
-        <div
-          class="mapa-placeholder bg-gray-200 h-64 flex items-center justify-center"
-        >
-          <p>Mapa</p>
-        </div>
+        <app-mapa></app-mapa>
         <!-- Lista de tarifas de entrega -->
         <div>
           <h3 class="text-2xl font-semibold mb-4">Tarifa de entrega</h3>
