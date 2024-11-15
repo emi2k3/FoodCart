@@ -12,3 +12,8 @@ export interface UsuarioRegister extends UsuarioLogin {
   repetirContraseña: string;
   foto: Object;
 }
+export interface ResetPassword {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}

@@ -1,13 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { FetchService } from './fetch.service';
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiSerivce: FetchService = inject(FetchService);
+  private apiService: FetchService = inject(FetchService);
+
   async login(body: string) {
     try {
-      const response = await this.apiSerivce.post('auth/login', body);
+      const response = await this.apiService.post('auth/login', body);
       localStorage.setItem('token', response.token);
     } catch (error) {
       console.log(error);
@@ -16,18 +18,30 @@ export class AuthService {
 
   async registro(body: string): Promise<any> {
     try {
-      const response = await this.apiSerivce.post('usuarios/', body);
+      const response = await this.apiService.post('usuarios/', body);
       return response;
     } catch (error) {
       console.log(error);
     }
   }
-  Logut() {
-    localStorage.removeItem('token');
+
+  async resetPassword(body: string): Promise<void> {
+    try {
+      const response = await this.apiService.post(
+        'reestablecer-contraseña/', // A cambiar cuando este la ruta del backend.
+        body,
+      );
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
+
   isValidUser(): boolean {
     return !!localStorage.getItem('token');
   }
+
   isAdmin(): boolean {
     try {
       const token = localStorage.getItem('token');
@@ -41,5 +55,6 @@ export class AuthService {
       return false;
     }
   }
-  constructor() { }
+
+  constructor() {}
 }
