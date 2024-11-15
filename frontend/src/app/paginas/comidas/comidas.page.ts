@@ -1,4 +1,3 @@
-import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio de carrito
 import { Component, inject, OnInit } from '@angular/core';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
@@ -8,12 +7,12 @@ import { AuthService } from '../../servicios/auth.service';
 import { RouterLink } from '@angular/router';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
-import { NgOptimizedImage } from '@angular/common';
+import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 
 @Component({
   selector: 'app-comidas',
   standalone: true,
-  imports: [NavbarComponent, NgFor, RouterLink, NgIf],
+  imports: [NavbarComponent, NgFor, RouterLink, NgIf, AddToCartComponent],
   templateUrl: './comidas.page.html',
   styleUrl: './comidas.page.css',
 })
@@ -21,10 +20,11 @@ export class ComidasPage implements OnInit {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   isAdmin: boolean = false;
+  modalIsOpen: boolean = false;
   authService: AuthService = inject(AuthService);
+
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
-  private carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio de carrito
   private deleteProduct: DeleteProductoService = inject(DeleteProductoService);
 
   ngOnInit(): void {
@@ -44,10 +44,15 @@ export class ComidasPage implements OnInit {
       producto.nombre.toLowerCase().includes(searchValue.toLowerCase()),
     );
   }
-  // Método para agregar al carrito
+
   agregarAlCarrito(producto: any) {
-    this.carritoService.agregarProducto(producto);
+    this.modalIsOpen = true;
   }
+
+  closeModal() {
+    this.modalIsOpen = false;
+  }
+
   onDetalles(idProducto: string) {
     this.router.navigate(['producto/detalles/'], {
       queryParams: { id: idProducto },
@@ -55,7 +60,6 @@ export class ComidasPage implements OnInit {
   }
 
   confirmarEliminacion(productoId: string): void {
-    console.log(productoId);
     const confirmacion = window.confirm(
       '¿Estás seguro de que deseas eliminar este producto?',
     );
@@ -71,10 +75,9 @@ export class ComidasPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
-
   }
 
   onCreate() {
-    this.router.navigate(['productos/ingresar'])
+    this.router.navigate(['productos/ingresar']);
   }
 }
