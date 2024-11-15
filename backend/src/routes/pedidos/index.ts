@@ -46,10 +46,9 @@ const pedidosRoute: FastifyPluginAsync = async (
             .send({ error: "El local especificado no existe" });
         }
 
-        const userExists = await query(
-          "SELECT id_usuario FROM usuario WHERE id_usuario = $1",
-          [bodyPedido.id_usuario]
-        );
+        const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
+          bodyPedido.id_usuario,
+        ]);
         if (userExists.rows.length === 0) {
           await query("ROLLBACK");
           return reply
@@ -62,11 +61,11 @@ const pedidosRoute: FastifyPluginAsync = async (
             estado,
             importe_total,
             id_local,
-            id_usuario,
+            id_usuario
           ) VALUES($1, $2, $3, $4) RETURNING *`,
           [
             bodyPedido.estado || "PENDIENTE",
-            bodyPedido.importe_total || "0",
+            bodyPedido.importe_total,
             bodyPedido.id_local,
             bodyPedido.id_usuario,
           ]
@@ -138,10 +137,9 @@ const pedidosRoute: FastifyPluginAsync = async (
             .send({ error: "El local especificado no existe" });
         }
 
-        const userExists = await query(
-          "SELECT id FROM usuario WHERE id = $1",
-          [bodyPedido.id_usuario]
-        );
+        const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
+          bodyPedido.id_usuario,
+        ]);
         if (userExists.rows.length === 0) {
           await query("ROLLBACK");
           return reply

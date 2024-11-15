@@ -8,13 +8,13 @@ import { RouterLink } from '@angular/router';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
+import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
 
 @Component({
   selector: 'app-comidas',
   standalone: true,
   imports: [NavbarComponent, NgFor, RouterLink, NgIf, AddToCartComponent],
   templateUrl: './comidas.page.html',
-  styleUrl: './comidas.page.css',
 })
 export class ComidasPage implements OnInit {
   productos: Producto[] = [];
@@ -22,6 +22,7 @@ export class ComidasPage implements OnInit {
   isAdmin: boolean = false;
   modalIsOpen: boolean = false;
   authService: AuthService = inject(AuthService);
+  getPedidoService: GetPedidosService = inject(GetPedidosService);
 
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
@@ -45,7 +46,7 @@ export class ComidasPage implements OnInit {
     );
   }
 
-  agregarAlCarrito(producto: any) {
+  agregarAlCarrito() {
     this.modalIsOpen = true;
   }
 

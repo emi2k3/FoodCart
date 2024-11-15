@@ -4,16 +4,17 @@ import { FetchService } from '../fetch.service';
 @Injectable({
   providedIn: 'root',
 })
-export class PostPedidosService {
+export class PostDetallePedidoService {
   private fetchService: FetchService = inject(FetchService);
 
-  postPedido(body: string) {
+  postDetallePedido(body: string) {
     try {
-      return this.fetchService.post('pedidos/', body);
+      return this.fetchService.post('pedidos/detalle_pedidos', body);
     } catch (error) {
       console.log(error);
       return null;
     }
   }
+
   constructor() {}
 }
