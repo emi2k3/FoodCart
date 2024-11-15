@@ -4,11 +4,11 @@
     *ngFor="let pedido of pedidos">
     <h3 class="font-bold">Pedido</h3>
     <div class="my-2 border-t border-gray-300"></div>
-    <select (change)="onChange(pedido,$event)" *ngIf="this.isAdmin==true">
+    <select (change)="onChange(pedido, $event)" *ngIf="this.isAdmin==true">
       <option value="CONFIRMADO">Confirmado</option>
-      <option value="EN_PREPARACION">En Preparacion</option>
-      <option value="LISTO">Listo</option>
-      <option value="EN_CAMINO">En camino</option>
+      <option value="EN_PREPARACION" [selected]="pedido.estado === 'EN_PREPARACION'">En Preparacion</option>
+      <option value="LISTO" [selected]="pedido.estado === 'LISTO'">Listo</option>
+      <option value="EN_CAMINO" [selected]="pedido.estado === 'EN_CAMINO'">En camino</option>
       <option value="ENTREGADO">Entregado</option>
       <option value="CANCELADO">Cancelado</option>
     </select>
