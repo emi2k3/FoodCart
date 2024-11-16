@@ -1,12 +1,20 @@
 <app-navbar></app-navbar>
-<div class="grid place-items-center min-h-screen">
-  <div class="w-1/4 border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black mb-96"
-    *ngFor="let detalle_pedido of detalle_pedidos">
+<div
+  class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4"
+>
+  <div
+    class="w-1/4 border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black mt-20"
+    *ngFor="let detalle_pedido of detalle_pedidos"
+  >
     <h2 class="mt-2 text-lg font-semibold text-gray-800 text-center">
       Detalles del pedido
     </h2>
-    <p class="text-left text-black">Producto:{{this.getProducto(detalle_pedido.id_producto)}}</p>
+    <p class="text-left text-black">
+      Producto:{{this.getProducto(detalle_pedido.id_producto)}}
+    </p>
     <p class="text-left text-black">Cantidad: {{detalle_pedido.cantidad}}</p>
-    <p class="text-left text-black">Indicaciones:{{detalle_pedido.indicaciones}}</p>
+    <p class="text-left text-black">
+      Indicaciones:{{detalle_pedido.indicaciones}}
+    </p>
   </div>
 </div>

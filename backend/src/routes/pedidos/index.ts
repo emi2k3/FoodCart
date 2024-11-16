@@ -152,8 +152,8 @@ const pedidosRoute: FastifyPluginAsync = async (
             estado = $1,
             importe_total = $2,
             id_local = $3,
-            id_usuario = $4,
-          WHERE id_pedido = $6
+            id_usuario = $4
+          WHERE id_pedido = $5
           RETURNING *`,
           [
             bodyPedido.estado,
