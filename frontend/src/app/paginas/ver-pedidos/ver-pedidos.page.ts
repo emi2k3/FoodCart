@@ -12,7 +12,7 @@ import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
   selector: 'app-ver-pedidos',
   templateUrl: './ver-pedidos.page.html',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf, FooterComponent],
+  imports: [NavbarComponent, NgFor, NgIf],
 })
 export class VerPedidosPage implements OnInit {
   pedidos: any[] = [];

@@ -69,7 +69,7 @@
         </button>
       </div>
     </div>
-    <div class="mt-4">
+    <div class="mt-4" *ngIf="showNote">
       <label class="text-sm text-gray-500">¿Querés aclarar algo?</label>
       <textarea
         [(ngModel)]="note"
