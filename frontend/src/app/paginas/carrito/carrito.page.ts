@@ -107,5 +107,6 @@ export class CarritoPage implements OnInit {
     this.pedidoaConfirmar.estado = "CONFIRMADO";
     this.pedidoaConfirmar.importe_total = this.getTotal();
     this.putPedido.put(JSON.stringify(this.pedidoaConfirmar), this.id_pedido.toString());
+    this.router.navigate(["/pedidos/ver"])
   }
 }
