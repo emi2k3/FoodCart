@@ -74,13 +74,10 @@ create table if not exists pedido (
     importe_total numeric(10,2) CHECK (importe_total >= 0),
     id_local integer not null,
     id_usuario integer not null,
-    id_producto integer not null,
     CONSTRAINT fk_local FOREIGN KEY (id_local) 
         REFERENCES local(id_local) ON DELETE RESTRICT,
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) 
-        REFERENCES usuario(id) ON DELETE RESTRICT,
-    CONSTRAINT fk_producto FOREIGN KEY (id_producto) 
-        REFERENCES producto(id_producto) ON DELETE RESTRICT
+        REFERENCES usuario(id) ON DELETE RESTRICT
 );
 
 create table if not exists detalle_pedido (
@@ -113,4 +110,14 @@ VALUES
 ('Hamburguesa Vegetariana', 'Hamburguesa con hamburguesa de lentejas y verduras frescas', 450, 1, true),
 ('Coca-cola', 'Coca de 500ml', 70, 2, true),
 ('Agua Mineral', 'Botella de agua mineral de 500ml', 50, 2, true);
+
+INSERT INTO telefono (numeroTel) VALUES('098777234');
+INSERT INTO direccion (numero,calle) VALUES('450','Brasil');
+INSERT INTO local (nombre,id_telefono,id_direccion) VALUES('Barsito',2,2);
+INSERT INTO pedido (estado,importe_total,id_local,id_usuario) VALUES('CONFIRMADO',200,1,1);
+INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin mostaza el pancho',1,3);
+INSERT INTO pedido (estado,importe_total,id_local,id_usuario) VALUES('CONFIRMADO',220,1,1);
+INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin pan,sin mostaza, sin pancho, sinnnnnnnnnnnnnnnnn',2,4);
+INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(2,'Sin pan,sin mostaza, con pancho',2,3);
+
 

@@ -23,6 +23,7 @@ const options: SwaggerOptions = {
       { name: "Pedidos", description: "CRUD de pedidos" },
       { name: "Productos", description: "CRUD de productos" },
       { name: "Categorias", description: "CRUD de categorias" },
+      { name: "Detalle_Pedidos", description: "CRUD de detalles pedidos" }
     ],
     components: {
       securitySchemes: {

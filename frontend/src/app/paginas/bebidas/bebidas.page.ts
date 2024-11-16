@@ -69,10 +69,9 @@ export class BebidasPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
-
   }
 
   onCreate() {
-    this.router.navigate(['productos/ingresar'])
+    this.router.navigate(['productos/ingresar']);
   }
 }
