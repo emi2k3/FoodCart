@@ -118,4 +118,6 @@ INSERT INTO pedido (estado,importe_total,id_local,id_usuario) VALUES('CONFIRMADO
 INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin mostaza el pancho',1,3);
 INSERT INTO pedido (estado,importe_total,id_local,id_usuario) VALUES('CONFIRMADO',220,1,1);
 INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(1,'Sin pan,sin mostaza, sin pancho, sinnnnnnnnnnnnnnnnn',2,4);
+INSERT INTO detalle_pedido (cantidad,indicaciones,id_pedido,id_producto) VALUES(2,'Sin pan,sin mostaza, con pancho',2,3);
+
 
