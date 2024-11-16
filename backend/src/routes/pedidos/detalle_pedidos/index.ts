@@ -88,6 +88,7 @@ const detallePedidoRoute: FastifyPluginAsync = async (
         };
 
       try {
+        console.log(request.body);
         // Verificar si el pedido existe
         const pedidoExists = await query(
           "SELECT id_pedido FROM pedido WHERE id_pedido = $1",

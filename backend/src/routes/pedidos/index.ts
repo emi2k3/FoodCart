@@ -24,6 +24,7 @@ const pedidosRoute: FastifyPluginAsync = async (
           type: "object",
           properties: {
             ...PedidoPostSchema.properties,
+            id_pedido: { type: "integer" },
           },
         },
       },

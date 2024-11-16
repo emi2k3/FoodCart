@@ -12,12 +12,7 @@ export class GetPedidosService {
       const response = await this.apiService.get(
         `pedidos/usuario/${id_usuario}`,
       );
-      let respuestaFiltrada = response.filter(
-        (pedido: any) =>
-          !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
-      );
-      console.log(await respuestaFiltrada);
-      return respuestaFiltrada;
+      return response;
     } catch (error) {
       console.log(error);
     }
@@ -25,12 +20,7 @@ export class GetPedidosService {
   async getAllPedidos() {
     try {
       const response = await this.apiService.get(`pedidos/`);
-      let respuestaFiltrada = response.filter(
-        (pedido: any) =>
-          !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
-      );
-
-      return respuestaFiltrada;
+      return response;
     } catch (error) {
       console.log(error);
     }

@@ -1,9 +1,21 @@
 import { NgIf } from '@angular/common';
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  Inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../servicios/auth.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { PostPedidosService } from '../../servicios/pedidos/post-pedidos.service';
+import { PostDetallePedidoService } from '../../servicios/pedidos/post-detalle-pedido.service';
+import { ThisReceiver } from '@angular/compiler';
+import { CarritoPage } from '../../paginas/carrito/carrito.page';
+import { CarritoService } from '../../servicios/carrito-service.service';
+import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 
 @Component({
   selector: 'add-to-cart',
@@ -12,9 +24,14 @@ import { PostPedidosService } from '../../servicios/pedidos/post-pedidos.service
   templateUrl: './add-to-cart.component.html',
 })
 export class AddToCartComponent {
+  carritoService: CarritoService = inject(CarritoService);
   authService: AuthService = inject(AuthService);
+  getDetallePedido: GetDetallePedidosService = inject(GetDetallePedidosService);
   getPedidoService: GetPedidosService = inject(GetPedidosService);
   postPedido: PostPedidosService = inject(PostPedidosService);
+  postDetallePedido: PostDetallePedidoService = inject(
+    PostDetallePedidoService,
+  );
 
   @Input() product: any;
   @Input() isOpen: boolean = false;
@@ -23,6 +40,7 @@ export class AddToCartComponent {
   userId: string = this.authService.getUserId();
   quantity: number = 1;
   note: string = '';
+  id_pedido: number = 9;
 
   increaseQuantity() {
     this.quantity++;
@@ -35,17 +53,33 @@ export class AddToCartComponent {
   }
 
   async addToCart() {
+    let detallePedido = {
+      cantidad: this.quantity,
+      indicaciones: this.note,
+      id_pedido: this.id_pedido,
+      id_producto: this.product.id_producto,
+    };
+
     try {
-      const respuestaFiltrada = await this.getPedidoService.getPedidoById(
+      const pedidosUsuarioFiltrado = await this.getPedidoService.getPedidoById(
         this.userId,
       );
-      const pedidoPendiente = respuestaFiltrada.filter(
-        (pedido: any) => pedido.estado === 'PENDIENTE',
+
+      const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
+        ['PENDIENTE'].includes(pedido.estado),
       );
 
       if (pedidoPendiente.length > 0) {
-        const pedidoId = pedidoPendiente[0].id;
-        console.log(pedidoId);
+        detallePedido.id_pedido = pedidoPendiente[0].id_pedido;
+        const detalle = await this.postDetallePedido.postDetallePedido(
+          JSON.stringify(detallePedido),
+        );
+
+        const detalleActualizado =
+          await this.getDetallePedido.getDetallePedidoByID(
+            pedidoPendiente[0].id_pedido,
+          );
+        this.carritoService.setCartCount(detalleActualizado.length);
       } else {
         const pedido = {
           estado: 'PENDIENTE',
@@ -57,7 +91,13 @@ export class AddToCartComponent {
         const respuesta = await this.postPedido.postPedido(
           JSON.stringify(pedido),
         );
-        console.log('Pedido creado exitosamente:', respuesta);
+
+        detallePedido.id_pedido = respuesta.id_pedido;
+        const detalle = await this.postDetallePedido.postDetallePedido(
+          JSON.stringify(detallePedido),
+        );
+
+        this.carritoService.setCartCount(1);
       }
     } catch (error) {
       console.log(error);

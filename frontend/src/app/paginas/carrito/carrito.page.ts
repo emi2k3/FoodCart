@@ -7,7 +7,7 @@ import { NgFor, NgIf } from '@angular/common';
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgIf, NgFor],
+  imports: [NavbarComponent, NgFor],
   templateUrl: './carrito.page.html',
   styleUrls: ['./carrito.page.scss'],
 })

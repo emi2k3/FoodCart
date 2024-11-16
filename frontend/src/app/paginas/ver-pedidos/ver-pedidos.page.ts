@@ -12,7 +12,7 @@ import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
   templateUrl: './ver-pedidos.page.html',
   styleUrls: ['./ver-pedidos.page.scss'],
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf]
+  imports: [NavbarComponent, NgFor, NgIf],
 })
 export class VerPedidosPage implements OnInit {
   pedidos: any[] = [];
@@ -20,10 +20,12 @@ export class VerPedidosPage implements OnInit {
   isAdmin: boolean = false;
   authService: AuthService = inject(AuthService);
   getPedidos: GetPedidosService = inject(GetPedidosService);
-  getDetalle_Pedido: GetDetallePedidosService = inject(GetDetallePedidosService)
+  getDetalle_Pedido: GetDetallePedidosService = inject(
+    GetDetallePedidosService,
+  );
   putPedido: PutPedidoService = inject(PutPedidoService);
   router: Router = inject(Router);
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -33,18 +35,25 @@ export class VerPedidosPage implements OnInit {
         const idusuario = JSON.parse(atob(token.split('.')[1]));
         this.cargarPedidosbyID(idusuario.id);
       }
-    }
-    else {
+    } else {
       this.cargarPedidos();
     }
-
   }
 
   async cargarPedidos() {
-    this.pedidos = await this.getPedidos.getAllPedidos()
+    let pedidossinfiltrar = await this.getPedidos.getAllPedidos();
+    this.pedidos = pedidossinfiltrar.filter(
+      (pedido: any) =>
+        !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
+    );
   }
   async cargarPedidosbyID(id_usuario: string) {
-    this.pedidos = await this.getPedidos.getPedidoById(id_usuario)
+    let pedidossinfiltrar = await this.getPedidos.getPedidoById(id_usuario);
+
+    this.pedidos = pedidossinfiltrar.filter(
+      (pedido: any) =>
+        !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
+    );
   }
   onChange(pedido: any, Eventochange: Event) {
     const Elemento = Eventochange.target as HTMLSelectElement;

@@ -13,6 +13,10 @@ import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service';
+import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
+import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
+import { CarritoService } from '../../servicios/carrito-service.service';
 
 @Component({
   selector: 'app-navbar',
@@ -31,6 +35,11 @@ export class NavbarComponent implements OnInit {
   private authservice: AuthService = inject(AuthService);
   private crudUsuarios: CRUDUsuariosService = inject(CRUDUsuariosService);
   private router: Router = inject(Router);
+  carritoService: CarritoService = inject(CarritoService);
+  private getPedido: GetPedidosService = inject(GetPedidosService);
+  private getDetallePedido: GetDetallePedidosService = inject(
+    GetDetallePedidosService,
+  );
 
   @Output() searchValueChange = new EventEmitter<string>();
 
@@ -56,6 +65,20 @@ export class NavbarComponent implements OnInit {
             this.usuario.foto = `https://localhost/backend/Resources/img/usuarios/${usuarioGet.id}.jpg`;
           } else {
             this.usuario.foto = 'assets/default-user.png';
+          }
+
+          const pedidosUsuarioFiltrado = await this.getPedido.getPedidoById(
+            idToken.id,
+          );
+          const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
+            ['PENDIENTE'].includes(pedido.estado),
+          );
+
+          if (pedidoPendiente.length > 0) {
+            const id_pedido = pedidoPendiente[0].id_pedido;
+            const detallePedido =
+              await this.getDetallePedido.getDetallePedidoByID(id_pedido);
+            this.carritoService.setCartCount(detallePedido.length);
           }
         }
       } catch (error) {
