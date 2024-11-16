@@ -1,23 +1,24 @@
 <div class="max-h-screen overflow-y-auto flex flex-col bg-gray-900">
-  <app-navbar
-    (searchValueChange)="actualizarFiltroDeProductos($event)"
-  ></app-navbar>
-  <main class="flex-grow max-w-7xl mx-auto p-6">
+<app-navbar
+  (searchValueChange)="actualizarFiltroDeProductos($event)"
+></app-navbar>
+<div class="min-h-screen bg-gray-900 max-h-screen overflow-y-auto">
+  <main class="bg-gray-900 max-w-7xl mx-auto p-6">
     <div
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40"
     >
       <div
         class="bg-white p-4 rounded-lg shadow-md flex flex-col justify-center items-center group relative"
         *ngFor="let producto of productosFiltrados"
       >
         <img
-          *ngIf="!producto.foto"
+          *ngIf="producto.foto==false"
           src="/assets/logo.jpeg"
           alt="Product Image"
           class="w-full h-48 object-cover rounded-md"
         />
         <img
-          *ngIf="producto.foto"
+          *ngIf="producto.foto==true"
           src="https://localhost/backend/Resources/img/productos/{{producto.id_producto}}.jpg"
           alt="Product Image"
           class="w-full h-48 object-cover rounded-md"
@@ -32,7 +33,7 @@
             <button
               class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-900 duration-300 flex items-center justify-center"
               type="button"
-              (click)="agregarAlCarrito(producto)"
+              (click)="agregarAlCarrito()"
             >
               <img src="assets/add-to-cart.png" alt="Icono" class="w-6 h-6" />
             </button>
@@ -59,6 +60,12 @@
                 <img src="assets/delete-icon.png" alt="Icono" class="w-5 h-5" />
               </button>
             </ng-container>
+            <add-to-cart
+              [product]="producto"
+              [isOpen]="modalIsOpen"
+              (closeModal)="closeModal()"
+            >
+            </add-to-cart>
           </div>
         </div>
       </div>

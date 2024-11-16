@@ -8,22 +8,24 @@ import { AuthService } from '../../servicios/auth.service';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
 import { FooterComponent } from '../../componentes/footer/footer.component';
+import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
+
 
 @Component({
   selector: 'bebidas',
   standalone: true,
-  imports: [FooterComponent, NavbarComponent, NgFor, NgIf, RouterLink],
+  imports: [NavbarComponent, NgFor, NgIf, RouterLink, AddToCartComponent],
   templateUrl: './bebidas.page.html',
-  styleUrl: './bebidas.page.css',
 })
 export class BebidasPage implements OnInit {
   bebidas: Producto[] = [];
   productosFiltrados: Producto[] = [];
   isAdmin: boolean = false;
+  modalIsOpen: boolean = false;
   authService: AuthService = inject(AuthService);
   private cargarTabla: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
-  private carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio de carrito
+  private carritoService: CarritoService = inject(CarritoService);
   private deleteProduct: DeleteProductoService = inject(DeleteProductoService);
 
   ngOnInit(): void {
@@ -39,14 +41,19 @@ export class BebidasPage implements OnInit {
   }
 
   actualizarFiltroDeProductos(searchValue: string) {
-    this.productosFiltrados = this.bebidas.filter((bebidas) =>
-      bebidas.nombre.toLowerCase().includes(searchValue.toLowerCase()),
+    this.productosFiltrados = this.bebidas.filter((bebida) =>
+      bebida.nombre.toLowerCase().includes(searchValue.toLowerCase()),
     );
   }
-  // Método para agregar al carrito
-  agregarAlCarrito(producto: any) {
-    this.carritoService.agregarProducto(producto);
+
+  agregarAlCarrito() {
+    this.modalIsOpen = true;
   }
+
+  closeModal() {
+    this.modalIsOpen = false;
+  }
+
   onDetalles(idProducto: string) {
     this.router.navigate(['producto/detalles/'], {
       queryParams: { id: idProducto },
@@ -54,7 +61,6 @@ export class BebidasPage implements OnInit {
   }
 
   confirmarEliminacion(productoId: string): void {
-    console.log(productoId);
     const confirmacion = window.confirm(
       '¿Estás seguro de que deseas eliminar este producto?',
     );

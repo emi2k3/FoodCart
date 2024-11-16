@@ -11,7 +11,9 @@ import { checkAdminGuard } from './guardia/check-admin.guard';
 import { VerDetallesPage } from './paginas/ver-detalles/ver-detalles.page';
 import { EditarProductoPages } from './paginas/editar-producto/editar-producto.pages';
 import { VerPedidosPage } from './paginas/ver-pedidos/ver-pedidos.page';
-import { RestablecerContrasenaPage } from './paginas/reestablecer-contrasena/reestablecer-contrasena.page';
+import { RestablecerContrasenaPage } from './paginas/reestablecer-contrasena/reestablecer-contrasena.page'
+import { VerdetallesPedidosPage } from './paginas/verdetalles-pedidos/verdetalles-pedidos.page';
+
 
 export const routes: Routes = [
   {
@@ -73,8 +75,15 @@ export const routes: Routes = [
     canActivate: [checkTokenGuard],
   },
   {
+
     path: 'restablecer-contrasena',
     component: RestablecerContrasenaPage,
     title: 'Restablecer Contraseña',
+  },
+  {
+    path: 'pedidos/detalles',
+    component: VerdetallesPedidosPage,
+    title: 'Ver detalles pedidos',
+    canActivate: [checkTokenGuard],
   },
 ];

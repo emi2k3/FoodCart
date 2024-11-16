@@ -7,7 +7,7 @@ import {
 } from "../../types/pedidos.js";
 import { IdPedidoSchema } from "../../types/detalle_pedido.js";
 
-const productosRoute: FastifyPluginAsync = async (
+const pedidosRoute: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
@@ -24,6 +24,7 @@ const productosRoute: FastifyPluginAsync = async (
           type: "object",
           properties: {
             ...PedidoPostSchema.properties,
+            id_pedido: { type: "integer" },
           },
         },
       },
@@ -37,7 +38,7 @@ const productosRoute: FastifyPluginAsync = async (
       try {
         const localExists = await query(
           "SELECT id_local FROM local WHERE id_local = $1",
-          [bodyPedido.id_local]
+          ["1"]
         );
         if (localExists.rows.length === 0) {
           await query("ROLLBACK");
@@ -46,10 +47,9 @@ const productosRoute: FastifyPluginAsync = async (
             .send({ error: "El local especificado no existe" });
         }
 
-        const userExists = await query(
-          "SELECT id_usuario FROM usuario WHERE id_usuario = $1",
-          [bodyPedido.id_usuario]
-        );
+        const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
+          bodyPedido.id_usuario,
+        ]);
         if (userExists.rows.length === 0) {
           await query("ROLLBACK");
           return reply
@@ -57,31 +57,18 @@ const productosRoute: FastifyPluginAsync = async (
             .send({ error: "El usuario especificado no existe" });
         }
 
-        const productExists = await query(
-          "SELECT id_producto FROM producto WHERE id_producto = $1",
-          [bodyPedido.id_producto]
-        );
-        if (productExists.rows.length === 0) {
-          await query("ROLLBACK");
-          return reply
-            .status(400)
-            .send({ error: "El producto especificado no existe" });
-        }
-
         const result = await query(
           `INSERT INTO pedido(
             estado,
             importe_total,
             id_local,
-            id_usuario,
-            id_producto
-          ) VALUES($1, $2, $3, $4, $5) RETURNING *`,
+            id_usuario
+          ) VALUES($1, $2, $3, $4) RETURNING *`,
           [
             bodyPedido.estado || "PENDIENTE",
             bodyPedido.importe_total,
             bodyPedido.id_local,
             bodyPedido.id_usuario,
-            bodyPedido.id_producto,
           ]
         );
 
@@ -151,10 +138,9 @@ const productosRoute: FastifyPluginAsync = async (
             .send({ error: "El local especificado no existe" });
         }
 
-        const userExists = await query(
-          "SELECT id_usuario FROM usuario WHERE id_usuario = $1",
-          [bodyPedido.id_usuario]
-        );
+        const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
+          bodyPedido.id_usuario,
+        ]);
         if (userExists.rows.length === 0) {
           await query("ROLLBACK");
           return reply
@@ -162,32 +148,19 @@ const productosRoute: FastifyPluginAsync = async (
             .send({ error: "El usuario especificado no existe" });
         }
 
-        const productExists = await query(
-          "SELECT id_producto FROM producto WHERE id_producto = $1",
-          [bodyPedido.id_producto]
-        );
-        if (productExists.rows.length === 0) {
-          await query("ROLLBACK");
-          return reply
-            .status(400)
-            .send({ error: "El producto especificado no existe" });
-        }
-
         const result = await query(
           `UPDATE pedido SET
             estado = $1,
             importe_total = $2,
             id_local = $3,
-            id_usuario = $4,
-            id_producto = $5
-          WHERE id_pedido = $6
+            id_usuario = $4
+          WHERE id_pedido = $5
           RETURNING *`,
           [
             bodyPedido.estado,
             bodyPedido.importe_total,
             bodyPedido.id_local,
             bodyPedido.id_usuario,
-            bodyPedido.id_producto,
             id_pedido,
           ]
         );
@@ -223,7 +196,6 @@ const productosRoute: FastifyPluginAsync = async (
               importe_total: 1500,
               id_local: 1,
               id_usuario: 1,
-              id_producto: 1,
             },
           ],
         },
@@ -319,7 +291,6 @@ const productosRoute: FastifyPluginAsync = async (
               importe_total: 1500,
               id_local: 1,
               id_usuario: 1,
-              id_producto: 1,
             },
           ],
         },
@@ -410,4 +381,4 @@ const productosRoute: FastifyPluginAsync = async (
     },
   });
 };
-export default productosRoute;
+export default pedidosRoute;

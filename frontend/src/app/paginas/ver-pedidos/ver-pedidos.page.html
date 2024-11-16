@@ -1,11 +1,44 @@
 <app-navbar></app-navbar>
-<div class="flex space-x-4">
+<div
+  class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4"
+>
   <div
-    class="border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black"
+    class="border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black w-1/4"
+    *ngFor="let pedido of pedidos"
   >
-    <h3 class="font-bold">{{pedidos}}</h3>
+    <h3 class="font-bold">Pedido</h3>
     <div class="my-2 border-t border-gray-300"></div>
-    <p>{{pedidos}}</p>
+    <select (change)="onChange(pedido, $event)" *ngIf="this.isAdmin==true">
+      <option value="CONFIRMADO">Confirmado</option>
+      <option
+        value="EN_PREPARACION"
+        [selected]="pedido.estado === 'EN_PREPARACION'"
+      >
+        En Preparacion
+      </option>
+      <option value="LISTO" [selected]="pedido.estado === 'LISTO'">
+        Listo
+      </option>
+      <option value="EN_CAMINO" [selected]="pedido.estado === 'EN_CAMINO'">
+        En camino
+      </option>
+      <option value="ENTREGADO">Entregado</option>
+      <option value="CANCELADO">Cancelado</option>
+    </select>
+    <p *ngIf="this.isAdmin==false">{{pedido.estado}}</p>
+    <p>Precio:<b>{{pedido.importe_total}}</b></p>
+    <button
+      class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
+      *ngIf="this.isAdmin==false"
+    >
+      Cancelar
+    </button>
+    <button
+      class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+      (click)="verDetalles(pedido.id_pedido)"
+    >
+      Ver Detalles
+    </button>
   </div>
 </div>
 <app-footer></app-footer>

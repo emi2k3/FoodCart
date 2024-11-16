@@ -29,9 +29,5 @@ export class VerDetallesPage implements OnInit {
       this.router.navigate(['']);
     }
   }
-  onDetalles(idProducto: string) {
-    this.router.navigate(['producto/detalles/'], {
-      queryParams: { id: idProducto },
-    });
-  }
+
 }

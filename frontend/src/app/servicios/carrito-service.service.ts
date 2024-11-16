@@ -1,10 +1,24 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CarritoService {
   private productosEnCarrito: any[] = this.cargarCarrito();
+
+  cartCount = signal(0);
+
+  incrementCart() {
+    this.cartCount.update((count) => count + 1);
+  }
+
+  decrementCart() {
+    this.cartCount.update((count) => Math.max(0, count - 1));
+  }
+
+  setCartCount(count: number) {
+    this.cartCount.set(count);
+  }
 
   agregarProducto(producto: any) {
     const productoExistente = this.productosEnCarrito.find(
