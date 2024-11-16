@@ -11,11 +11,9 @@ import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 @Component({
   selector: 'app-ver-pedidos',
   templateUrl: './ver-pedidos.page.html',
-  styleUrls: ['./ver-pedidos.page.scss'],
   standalone: true,
   imports: [NavbarComponent, NgFor, NgIf, FooterComponent],
 })
-
 export class VerPedidosPage implements OnInit {
   pedidos: any[] = [];
   detalle_pedidos: any[] = [];

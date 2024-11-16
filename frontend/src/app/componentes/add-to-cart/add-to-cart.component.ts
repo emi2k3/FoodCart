@@ -12,8 +12,6 @@ import { AuthService } from '../../servicios/auth.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { PostPedidosService } from '../../servicios/pedidos/post-pedidos.service';
 import { PostDetallePedidoService } from '../../servicios/pedidos/post-detalle-pedido.service';
-import { ThisReceiver } from '@angular/compiler';
-import { CarritoPage } from '../../paginas/carrito/carrito.page';
 import { CarritoService } from '../../servicios/carrito-service.service';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 

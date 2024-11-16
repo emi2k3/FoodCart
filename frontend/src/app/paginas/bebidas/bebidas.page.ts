@@ -10,11 +10,17 @@ import { Producto } from '../../interfaces/producto';
 import { FooterComponent } from '../../componentes/footer/footer.component';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 
-
 @Component({
   selector: 'bebidas',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf, RouterLink, AddToCartComponent],
+  imports: [
+    NavbarComponent,
+    NgFor,
+    NgIf,
+    RouterLink,
+    AddToCartComponent,
+    FooterComponent,
+  ],
   templateUrl: './bebidas.page.html',
 })
 export class BebidasPage implements OnInit {

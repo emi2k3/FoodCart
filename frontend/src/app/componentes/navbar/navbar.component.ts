@@ -23,7 +23,6 @@ import { CarritoService } from '../../servicios/carrito-service.service';
   standalone: true,
   imports: [SearchComponent, NgIf, CommonModule],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent implements OnInit {
   usuario = {
