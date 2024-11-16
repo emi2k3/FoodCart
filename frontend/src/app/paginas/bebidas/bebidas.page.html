@@ -1,3 +1,4 @@
+<div class="min-h-screen flex flex-col bg-gray-900">
 <app-navbar
   (searchValueChange)="actualizarFiltroDeProductos($event)"
 ></app-navbar>
@@ -70,8 +71,9 @@
           </div>
         </div>
       </div>
-    </div>
+    </section>
   </main>
+  <app-footer></app-footer>
   <button
     class="fixed bottom-0 right-0 m-4 p-6 bg-blue-500 text-white rounded-full"
     (click)="onCreate()"

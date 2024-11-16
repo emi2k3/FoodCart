@@ -3,11 +3,12 @@ import { CarritoService } from '../../servicios/carrito-service.service';
 import { AuthService } from '../../servicios/auth.service';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { NgFor, NgIf } from '@angular/common';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgFor],
+  imports: [FooterComponent, NavbarComponent, NgIf, NgFor],
   templateUrl: './carrito.page.html',
   styleUrls: ['./carrito.page.scss'],
 })

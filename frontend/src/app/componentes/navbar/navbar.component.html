@@ -1,8 +1,9 @@
+<!-- navbar.component.html -->
 <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900">
   <div
     class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4"
   >
-    <a class="flex items-center space-x-3 rtl:space-x-reverse">
+    <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
       <img src="assets/logo.jpeg" class="h-20" alt="FoodCart Logo" />
       <span
         class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white"
@@ -10,8 +11,6 @@
         FoodCart
       </span>
     </a>
-
-    <!-- Carrito y Usuario -->
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
       <!-- Carrito -->
       <a
@@ -26,93 +25,47 @@
           {{ carritoService.cartCount() }}
         </div>
       </a>
-
-      <!-- Usuario con Dropdown -->
-      <div class="relative">
-        <button
-          (click)="toggleDropdown()"
-          class="flex items-center space-x-3 focus:outline-none"
-        >
-          <span
-            class="text-lg text-white dark:text-blue-500 hover:text-blue-400"
-          >
-            {{ usuario.nombre }}
-          </span>
-          <img
-            src="assets/user.png"
-            alt="User Photo"
-            class="h-10 w-10 rounded-full border-2 border-gray-300"
-          />
-        </button>
-        <div
-          *ngIf="isDropdownOpen"
-          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
-        >
-          <a
-            href="/profile"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-          >
-            <img
-              src="assets/edit-profile.png"
-              alt="Edit Profile Icon"
-              class="h-5 w-5 mr-2"
-            />
-            Editar Perfil
-          </a>
-          <a
-            href="/settings"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-          >
-            <img
-              src="assets/settings.png"
-              alt="Settings Icon"
-              class="h-5 w-5 mr-2"
-            />
-            Configuración y Privacidad
-          </a>
-          <a
-            href="/help"
-            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-          >
-            <img src="assets/help.png" alt="Help Icon" class="h-5 w-5 mr-2" />
-            Ayuda y Soporte
-          </a>
-          <button
-            (click)="logout()"
-            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
-          >
-            <img
-              src="assets/logout.png"
-              alt="Logout Icon"
-              class="h-5 w-5 mr-2"
-            />
-            Cerrar Sesión
-          </button>
-        </div>
+      <!-- Perfil del Usuario -->
+      <div class="flex items-center space-x-3">
+        <span class="text-lg text-white dark:text-blue-500 hover:text-blue-400">
+          {{ usuario.nombre }}
+        </span>
+        <img
+          src="assets/user.png"
+          alt="User Photo"
+          class="h-10 w-10 rounded-full border-2 border-gray-300"
+        />
       </div>
+      <button
+        (click)="logout()"
+        class="text-white font-bold text-base hover:text-blue-950"
+      >
+        Cerrar sesión
+      </button>
     </div>
   </div>
 </nav>
 
-<!-- Menú de navegación secundario -->
 <nav class="bg-red-800 dark:bg-gray-700">
   <div class="max-w-[95%] px-4 py-3 mx-auto">
     <div class="flex items-center justify-between">
       <ul class="flex items-center space-x-8 rtl:space-x-reverse">
         <li>
           <a
-            href="comidas"
+            href="/comidas"
             class="text-white font-bold text-base hover:text-blue-950"
             aria-current="page"
-            >Comidas</a
           >
+            Comidas
+          </a>
         </li>
         <li>
           <a
-            href="bebidas"
+            href="/bebidas"
             class="text-white font-bold text-base hover:text-blue-950"
-            >Bebidas</a
           >
+            Bebidas
+          </a>
         </li>
         <li>
           <a
@@ -122,13 +75,11 @@
             Ver pedidos
           </a>
         </li>
-        <li>
-          <a
-            href="aboutUs"
-            class="text-white font-bold text-base hover:text-blue-950"
-            >About us</a
-          >
-        </li>
+        <!-- <li>
+          <a href="/aboutUs" class="text-white font-bold text-base hover:text-blue-950">
+            About Us
+          </a>
+        </li> -->
       </ul>
       <app-search (searchTask)="onSearchValue($event)"></app-search>
     </div>

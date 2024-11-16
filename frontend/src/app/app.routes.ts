@@ -4,7 +4,6 @@ import { RegistroUsuarioPage } from './paginas/registro-usuario/registro-usuario
 import { InicioPage } from './paginas/inicio/inicio.page';
 import { BebidasPage } from './paginas/bebidas/bebidas.page';
 import { ComidasPage } from './paginas/comidas/comidas.page';
-import { AboutUsPage } from './paginas/about-us/about-us.page';
 import { PostProductoPage } from './paginas/post-producto/post-producto.page';
 import { CarritoPage } from './paginas/carrito/carrito.page'; // Importamos la pagina del carrito.
 import { checkTokenGuard } from './guardia/check-token.guard';
@@ -12,7 +11,9 @@ import { checkAdminGuard } from './guardia/check-admin.guard';
 import { VerDetallesPage } from './paginas/ver-detalles/ver-detalles.page';
 import { EditarProductoPages } from './paginas/editar-producto/editar-producto.pages';
 import { VerPedidosPage } from './paginas/ver-pedidos/ver-pedidos.page';
+import { RestablecerContrasenaPage } from './paginas/reestablecer-contrasena/reestablecer-contrasena.page'
 import { VerdetallesPedidosPage } from './paginas/verdetalles-pedidos/verdetalles-pedidos.page';
+
 
 export const routes: Routes = [
   {
@@ -44,12 +45,6 @@ export const routes: Routes = [
     canActivate: [checkTokenGuard],
   },
   {
-    path: 'aboutUs',
-    component: AboutUsPage,
-    title: 'About Us',
-    canActivate: [checkTokenGuard],
-  },
-  {
     path: 'productos/ingresar',
     component: PostProductoPage,
     title: 'Ingresar Producto',
@@ -61,7 +56,6 @@ export const routes: Routes = [
     title: 'Carrito de Compras',
     canActivate: [checkTokenGuard],
   },
-
   {
     path: 'producto/detalles',
     component: VerDetallesPage,
@@ -79,6 +73,12 @@ export const routes: Routes = [
     component: VerPedidosPage,
     title: 'Ver pedidos',
     canActivate: [checkTokenGuard],
+  },
+  {
+
+    path: 'restablecer-contrasena',
+    component: RestablecerContrasenaPage,
+    title: 'Restablecer Contraseña',
   },
   {
     path: 'pedidos/detalles',

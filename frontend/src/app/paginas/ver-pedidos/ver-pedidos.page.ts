@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { AuthService } from '../../servicios/auth.service';
 import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
@@ -12,8 +13,9 @@ import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
   templateUrl: './ver-pedidos.page.html',
   styleUrls: ['./ver-pedidos.page.scss'],
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf],
+  imports: [NavbarComponent, NgFor, NgIf, FooterComponent],
 })
+
 export class VerPedidosPage implements OnInit {
   pedidos: any[] = [];
   detalle_pedidos: any[] = [];
@@ -25,6 +27,7 @@ export class VerPedidosPage implements OnInit {
   );
   putPedido: PutPedidoService = inject(PutPedidoService);
   router: Router = inject(Router);
+
   constructor() {}
 
   ngOnInit(): void {

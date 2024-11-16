@@ -7,7 +7,9 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../servicios/auth.service';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
+
 
 @Component({
   selector: 'bebidas',

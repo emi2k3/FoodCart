@@ -27,7 +27,7 @@ export class LoginPage {
     await this.authService.login(JSON.stringify(this.loginUser));
 
     if (localStorage.getItem('token')) {
-      this.router.navigate(['/comidas']);
+      this.router.navigate(['/']);
     } else {
       this.loginOkay = false;
     }

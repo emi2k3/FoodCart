@@ -7,15 +7,17 @@ import { AuthService } from '../../servicios/auth.service';
 import { RouterLink } from '@angular/router';
 import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
 import { Producto } from '../../interfaces/producto';
+import { FooterComponent } from '../../componentes/footer/footer.component';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
 
 @Component({
   selector: 'app-comidas',
   standalone: true,
-  imports: [NavbarComponent, NgFor, RouterLink, NgIf, AddToCartComponent],
+  imports: [NavbarComponent, NgFor, RouterLink, NgIf, AddToCartComponent, FooterComponent],
   templateUrl: './comidas.page.html',
 })
+
 export class ComidasPage implements OnInit {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
