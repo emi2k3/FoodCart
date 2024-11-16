@@ -95,22 +95,34 @@
   <!-- Sección 3: Mapa -->
   <section class="bg-white text-gray-900 py-12">
     <div class="container mx-auto px-6">
-      <h2 class="text-4xl font-bold mb-6 text-center">
-        Entrega De Comida En Las Palmas De Gran Canaria
-      </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Espacio para el mapa -->
-        <app-mapa></app-mapa>
-        <!-- Lista de tarifas de entrega -->
-        <div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+          <app-mapa></app-mapa>
+        </div>
+        <!-- Lista de tarifas de entrega y horarios de apertura -->
+        <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+          <h2 class="text-4xl font-bold mb-6 text-center text-gray-800">
+            Entrega De Comida En Salto, Uruguay
+          </h2>
           <h3 class="text-2xl font-semibold mb-4">Tarifa de entrega</h3>
-          <ul class="list-disc ml-8 text-lg leading-relaxed">
-            <li class="mb-2">[Completa aquí la tarifa de la zona 1]</li>
-            <li class="mb-2">[Completa aquí la tarifa de la zona 2]</li>
-            <li class="mb-2">[Completa aquí la tarifa de la zona 3]</li>
-            <li class="mb-2">[Completa aquí la tarifa de la zona 4]</li>
-            <li class="mb-2">[Completa aquí la tarifa de la zona 5]</li>
-            <li class="mb-2">[Completa aquí la tarifa de la zona 6]</li>
+          <ul class="list-disc ml-8 text-lg leading-relaxed text-gray-700">
+            <li class="mb-2">Zona Naranja: Min UYU 0, Fee UYU 0</li>
+            <li class="mb-2">Zona Roja: Min UYU 0, Fee UYU 20</li>
+            <li class="mb-2">Zona Amarilla: Min UYU 0, Fee UYU 20</li>
+            <li class="mb-2">Zona Verde: Min UYU 0, Fee UYU 20</li>
+            <li class="mb-2">Zona Púrpura: Min UYU 0, Fee UYU 20</li>
+            <li class="mb-2">Zona Celeste: Min UYU 0, Fee UYU 20</li>
+            <li class="mb-2">Zona Amarillo Oscuro: Min UYU 0, Fee UYU 30</li>
+            <li class="mb-2">Zona Azul Oscuro: Min UYU 0, Fee UYU 40</li>
+            <li class="mb-2">Zona Verde Oscuro: Min UYU 400, Fee UYU 40</li>
+            <li class="mb-2">Zona Púrpura Oscuro: Min UYU 500, Fee UYU 50</li>
+          </ul>
+          <h3 class="text-2xl font-semibold mt-4 mb-4">Horarios de apertura</h3>
+          <ul class="list-disc ml-8 text-lg leading-relaxed text-gray-700">
+            <li class="mb-2">Martes - Jueves: 19:00 - 00:00</li>
+            <li class="mb-2">Viernes - Sábado: 19:00 - 00:30</li>
+            <li class="mb-2">Domingo: 19:00 - 23:50</li>
           </ul>
         </div>
       </div>

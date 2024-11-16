@@ -13,7 +13,6 @@ import { Point } from 'ol/geom';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import { Style, Icon } from 'ol/style';
-import { Modify, Draw } from 'ol/interaction';
 import { Punto } from '../../interfaces/punto';
 
 @Component({
@@ -26,19 +25,10 @@ export class MapComponent implements OnInit, AfterViewInit {
   @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
 
   map!: Map;
-  draw!: Draw;
-  modify!: Modify;
   vectorSource: VectorSource;
-  drawType: 'Point' | 'LineString' | 'Polygon' | 'Circle' = 'Point';
-  isDrawMode: boolean = true;
 
   puntos: Punto[] = [
-    { latitud: -56.1645, longitud: -34.9011 },
-    { latitud: -56.1687, longitud: -34.892 },
-    { latitud: -56.1601, longitud: -34.8897 },
-    { latitud: -56.1663, longitud: -34.915 },
-    { latitud: -56.1618, longitud: -34.9213 },
-    { latitud: -56.1582, longitud: -34.8842 },
+    { latitud: -31.390312485072155, longitud: -57.95325964113459 }, // Coordenadas de Salto, Uruguay
   ];
 
   constructor() {
@@ -49,17 +39,23 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.initializeMap();
-    this.addInteractions();
   }
 
   private initializeMap(): void {
     const tileLayer = new TileLayer({
-      source: new OSM(),
+      source: new OSM({
+        attributions: [
+          'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        ],
+        maxZoom: 19, // Limitando el zoom máximo para mejorar el rendimiento
+      }),
     });
 
     const view = new View({
-      center: fromLonLat([-56.1645, -34.9011]),
+      center: fromLonLat([-57.95325964113459, -31.390312485072155]), // Coordenadas de Salto, Uruguay
       zoom: 13,
+      minZoom: 10, // Establecer un zoom mínimo para evitar errores al hacer zoom hacia atrás
+      maxZoom: 19, // Establecer un zoom máximo para evitar errores al hacer zoom hacia adelante
     });
 
     const vectorLayer = new VectorLayer({
@@ -93,54 +89,5 @@ export class MapComponent implements OnInit, AfterViewInit {
     );
 
     this.vectorSource.addFeature(pointFeature);
-  }
-
-  private addInteractions(): void {
-    // Inicializa la modificación
-    this.modify = new Modify({ source: this.vectorSource });
-    this.map.addInteraction(this.modify);
-    this.modify.setActive(false);
-
-    // Inicializa el dibujo
-    this.updateDrawInteraction();
-  }
-
-  private updateDrawInteraction(): void {
-    if (this.draw) {
-      this.map.removeInteraction(this.draw);
-    }
-
-    // Crea una nueva interacción de dibujo
-    this.draw = new Draw({
-      source: this.vectorSource,
-      type: this.drawType,
-    });
-
-    // Añade la interacción al mapa
-    this.map.addInteraction(this.draw);
-    // Activa o desactiva la interacción de dibujo
-    this.draw.setActive(this.isDrawMode);
-  }
-
-  // cuando se cambia el tipo de dibujo
-  onDrawTypeChange(event: Event): void {
-    const selectedType = (event.target as HTMLSelectElement).value as
-      | 'Point'
-      | 'LineString'
-      | 'Polygon'
-      | 'Circle';
-    this.drawType = selectedType;
-    this.updateDrawInteraction();
-  }
-
-  toggleMode(): void {
-    this.isDrawMode = !this.isDrawMode;
-    this.draw.setActive(this.isDrawMode);
-    this.modify.setActive(!this.isDrawMode);
-  }
-
-  // Resetea el mapa
-  resetMap(): void {
-    this.vectorSource.clear();
   }
 }
