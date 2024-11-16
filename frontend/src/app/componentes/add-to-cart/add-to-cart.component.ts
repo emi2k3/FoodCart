@@ -33,6 +33,7 @@ export class AddToCartComponent {
 
   @Input() product: any;
   @Input() isOpen: boolean = false;
+  @Input() showNote: boolean = true;
   @Output() closeModal = new EventEmitter<void>();
 
   userId: string = this.authService.getUserId();
@@ -66,25 +67,27 @@ export class AddToCartComponent {
       const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
         ['PENDIENTE'].includes(pedido.estado),
       );
-
+      console.log("ACA LLEGO1");
       if (pedidoPendiente.length > 0) {
         detallePedido.id_pedido = pedidoPendiente[0].id_pedido;
         const detalle = await this.postDetallePedido.postDetallePedido(
           JSON.stringify(detallePedido),
         );
-
+        console.log("ACA LLEGO2");
         const detalleActualizado =
           await this.getDetallePedido.getDetallePedidoByID(
             pedidoPendiente[0].id_pedido,
           );
         this.carritoService.setCartCount(detalleActualizado.length);
       } else {
+        console.log("ACA LLEGO3");
         const pedido = {
           estado: 'PENDIENTE',
           importe_total: 0,
           id_local: 1,
           id_usuario: parseInt(this.userId),
         };
+        console.log("ACA LLEGO4");
 
         const respuesta = await this.postPedido.postPedido(
           JSON.stringify(pedido),

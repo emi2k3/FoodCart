@@ -7,11 +7,13 @@ import { FooterComponent } from '../../componentes/footer/footer.component';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
+import { Router } from '@angular/router';
+import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [FooterComponent, NavbarComponent, NgFor],
+  imports: [NavbarComponent, NgFor],
   templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
@@ -21,14 +23,17 @@ export class CarritoPage implements OnInit {
   private getUserService: AuthService = inject(AuthService);
   private pedidoUsuario: GetPedidosService = inject(GetPedidosService);
   private cargarProducto: GetProductosService = inject(GetProductosService);
+  private router: Router = inject(Router);
+  private putPedido: PutPedidoService = inject(PutPedidoService);
 
   userId: number = this.getUserService.getUserId();
   subTotal: number[] = [];
   id_pedido: number = 0;
   productosPedido: any[] = [];
   productos: any[] = [];
+  pedidoaConfirmar: any;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.cargarProductosDelCarrito();
@@ -43,7 +48,9 @@ export class CarritoPage implements OnInit {
       ['PENDIENTE'].includes(pedido.estado),
     );
 
+
     this.id_pedido = pedidoPendiente[0].id_pedido;
+    this.pedidoaConfirmar = pedidoPendiente[0];
 
     const productosPedido =
       await this.detallePedidoService.getDetallePedidoByID(
@@ -65,15 +72,40 @@ export class CarritoPage implements OnInit {
     this.productos = await Promise.all(productosLista);
   }
 
+  decreaseQuantity(producto: any): void {
+    if (producto.cantidad > 1) {
+      producto.cantidad--;
+    }
+  }
+
+  increaseQuantity(producto: any): void {
+    producto.cantidad++;
+  }
+
   getCantidad(id_producto: string) {
-    console.log('id producto' + id_producto);
     const producto = this.productosPedido.find(
       (producto) => producto.id_producto == id_producto,
     );
     return producto.cantidad;
   }
 
-  getTotal() {}
+  getTotal(): number {
+    return this.productos.reduce((total, producto) => {
+      return total + producto.precio_unidad * producto.cantidad;
+    }, 0);
+  }
 
-  eliminarDelCarrito(idProducto: string) {}
+  onDetalles(idProducto: string) {
+    this.router.navigate(['producto/detalles/'], {
+      queryParams: { id: idProducto },
+    });
+  }
+
+  eliminarDelCarrito(idProducto: string) { }
+
+  onConfirmar() {
+    this.pedidoaConfirmar.estado = "CONFIRMADO";
+    this.pedidoaConfirmar.importe_total = this.getTotal();
+    this.putPedido.put(JSON.stringify(this.pedidoaConfirmar), this.id_pedido.toString());
+  }
 }
