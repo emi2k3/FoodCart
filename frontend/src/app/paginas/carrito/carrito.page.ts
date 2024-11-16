@@ -8,6 +8,7 @@ import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pe
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { Router } from '@angular/router';
+import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 
 @Component({
   selector: 'app-carrito',
@@ -23,14 +24,16 @@ export class CarritoPage implements OnInit {
   private pedidoUsuario: GetPedidosService = inject(GetPedidosService);
   private cargarProducto: GetProductosService = inject(GetProductosService);
   private router: Router = inject(Router);
+  private putPedido: PutPedidoService = inject(PutPedidoService);
 
   userId: number = this.getUserService.getUserId();
   subTotal: number[] = [];
   id_pedido: number = 0;
   productosPedido: any[] = [];
   productos: any[] = [];
+  pedidoaConfirmar: any;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.cargarProductosDelCarrito();
@@ -45,7 +48,9 @@ export class CarritoPage implements OnInit {
       ['PENDIENTE'].includes(pedido.estado),
     );
 
+
     this.id_pedido = pedidoPendiente[0].id_pedido;
+    this.pedidoaConfirmar = pedidoPendiente[0];
 
     const productosPedido =
       await this.detallePedidoService.getDetallePedidoByID(
@@ -96,5 +101,11 @@ export class CarritoPage implements OnInit {
     });
   }
 
-  eliminarDelCarrito(idProducto: string) {}
+  eliminarDelCarrito(idProducto: string) { }
+
+  onConfirmar() {
+    this.pedidoaConfirmar.estado = "CONFIRMADO";
+    this.pedidoaConfirmar.importe_total = this.getTotal();
+    this.putPedido.put(JSON.stringify(this.pedidoaConfirmar), this.id_pedido.toString());
+  }
 }

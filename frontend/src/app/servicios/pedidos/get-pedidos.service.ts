@@ -15,6 +15,7 @@ export class GetPedidosService {
       return response;
     } catch (error) {
       console.log(error);
+      return [];
     }
   }
   async getAllPedidos() {
@@ -23,9 +24,10 @@ export class GetPedidosService {
       return response;
     } catch (error) {
       console.log(error);
+      return [];
     }
   }
-  constructor() {}
+  constructor() { }
 }
 
 export default GetPedidosService;
