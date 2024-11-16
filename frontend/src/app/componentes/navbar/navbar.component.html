@@ -1,4 +1,4 @@
-<!-- navbar.component.html -->
+<!-- Primera barra de navegación -->
 <nav class="bg-gray-900 border-gray-200 dark:bg-gray-900">
   <div
     class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4"
@@ -25,21 +25,78 @@
           {{ carritoService.cartCount() }}
         </div>
       </a>
-      <!-- Perfil del Usuario -->
-      <div class="flex items-center space-x-3">
-        <span class="text-lg text-white dark:text-blue-500 hover:text-blue-400">
-          {{ usuario.nombre }}
-        </span>
-        <img
-          src="assets/user.png"
-          alt="User Photo"
-          class="h-10 w-10 rounded-full border-2 border-gray-300"
-        />
+      <!-- Usuario con Dropdown -->
+      <div class="relative">
+        <button
+          (click)="toggleDropdown()"
+          class="flex items-center space-x-3 focus:outline-none"
+        >
+          <span
+            class="text-lg text-white dark:text-blue-500 hover:text-blue-400"
+          >
+            {{ usuario.nombre }}
+          </span>
+          <img
+            src="assets/user.png"
+            alt="User Photo"
+            class="h-10 w-10 rounded-full border-2 border-gray-300"
+          />
+        </button>
+
+        <div
+          *ngIf="isDropdownOpen"
+          class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+        >
+          <a
+            href="/profile"
+            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+          >
+            <img
+              src="assets/edit-profile.png"
+              alt="Edit Profile Icon"
+              class="h-5 w-5 mr-2"
+            />
+            Editar Perfil
+          </a>
+
+          <a
+            href="/settings"
+            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+          >
+            <img
+              src="assets/settings.png"
+              alt="Settings Icon"
+              class="h-5 w-5 mr-2"
+            />
+            Configuración y Privacidad
+          </a>
+
+          <a
+            href="/help"
+            class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+          >
+            <img src="assets/help.png" alt="Help Icon" class="h-5 w-5 mr-2" />
+            Ayuda y Soporte
+          </a>
+
+          <button
+            (click)="logout()"
+            class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+          >
+            <img
+              src="assets/logout.png"
+              alt="Logout Icon"
+              class="h-5 w-5 mr-2"
+            />
+            Cerrar Sesión
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </nav>
 
+<!-- Segunda barra de navegación -->
 <nav class="bg-red-800 dark:bg-gray-700">
   <div class="max-w-[95%] px-4 py-3 mx-auto">
     <div class="flex items-center justify-between">
@@ -69,11 +126,6 @@
             Ver pedidos
           </a>
         </li>
-        <!-- <li>
-          <a href="/aboutUs" class="text-white font-bold text-base hover:text-blue-950">
-            About Us
-          </a>
-        </li> -->
       </ul>
       <app-search (searchTask)="onSearchValue($event)"></app-search>
     </div>
