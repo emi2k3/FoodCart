@@ -23,6 +23,7 @@ export class CarritoPage implements OnInit {
   private getUserService: AuthService = inject(AuthService);
   private pedidoUsuario: GetPedidosService = inject(GetPedidosService);
   private cargarProducto: GetProductosService = inject(GetProductosService);
+  private carritoService: CarritoService = inject(CarritoService);
   private router: Router = inject(Router);
   private putPedido: PutPedidoService = inject(PutPedidoService);
 
@@ -33,7 +34,7 @@ export class CarritoPage implements OnInit {
   productos: any[] = [];
   pedidoaConfirmar: any;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.cargarProductosDelCarrito();
@@ -47,7 +48,6 @@ export class CarritoPage implements OnInit {
     const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
       ['PENDIENTE'].includes(pedido.estado),
     );
-
 
     this.id_pedido = pedidoPendiente[0].id_pedido;
     this.pedidoaConfirmar = pedidoPendiente[0];
@@ -101,12 +101,34 @@ export class CarritoPage implements OnInit {
     });
   }
 
-  eliminarDelCarrito(idProducto: string) { }
+  confirmarEliminacion(id_producto: string): void {
+    const confirmacion = window.confirm(
+      '¿Estás seguro de que deseas eliminar este producto del carrito?',
+    );
+    if (confirmacion) {
+      this.eliminarDetallePedido(id_producto);
+    }
+  }
+
+  async eliminarDetallePedido(id_producto: string): Promise<void> {
+    try {
+      await this.carritoService.eliminarDetallePedido(
+        this.id_pedido.toString(),
+        id_producto,
+      );
+    } catch (error) {
+      console.error('Error eliminando el producto:', error);
+    }
+    await this.cargarProductosDelCarrito();
+  }
 
   onConfirmar() {
-    this.pedidoaConfirmar.estado = "CONFIRMADO";
+    this.pedidoaConfirmar.estado = 'CONFIRMADO';
     this.pedidoaConfirmar.importe_total = this.getTotal();
-    this.putPedido.put(JSON.stringify(this.pedidoaConfirmar), this.id_pedido.toString());
-    this.router.navigate(["/pedidos/ver"])
+    this.putPedido.put(
+      JSON.stringify(this.pedidoaConfirmar),
+      this.id_pedido.toString(),
+    );
+    this.router.navigate(['/pedidos/ver']);
   }
 }

@@ -127,6 +127,73 @@ const detallePedidoRoute: FastifyPluginAsync = async (
       }
     },
   });
+
+  fastify.delete("/:id_pedido/:id_producto", {
+    schema: {
+      summary: "Eliminar un detalle de pedido por Id pedido y Id producto",
+      description: "### Implementa y valida: \n - token",
+      tags: ["Detalle_Pedidos"],
+      security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        properties: {
+          id_pedido: { type: "integer" },
+          id_producto: { type: "integer" },
+        },
+        required: ["id_pedido", "id_producto"],
+      },
+      response: {
+        200: {
+          description: "Detalle de pedido eliminado exitosamente",
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+        404: {
+          description: "Detalle de pedido no encontrado",
+          type: "object",
+          properties: {
+            message: { type: "string" },
+          },
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const { id_pedido, id_producto } = request.params as {
+        id_pedido: number;
+        id_producto: number;
+      };
+
+      try {
+        // Validar existencia del detalle de pedido
+        const detalleExists = await query(
+          "SELECT id_pedido id_producto  FROM detalle_pedido WHERE id_pedido = $1 AND id_producto = $2",
+          [id_pedido, id_producto]
+        );
+
+        if (detalleExists.rows.length === 0) {
+          return reply
+            .status(404)
+            .send({ message: "Detalle de pedido no encontrado" });
+        }
+        await query(
+          "DELETE FROM detalle_pedido WHERE id_pedido = $1 AND id_producto = $2",
+          [id_pedido, id_producto]
+        );
+
+        return reply
+          .code(204)
+          .send({ message: "Detalle de pedido eliminado exitosamente" });
+      } catch (error) {
+        console.error("Error al eliminar detalle de pedido:", error);
+        return reply
+          .status(500)
+          .send({ message: "Error interno del servidor" });
+      }
+    },
+  });
 };
 
 export default detallePedidoRoute;
