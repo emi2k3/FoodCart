@@ -4,70 +4,73 @@ import {
   AfterViewInit,
   ElementRef,
   ViewChild,
-} from '@angular/core';
-import { View, Map, Feature } from 'ol';
-import TileLayer from 'ol/layer/Tile';
-import OSM from 'ol/source/OSM';
-import { fromLonLat } from 'ol/proj';
-import { Point, Polygon } from 'ol/geom';
-import VectorLayer from 'ol/layer/Vector';
-import VectorSource from 'ol/source/Vector';
-import { Style, Icon, Fill, Stroke } from 'ol/style';
-import { Punto } from '../../interfaces/punto';
+} from '@angular/core'; // Importa las funciones necesarias de Angular
+import { View, Map, Feature } from 'ol'; // Importa las clases View, Map y Feature de OpenLayers
+import TileLayer from 'ol/layer/Tile'; // Importa TileLayer de OpenLayers para crear una capa de mosaico
+import OSM from 'ol/source/OSM'; // Importa OSM de OpenLayers como fuente de mosaico
+import { fromLonLat } from 'ol/proj'; // Importa fromLonLat de OpenLayers para convertir coordenadas
+import { Point, Polygon } from 'ol/geom'; // Importa las geometrías Point y Polygon de OpenLayers
+import VectorLayer from 'ol/layer/Vector'; // Importa VectorLayer de OpenLayers para crear una capa vectorial
+import VectorSource from 'ol/source/Vector'; // Importa VectorSource de OpenLayers para la fuente de datos vectoriales
+import { Style, Icon, Fill, Stroke } from 'ol/style'; // Importa las clases de estilo de OpenLayers
+import { Punto } from '../../interfaces/punto'; // Importa la interfaz Punto
 
 @Component({
-  selector: 'app-mapa',
-  standalone: true,
-  templateUrl: './mapa.component.html',
-  styleUrls: ['./mapa.component.scss'],
+  selector: 'app-mapa', // Define el selector del componente, que se utiliza en el HTML
+  standalone: true, // Indica que el componente es autónomo
+  templateUrl: './mapa.component.html', // Especifica la ubicación del archivo de plantilla HTML del componente
+  styleUrls: ['./mapa.component.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef;
+  @ViewChild('mapContainer', { static: false }) mapContainer!: ElementRef; // Accede al contenedor del mapa en la plantilla
 
-  map!: Map;
-  vectorSource: VectorSource;
+  map!: Map; // Define una propiedad para almacenar la instancia del mapa
+  vectorSource: VectorSource; // Define una propiedad para la fuente vectorial
 
+  // Define un array de puntos con coordenadas de Salto, Uruguay
   puntos: Punto[] = [
     { latitud: -31.390312485072155, longitud: -57.95325964113459 }, // Coordenadas de Salto, Uruguay
   ];
 
   constructor() {
-    this.vectorSource = new VectorSource();
+    this.vectorSource = new VectorSource(); // Inicializa la fuente vectorial
   }
 
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.initializeMap();
+    this.initializeMap(); // Inicializa el mapa después de que la vista se haya inicializado
   }
 
+  // Método para inicializar el mapa
   private initializeMap(): void {
     const tileLayer = new TileLayer({
       source: new OSM({
         attributions: [
           'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         ],
-        maxZoom: 19, // Limitando el zoom máximo para mejorar el rendimiento
+        maxZoom: 19, // Limita el zoom máximo para mejorar el rendimiento
       }),
     });
 
     const view = new View({
-      center: fromLonLat([-57.95325964113459, -31.390312485072155]), // Coordenadas de Salto, Uruguay
+      center: fromLonLat([-57.95325964113459, -31.390312485072155]), // Establece las coordenadas centrales del mapa en Salto, Uruguay
       zoom: 13,
-      minZoom: 10, // Establecer un zoom mínimo para evitar errores al hacer zoom hacia atrás
-      maxZoom: 19, // Establecer un zoom máximo para evitar errores al hacer zoom hacia adelante
+      minZoom: 10, // Establece un zoom mínimo para evitar errores al hacer zoom hacia atrás
+      maxZoom: 19, // Establece un zoom máximo para evitar errores al hacer zoom hacia adelante
     });
 
     const vectorLayer = new VectorLayer({
-      source: this.vectorSource,
+      source: this.vectorSource, // Asigna la fuente vectorial al vectorLayer
     });
 
     this.map = new Map({
-      target: this.mapContainer.nativeElement,
-      layers: [tileLayer, vectorLayer],
-      view: view,
+      target: this.mapContainer.nativeElement, // Establece el contenedor del mapa como objetivo
+      layers: [tileLayer, vectorLayer], // Agrega capas al mapa
+      view: view, // Establece la vista del mapa
     });
 
+    // Agrega puntos al mapa a partir de las coordenadas definidas en `puntos`
     for (let punto of this.puntos) {
       this.addPointGeometry([punto.longitud, punto.latitud]);
     }

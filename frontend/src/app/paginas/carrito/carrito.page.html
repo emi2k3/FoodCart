@@ -1,23 +1,34 @@
+<!-- Componente de la barra de navegación -->
 <app-navbar></app-navbar>
+<!-- Contenedor principal -->
 <div class="w-full h-[calc(100vh-64px)] bg-gray-900 overflow-auto">
+  <!-- Contenido principal -->
   <main class="bg-gray-900 max-w-7xl mx-auto px-4 py-8">
+    <!-- Título del carrito de compras -->
     <h1 class="text-2xl font-bold mb-4 text-white">Carrito de Compras</h1>
+    <!-- Lista de productos en el carrito -->
     <div class="grid grid-cols-1 gap-4 pb-40">
+      <!-- Tarjeta de cada producto -->
       <div
         class="bg-white p-4 rounded-lg shadow-lg flex items-center justify-between"
         *ngFor="let producto of productos"
       >
         <div class="flex-1">
+          <!-- Nombre del producto -->
           <h2 class="text-lg font-semibold text-gray-900">
             {{ producto.nombre }}
           </h2>
+          <!-- Descripción del producto -->
           <p class="text-gray-600">{{ producto.descripcion }}</p>
         </div>
         <div class="flex items-center gap-6">
+          <!-- Precio del producto -->
           <span class="text-xl font-bold text-gray-900">
             ${{ producto.precio_unidad }}
           </span>
+          <!-- Controles de cantidad -->
           <div class="flex items-center gap-2">
+            <!-- Botón para disminuir la cantidad -->
             <div class="relative flex items-center max-w-[6rem]">
               <button
                 (click)="decreaseQuantity(producto)"
@@ -39,12 +50,14 @@
                   />
                 </svg>
               </button>
+              <!-- Campo de entrada para la cantidad -->
               <input
                 type="text"
                 [value]="producto.cantidad"
                 class="bg-gray-150 h-6 border-x-0 border-gray-300 text-center text-gray-900 text-xs focus:ring-blue-500 focus:border-blue-500 block w-full py-0 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 readonly
               />
+              <!-- Botón para aumentar la cantidad -->
               <button
                 (click)="increaseQuantity(producto)"
                 class="bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-1 h-6 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
@@ -66,12 +79,14 @@
                 </svg>
               </button>
             </div>
+            <!-- Botón para ver los detalles del producto -->
             <button
               (click)="onDetalles(producto.id_producto.toString())"
               class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-blue-800 transition-all flex items-center justify-center"
             >
               <img src="assets/see-more.png" alt="Detalles" class="w-4 h-4" />
             </button>
+            <!-- Botón para eliminar el producto del carrito -->
             <button
               (click)="confirmarEliminacion(producto.id_producto)"
               class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-800 transition-all flex items-center justify-center gap-2"
@@ -86,6 +101,7 @@
         </div>
       </div>
     </div>
+    <!-- Sección de total y botón de proceder al pago -->
     <div
       class="fixed bottom-0 left-0 right-0 bg-gray-900 p-4 border-t border-gray-800"
     >

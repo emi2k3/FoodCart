@@ -3,6 +3,7 @@
   <div
     class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4"
   >
+    <!-- Logotipo y nombre del sitio -->
     <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
       <img src="assets/logo.jpeg" class="h-20" alt="FoodCart Logo" />
       <span
@@ -11,8 +12,9 @@
         FoodCart
       </span>
     </a>
+
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
-      <!-- Carrito -->
+      <!-- Carrito de compras -->
       <a
         href="/carrito"
         class="text-lg hover:text-gray-700 flex items-center relative"
@@ -25,6 +27,7 @@
           {{ carritoService.cartCount() }}
         </div>
       </a>
+
       <!-- Usuario con Dropdown -->
       <div class="relative">
         <button

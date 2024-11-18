@@ -11,6 +11,8 @@ const pedidosRoute: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
+  // ################################################### POST ###################################################
+  // Ruta para crear un nuevo pedido
   fastify.post("/", {
     schema: {
       summary: "Creación de un pedido",
@@ -29,13 +31,14 @@ const pedidosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const bodyPedido: PedidoPostType = request.body as PedidoPostType;
 
       await query("BEGIN");
 
       try {
+        // Verifica si el local especificado existe
         const localExists = await query(
           "SELECT id_local FROM local WHERE id_local = $1",
           ["1"]
@@ -47,6 +50,7 @@ const pedidosRoute: FastifyPluginAsync = async (
             .send({ error: "El local especificado no existe" });
         }
 
+        // Verifica si el usuario especificado existe
         const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
           bodyPedido.id_usuario,
         ]);
@@ -57,6 +61,7 @@ const pedidosRoute: FastifyPluginAsync = async (
             .send({ error: "El usuario especificado no existe" });
         }
 
+        // Inserta el nuevo pedido en la base de datos
         const result = await query(
           `INSERT INTO pedido(
             estado,
@@ -81,6 +86,8 @@ const pedidosRoute: FastifyPluginAsync = async (
     },
   });
 
+  // ################################################### PUT ###################################################
+  // Ruta para modificar un pedido existente por su ID
   fastify.put("/:id_pedido", {
     schema: {
       summary: "Modificación de un pedido por su id",
@@ -110,7 +117,7 @@ const pedidosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const bodyPedido: PedidoPostType = request.body as PedidoPostType;
       const id_pedido = (request.params as { id_pedido: string }).id_pedido;
@@ -118,6 +125,7 @@ const pedidosRoute: FastifyPluginAsync = async (
       await query("BEGIN");
 
       try {
+        // Verifica si el pedido existe
         const existingPedido = await query(
           "SELECT * FROM pedido WHERE id_pedido = $1",
           [id_pedido]
@@ -127,6 +135,7 @@ const pedidosRoute: FastifyPluginAsync = async (
           return reply.status(404).send({ error: "Pedido no encontrado" });
         }
 
+        // Verifica si el local especificado existe
         const localExists = await query(
           "SELECT id_local FROM local WHERE id_local = $1",
           [bodyPedido.id_local]
@@ -138,6 +147,7 @@ const pedidosRoute: FastifyPluginAsync = async (
             .send({ error: "El local especificado no existe" });
         }
 
+        // Verifica si el usuario especificado existe
         const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
           bodyPedido.id_usuario,
         ]);
@@ -148,6 +158,7 @@ const pedidosRoute: FastifyPluginAsync = async (
             .send({ error: "El usuario especificado no existe" });
         }
 
+        // Actualiza el pedido en la base de datos
         const result = await query(
           `UPDATE pedido SET
             estado = $1,
@@ -173,7 +184,7 @@ const pedidosRoute: FastifyPluginAsync = async (
       }
     },
   });
-
+  // Ruta para obtener una lista completa de pedidos
   fastify.get("/", {
     schema: {
       summary: "Listado de pedidos completo",
@@ -201,9 +212,10 @@ const pedidosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       try {
+        // Consulta para obtener todos los pedidos ordenados por fecha y hora
         const response = await query(
           "SELECT * FROM pedido ORDER BY fecha_hora DESC"
         );
@@ -218,6 +230,7 @@ const pedidosRoute: FastifyPluginAsync = async (
     },
   });
 
+  // Ruta para obtener un pedido por su ID
   fastify.get("/:id_pedido", {
     schema: {
       summary: "Obtener un pedido por su ID",
@@ -241,11 +254,12 @@ const pedidosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_pedido = (request.params as { id_pedido: string }).id_pedido;
 
       try {
+        // Consulta para obtener un pedido por su ID
         const response = await query(
           "SELECT * FROM pedido WHERE id_pedido = $1",
           [id_pedido]
@@ -263,6 +277,7 @@ const pedidosRoute: FastifyPluginAsync = async (
     },
   });
 
+  // Ruta para obtener todos los pedidos de un usuario por su ID
   fastify.get("/usuario/:id_usuario", {
     schema: {
       summary: "Obtener todos los pedidos de un usuario por su ID",
@@ -296,11 +311,12 @@ const pedidosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_usuario = (request.params as { id_usuario: string }).id_usuario;
 
       try {
+        // Consulta para obtener todos los pedidos de un usuario por su ID
         const response = await query(
           "SELECT * FROM pedido WHERE id_usuario = $1",
           [id_usuario]
@@ -318,6 +334,7 @@ const pedidosRoute: FastifyPluginAsync = async (
     },
   });
 
+  // Ruta para eliminar un pedido por su ID
   fastify.delete("/:id_pedido", {
     schema: {
       summary: "Eliminación de un pedido por su id",
@@ -342,11 +359,12 @@ const pedidosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_pedido = (request.params as { id_pedido: string }).id_pedido;
 
       try {
+        // Verifica el estado del pedido antes de eliminarlo
         const pedidoExistente = await query(
           "SELECT estado FROM pedido WHERE id_pedido = $1",
           [id_pedido]
@@ -358,6 +376,7 @@ const pedidosRoute: FastifyPluginAsync = async (
           });
         }
 
+        // Permite eliminar pedidos en estado CANCELADO o cambia su estado a CANCELADO si está PENDIENTE
         if (pedidoExistente.rows[0].estado === "CANCELADO") {
           await query("DELETE FROM pedido WHERE id_pedido = $1", [id_pedido]);
           return reply.code(204).send();

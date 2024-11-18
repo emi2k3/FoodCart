@@ -1,20 +1,25 @@
-import fp from 'fastify-plugin'
+import fp from "fastify-plugin";
 
+/**
+ * Plugin de soporte genérico.
+ *
+ * Este plugin es un ejemplo de cómo agregar decoradores simples
+ * a la instancia de Fastify.
+ */
 export interface SupportPluginOptions {
-  // Specify Support plugin options here
+  // Opciones específicas del plugin.
 }
 
-// The use of fastify-plugin is required to be able
-// to export the decorators to the outer scope
 export default fp<SupportPluginOptions>(async (fastify, opts) => {
-  fastify.decorate('someSupport', function () {
-    return 'hugs'
-  })
-})
+  // Decora la instancia con un método de ejemplo.
+  fastify.decorate("someSupport", function () {
+    return "hugs"; // Devuelve un mensaje de soporte.
+  });
+});
 
-// When using .decorate you have to specify added properties for Typescript
-declare module 'fastify' {
+// Declaración del tipo para TypeScript.
+declare module "fastify" {
   export interface FastifyInstance {
-    someSupport(): string;
+    someSupport(): string; // Método de soporte agregado.
   }
 }
