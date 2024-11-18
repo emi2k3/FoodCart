@@ -2,6 +2,8 @@ import * as path from "path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync } from "fastify";
 import { fileURLToPath } from "url";
+import websocket from '@fastify/websocket';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,7 +22,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // Place here your custom code!
 
   // Do not touch the following lines
-
+  await fastify.register(websocket);
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused
   // through your application

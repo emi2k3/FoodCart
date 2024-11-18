@@ -8,7 +8,6 @@ import { CommonModule, NgFor } from '@angular/common';
 @Component({
   selector: 'app-verdetalles-pedidos',
   templateUrl: './verdetalles-pedidos.page.html',
-  styleUrls: ['./verdetalles-pedidos.page.scss'],
   standalone: true,
   imports: [NavbarComponent, NgFor, CommonModule],
 })
@@ -22,7 +21,7 @@ export class VerdetallesPedidosPage implements OnInit {
 
   detalle_pedidos: any[] = [];
   productos: any[] = [];
-  constructor() {}
+  constructor() { }
   getProducto(id_producto: string) {
     const producto = this.productos.find(
       (producto) => producto.id_producto == id_producto,
