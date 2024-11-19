@@ -1,13 +1,19 @@
-<div class="min-h-screen flex flex-col bg-gray-900">
-  <!-- Componente de la barra de navegación -->
+<div class="flex flex-col h-screen overflow-hidden bg-gray-900">
   <app-navbar
     (searchValueChange)="actualizarFiltroDeProductos($event)"
   ></app-navbar>
-  <!-- Contenedor principal -->
-  <div class="min-h-screen bg-gray-900 max-h-screen overflow-y-auto">
-    <main class="bg-gray-900 max-w-7xl mx-auto p-6">
+  <div class="flex-grow overflow-y-auto">
+    <main class="bg-gray-900 max-w-7xl mx-auto p-6 flex-grow flex flex-col">
+      <!-- Mensaje cuando no hay productos -->
+      <div
+        *ngIf="productosFiltrados.length === 0"
+        class="text-center text-white text-xl flex-grow flex items-center justify-center"
+      >
+        No se encontraron productos.
+      </div>
       <!-- Grid de productos -->
       <div
+        *ngIf="productosFiltrados.length > 0"
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-40"
       >
         <!-- Itera sobre los productos filtrados -->
@@ -87,15 +93,15 @@
         </div>
       </div>
     </main>
-    <!-- Componente de pie de página -->
-    <app-footer></app-footer>
-    <!-- Botón para crear un nuevo producto (visible solo para administradores) -->
-    <button
-      class="fixed bottom-0 right-0 m-4 p-6 bg-blue-500 text-white rounded-full"
-      (click)="onCreate()"
-      *ngIf="this.isAdmin==true"
-    >
-      +
-    </button>
   </div>
+  <!-- Componente de pie de página -->
+  <app-footer></app-footer>
+  <!-- Botón para crear un nuevo producto (visible solo para administradores) -->
+  <button
+    class="fixed bottom-0 right-0 m-4 p-6 bg-blue-500 text-white rounded-full"
+    (click)="onCreate()"
+    *ngIf="this.isAdmin==true"
+  >
+    +
+  </button>
 </div>

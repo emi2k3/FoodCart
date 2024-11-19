@@ -1,107 +1,155 @@
 <!-- Header con botones de navegación opcional -->
 <header
-  class="w-full bg-gray-800 text-white p-4 flex justify-end space-x-4 fixed top-0 left-0 z-20"
+  class="w-full bg-gray-800 text-white p-4 flex justify-between items-center fixed top-0 left-0 z-20"
 >
+  <!-- Botones de navegación -->
+  <button class="text-2xl font-semibold" (click)="navegarA('')">
+    FoodCart
+  </button>
   <button
-    class="px-4 py-2 hover:bg-gray-600 transition duration-300"
+    class="relative px-4 py-2 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
     (click)="navegarA('comidas')"
   >
     Comidas
   </button>
+
   <button
-    class="px-4 py-2 hover:bg-gray-600 transition duration-300"
+    class="relative px-4 py-2 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
     (click)="navegarA('bebidas')"
   >
     Bebidas
   </button>
-  <button
-    class="px-4 py-2 hover:bg-gray-600 transition duration-300"
-    (click)="navegarA('contacto')"
+  <a
+    href="mailto:contacto@foodcart.com?subject=Contacto desde la página web&body=Hola, me gustaría contactar con ustedes por..."
+    class="relative px-4 py-2 after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full"
   >
     Contáctenos
-  </button>
+  </a>
+  <!-- </nav> -->
 </header>
 
 <div class="pt-20 max-h-screen overflow-y-auto">
   <!-- Sección 1: Bienvenida -->
-  <section class="relative py-32 flex items-center justify-center bg-gray-100">
-    <div class="absolute inset-0 opacity-10">
-      <img
-        src="/assets/logo.jpeg"
-        alt="Logo"
-        class="w-full h-full object-cover"
-      />
-    </div>
-    <div class="relative z-10 text-center">
-      <h1 class="text-4xl md:text-6xl font-bold text-gray-800">FoodCart</h1>
-      <p class="text-xl md:text-2xl text-gray-600 mt-4">
-        TU MEJOR OPCIÓN AL MOMENTO DE PEDIR COMIDA
+  <section
+    class="welcome-section relative flex items-center justify-center h-screen bg-cover bg-center"
+    style="background-image: url(&quot;assets/logo.jpeg&quot;)"
+  >
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-75"
+    ></div>
+    <div class="relative z-10 text-center text-white p-6">
+      <h1 class="text-4xl md:text-6xl font-bold font-montserrat animate-fadeIn">
+        Bienvenidos a FoodCart
+      </h1>
+      <p class="text-lg md:text-xl mt-4 animate-slideIn">
+        La mejor comida a tu alcance
       </p>
     </div>
   </section>
 
   <!-- Espacio entre secciones -->
-  <div class="py-10 bg-gray-100"></div>
+  <div class="py-1 bg-gray-100"></div>
 
   <!-- Sección 2: About Us -->
-  <section class="bg-gray-900 text-white py-12">
-    <div class="container mx-auto px-6">
-      <h1 class="text-4xl font-bold mb-6 border-b-2 border-gray-700 pb-2">
-        Información
-      </h1>
-      <!-- Sub-sección de características -->
-      <div class="mb-8">
-        <h2 class="text-3xl font-semibold mb-4">Funcionamiento</h2>
-        <ul class="list-disc ml-8 text-lg leading-relaxed">
-          <li class="mb-2">
-            Pedidos de alimentos en línea optimizados: Nuestra plataforma está
-            diseñada para ofrecerte la mejor experiencia de pedido desde la
-            página web o dispositivo móvil, ahorrándote tiempo y esfuerzo.
-          </li>
-          <li class="mb-2">
-            Detalles de pago precargados: Simplificamos el proceso de pago para
-            que puedas realizar tu pedido con solo unos pocos clics.
-          </li>
-          <li class="mb-2">
-            Gestión de direcciones: Guarda varias direcciones y elige tu
-            favorita al momento de pagar, facilitando tus pedidos recurrentes.
-          </li>
-          <li class="mb-2">
-            Confirmación en tiempo real: Recibe una confirmación inmediata de tu
-            pedido por parte de nuestro personal, con el tiempo estimado de
-            entrega. Sin intermediarios, sin centro de llamadas confuso, sin
-            promesas excesivas. Esto es solo entre tú y el restaurante.
-          </li>
-        </ul>
+  <section id="about-us" class="py-12 px-6 bg-gray-900 text-white">
+    <div class="container mx-auto">
+      <h1 class="text-4xl font-bold mb-12 text-center">Sobre Nosotros</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <!-- Tarjeta de Calidad -->
+        <div
+          class="about-card p-6 bg-white text-gray-900 shadow-md flex flex-col items-center"
+        >
+          <img src="assets/icon1.png" alt="Calidad" class="h-16 mb-4" />
+          <h3 class="text-xl font-semibold mb-2">Calidad</h3>
+          <p class="text-center">
+            Ofrecemos productos de la más alta calidad para garantizar tu
+            satisfacción.
+          </p>
+        </div>
+        <!-- Tarjeta de Rapidez -->
+        <div
+          class="about-card p-6 bg-white text-gray-900 shadow-md flex flex-col items-center"
+        >
+          <img src="assets/icon2.png" alt="Rapidez" class="h-16 mb-4" />
+          <h3 class="text-xl font-semibold mb-2">Rapidez</h3>
+          <p class="text-center">
+            Entregamos tu pedido en el menor tiempo posible, asegurando rapidez
+            y eficiencia.
+          </p>
+        </div>
+        <!-- Tarjeta de Sabor -->
+        <div
+          class="about-card p-6 bg-white text-gray-900 shadow-md flex flex-col items-center"
+        >
+          <img src="assets/icon3.png" alt="Sabor" class="h-16 mb-4" />
+          <h3 class="text-xl font-semibold mb-2">Sabor</h3>
+          <p class="text-center">
+            Nuestros productos son conocidos por su delicioso sabor que deleita
+            a todos.
+          </p>
+        </div>
       </div>
-      <!-- Sub-sección para personalizar -->
-      <div>
-        <h2 class="text-3xl font-semibold mb-4">Sobre Nosotros</h2>
-        <p class="text-lg leading-relaxed">
-          Foodcart comenzó como una idea a mediados de 2024. Surge como proyecto
-          final de curso de la materia "Desarrollo Web y Mobile" y se extendió
-          hasta llegar a los carritos de comida rápida de todo el departamento
-          de Salto. Sus desarrolladores, Gabriela Fares, Emilio Rodríguez y
-          Francisco Lima, son estudiantes de la Universidad Católica del Uruguay
-          en el campus Salto.
-        </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Tarjeta de Funcionamiento -->
+        <div class="about-card p-6 bg-white text-gray-900 shadow-md">
+          <h3 class="text-3xl font-semibold mb-4">Funcionamiento</h3>
+          <ul class="list-disc list-inside text-lg leading-relaxed">
+            <li class="mb-2">
+              Pedidos optimizados: Nuestra plataforma ofrece la mejor
+              experiencia de pedido desde la web o móvil, ahorrándote tiempo y
+              esfuerzo.
+            </li>
+            <li class="mb-2">
+              Detalles de pago precargados: Simplificamos el proceso de pago
+              para que puedas realizar tu pedido con solo unos pocos clics.
+            </li>
+            <li class="mb-2">
+              Gestión de direcciones: Guarda varias direcciones y elige tu
+              favorita al pagar, facilitando tus pedidos recurrentes.
+            </li>
+            <li class="mb-2">
+              Confirmación en tiempo real: Recibe una confirmación inmediata de
+              tu pedido por parte de nuestro personal, con el tiempo estimado de
+              entrega.
+            </li>
+          </ul>
+        </div>
+
+        <!-- Tarjeta de Sobre Nosotros -->
+        <div class="about-card p-6 bg-white text-gray-900 shadow-md">
+          <h3 class="text-3xl font-semibold mb-4">Sobre Nosotros</h3>
+          <p class="text-lg leading-relaxed">
+            Foodcart comenzó como una idea a mediados de 2024. Surge como
+            proyecto final de curso de la materia "Desarrollo Web y Mobile" y se
+            extendió hasta llegar a los carritos de comida rápida de todo el
+            departamento de Salto. Sus desarrolladores, Gabriela Fares, Emilio
+            Rodríguez y Francisco Lima, son estudiantes de la Universidad
+            Católica del Uruguay en el campus Salto.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Espacio entre secciones -->
-  <div class="py-10 bg-gray-900"></div>
+  <div class="py-1 bg-gray-900"></div>
 
   <!-- Sección 3: Mapa -->
   <section class="bg-white text-gray-900 py-12">
     <div class="container mx-auto px-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Espacio para el mapa -->
-        <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+        <div
+          class="bg-gradient-to-br from-gray-50 to-gray-200 p-6 rounded-lg shadow-lg"
+        >
           <app-mapa></app-mapa>
         </div>
         <!-- Lista de tarifas de entrega y horarios de apertura -->
-        <div class="bg-gray-100 p-6 rounded-lg shadow-lg">
+        <div
+          class="bg-gradient-to-br from-gray-50 to-gray-200 p-6 rounded-lg shadow-lg"
+        >
           <h2 class="text-4xl font-bold mb-6 text-center text-gray-800">
             Entrega De Comida En Salto, Uruguay
           </h2>

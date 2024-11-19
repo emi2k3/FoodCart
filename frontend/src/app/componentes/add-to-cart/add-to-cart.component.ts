@@ -1,12 +1,5 @@
 import { NgIf } from '@angular/common'; // Importa la directiva NgIf de Angular
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  inject,
-  Inject,
-} from '@angular/core'; // Importa las funciones necesarias de Angular
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core'; // Importa las funciones necesarias de Angular
 import { FormsModule } from '@angular/forms'; // Importa FormsModule para el manejo de formularios
 import { AuthService } from '../../servicios/auth.service'; // Importa el servicio AuthService
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
