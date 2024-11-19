@@ -1,3 +1,85 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* styles.css */
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+}
+
+.welcome-section {
+  position: relative;
+  background: url("/src/assets/logo.jpeg") no-repeat center center/cover;
+}
+
+.welcome-section .bg-black {
+  opacity: 0.5;
+}
+
+.welcome-section .bg-gradient-to-b {
+  opacity: 0.75;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 1.5s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 2s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* aboutus */
+.about-card {
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+.about-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.about-card img {
+  max-width: 100%;
+  height: auto;
+}
+
+.about-card h3 {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.about-card p,
+.about-card ul {
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.about-card ul {
+  padding-left: 1.5rem;
+  text-align: left;
+}
