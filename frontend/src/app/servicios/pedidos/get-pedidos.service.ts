@@ -27,7 +27,7 @@ export class GetPedidosService {
       return [];
     }
   }
-  constructor() { }
+  constructor() {}
 }
 
 export default GetPedidosService;

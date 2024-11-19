@@ -128,6 +128,70 @@ const detallePedidoRoute: FastifyPluginAsync = async (
     },
   });
 
+  fastify.put("/:id_pedido/:id_producto", {
+    schema: {
+      summary: "Actualizar un detalle de pedido por Id pedido y Id producto",
+      description: "### Implementa y valida: \n - token \n - body",
+      tags: ["Detalle_Pedidos"],
+      security: [{ BearerAuth: [] }],
+      params: {
+        type: "object",
+        properties: {
+          id_pedido: { type: "integer" },
+          id_producto: { type: "integer" },
+        },
+        required: ["id_pedido", "id_producto"],
+      },
+      body: {
+        type: "object",
+        properties: {
+          cantidad: { type: "integer" },
+          indicaciones: { type: ["string", "null"], nullable: true },
+          id_pedido: { type: "integer" },
+          id_producto: { type: "integer" },
+        },
+        required: ["cantidad", "id_pedido", "id_producto"],
+      },
+      response: {
+        200: {
+          description: "Detalle de pedido actualizado exitosamente",
+          type: "object",
+          properties: {
+            ...detalle_pedido.properties,
+          },
+        },
+      },
+    },
+    onRequest: [fastify.authenticate],
+    handler: async function (request, reply) {
+      const { cantidad, indicaciones, id_pedido, id_producto } =
+        request.body as {
+          cantidad: number;
+          indicaciones: string;
+          id_pedido: number;
+          id_producto: number;
+        };
+
+      try {
+        const updatedDetalle = await query(
+          `UPDATE detalle_pedido
+           SET cantidad = $1, indicaciones = $2
+           WHERE id_pedido = $3 AND id_producto = $4
+           RETURNING *`,
+          [cantidad, indicaciones, id_pedido, id_producto]
+        );
+
+        reply.code(200);
+        return updatedDetalle.rows[0];
+      } catch (error) {
+        console.error("Error al actualizar detalle de pedido:", error);
+        return reply
+          .status(500)
+          .send({ message: "Error interno del servidor" });
+      }
+    },
+  });
+
   fastify.delete("/:id_pedido/:id_producto", {
     schema: {
       summary: "Eliminar un detalle de pedido por Id pedido y Id producto",

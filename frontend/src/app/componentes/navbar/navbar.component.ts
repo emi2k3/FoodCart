@@ -17,6 +17,7 @@ import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import { CarritoService } from '../../servicios/carrito-service.service';
+import { determinant } from 'ol/transform';
 
 @Component({
   selector: 'app-navbar',
@@ -69,6 +70,7 @@ export class NavbarComponent implements OnInit {
           const pedidosUsuarioFiltrado = await this.getPedido.getPedidoById(
             idToken.id,
           );
+
           const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
             ['PENDIENTE'].includes(pedido.estado),
           );

@@ -80,13 +80,19 @@
     </div>
     <button
       (click)="addToCart()"
-      class="w-full bg-blue-700 text-white py-2 mt-4 rounded-full flex items-center justify-between px-4"
+      [ngClass]="{
+        'bg-green-600 hover:bg-green-700': actualizar,
+        'bg-blue-700 hover:bg-blue-800': !actualizar,
+      }"
+      class="w-full text-white py-2 mt-4 rounded-full flex items-center justify-between px-4"
     >
       <span class="flex items-center w-full">
         <span class="w-6 h-6 flex items-center justify-center text-sm">
           {{ quantity }}
         </span>
-        <span class="flex-grow text-center"> Agregar a mi pedido </span>
+        <span class="flex-grow text-center">
+          {{ actualizar ? "Actualizar Pedido" : "Agregar a mi Pedido" }}
+        </span>
         <span>${{ product.precio_unidad * quantity }}</span>
       </span>
     </button>

@@ -7,13 +7,14 @@ import { FooterComponent } from '../../componentes/footer/footer.component';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgFor],
+  imports: [NavbarComponent, NgFor, NgIf, RouterModule],
   templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
@@ -41,35 +42,61 @@ export class CarritoPage implements OnInit {
   }
 
   async cargarProductosDelCarrito() {
-    const pedidosUsuarioFiltrado = await this.pedidoUsuario.getPedidoById(
-      this.userId.toString(),
-    );
-
-    const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
-      ['PENDIENTE'].includes(pedido.estado),
-    );
-
-    this.id_pedido = pedidoPendiente[0].id_pedido;
-    this.pedidoaConfirmar = pedidoPendiente[0];
-
-    const productosPedido =
-      await this.detallePedidoService.getDetallePedidoByID(
-        this.id_pedido.toString(),
+    try {
+      const pedidosUsuario = await this.pedidoUsuario.getPedidoById(
+        this.userId.toString(),
       );
 
-    const productosLista = productosPedido.map(
-      async (detalle: { id_producto: string; cantidad: number }) => {
-        const producto = await this.cargarProducto.getProductoById(
-          detalle.id_producto,
-        );
-        return {
-          ...producto,
-          cantidad: detalle.cantidad,
-        };
-      },
-    );
+      if (!pedidosUsuario) {
+        this.resetearEstadoCarrito();
+        return;
+      }
 
-    this.productos = await Promise.all(productosLista);
+      const pedidoPendiente = pedidosUsuario.filter(
+        (pedido: any) => pedido.estado === 'PENDIENTE',
+      );
+
+      if (pedidoPendiente.length === 0) {
+        this.resetearEstadoCarrito();
+        return;
+      }
+
+      this.id_pedido = pedidoPendiente[0].id_pedido;
+
+      const productosPedido =
+        await this.detallePedidoService.getDetallePedidoByID(
+          this.id_pedido.toString(),
+        );
+
+      if (!productosPedido) {
+        this.resetearEstadoCarrito();
+        return;
+      }
+
+      const productosLista = productosPedido.map(
+        async (detalle: { id_producto: string; cantidad: number }) => {
+          const producto = await this.cargarProducto.getProductoById(
+            detalle.id_producto,
+          );
+          return {
+            ...producto,
+            cantidad: detalle.cantidad,
+          };
+        },
+      );
+
+      this.productos = await Promise.all(productosLista);
+    } catch (error) {
+      console.error('Error general al cargar el carrito:', error);
+      this.resetearEstadoCarrito();
+      throw error;
+    }
+  }
+
+  private resetearEstadoCarrito() {
+    this.productos = [];
+    this.id_pedido = 0;
+    this.pedidoaConfirmar = null;
   }
 
   decreaseQuantity(producto: any): void {
@@ -119,6 +146,7 @@ export class CarritoPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
+    this.carritoService.decrementCart();
     await this.cargarProductosDelCarrito();
   }
 
