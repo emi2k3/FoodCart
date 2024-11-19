@@ -10,11 +10,14 @@ import { GetProductosService } from '../../servicios/productos/get-productos.ser
 import { Router, RouterModule } from '@angular/router';
 import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Producto } from '../../interfaces/producto';
+import { Pedido } from '../../interfaces/pedido';
+import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf, RouterModule],
+  imports: [NavbarComponent, NgFor, NgIf, RouterModule, AddToCartComponent],
   templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
@@ -34,6 +37,9 @@ export class CarritoPage implements OnInit {
   productosPedido: any[] = [];
   productos: any[] = [];
   pedidoaConfirmar: any;
+  modalIsOpen: boolean = false;
+  actualizar: boolean = false;
+  productoSeleccionado: any = null;
 
   constructor() {}
 
@@ -43,54 +49,43 @@ export class CarritoPage implements OnInit {
 
   async cargarProductosDelCarrito() {
     try {
-      const pedidosUsuario = await this.pedidoUsuario.getPedidoById(
+      const pedidoUsuario = await this.pedidoUsuario.getPedidoById(
         this.userId.toString(),
       );
 
-      if (!pedidosUsuario) {
-        this.resetearEstadoCarrito();
-        return;
-      }
-
-      const pedidoPendiente = pedidosUsuario.filter(
-        (pedido: any) => pedido.estado === 'PENDIENTE',
-      );
-
-      if (pedidoPendiente.length === 0) {
-        this.resetearEstadoCarrito();
-        return;
-      }
-
-      this.id_pedido = pedidoPendiente[0].id_pedido;
-
-      const productosPedido =
-        await this.detallePedidoService.getDetallePedidoByID(
-          this.id_pedido.toString(),
+      if (pedidoUsuario.length > 0) {
+        const pedidoPendiente = pedidoUsuario.find(
+          (pedido: Pedido) => pedido.estado === 'PENDIENTE',
         );
 
-      if (!productosPedido) {
-        this.resetearEstadoCarrito();
-        return;
+        if (pedidoPendiente && pedidoPendiente.items) {
+          this.id_pedido = pedidoPendiente.id_pedido;
+          this.productos = pedidoPendiente.items.map((item: any) => ({
+            id_producto: item.id_producto,
+            nombre: item.producto,
+            cantidad: item.cantidad,
+            precio_unidad: item.precio_unidad,
+            indicaciones: item.indicaciones,
+          }));
+          return;
+        }
       }
-
-      const productosLista = productosPedido.map(
-        async (detalle: { id_producto: string; cantidad: number }) => {
-          const producto = await this.cargarProducto.getProductoById(
-            detalle.id_producto,
-          );
-          return {
-            ...producto,
-            cantidad: detalle.cantidad,
-          };
-        },
-      );
-
-      this.productos = await Promise.all(productosLista);
-    } catch (error) {
-      console.error('Error general al cargar el carrito:', error);
       this.resetearEstadoCarrito();
-      throw error;
+    } catch (error) {
+      console.error('Error al cargar el carrito:', error);
+      this.resetearEstadoCarrito();
     }
+  }
+
+  async editarProducto(producto: any) {
+    this.productoSeleccionado = producto;
+    this.modalIsOpen = true;
+    this.productoSeleccionado = {
+      ...producto,
+      cantidad: producto.cantidad,
+      nota: producto.indicaciones,
+    };
+    this.actualizar = true;
   }
 
   private resetearEstadoCarrito() {
@@ -99,21 +94,9 @@ export class CarritoPage implements OnInit {
     this.pedidoaConfirmar = null;
   }
 
-  decreaseQuantity(producto: any): void {
-    if (producto.cantidad > 1) {
-      producto.cantidad--;
-    }
-  }
-
-  increaseQuantity(producto: any): void {
-    producto.cantidad++;
-  }
-
-  getCantidad(id_producto: string) {
-    const producto = this.productosPedido.find(
-      (producto) => producto.id_producto == id_producto,
-    );
-    return producto.cantidad;
+  closeModal() {
+    this.productoSeleccionado = null;
+    this.modalIsOpen = false;
   }
 
   getTotal(): number {

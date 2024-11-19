@@ -295,6 +295,7 @@ const pedidosRoute: FastifyPluginAsync = async (
                   properties: {
                     id_producto: { type: "number" },
                     producto: { type: "string" },
+                    precio_unidad: { type: "number" },
                     cantidad: { type: "number" },
                     indicaciones: { type: "string" },
                   },
@@ -320,7 +321,8 @@ const pedidosRoute: FastifyPluginAsync = async (
             dp.id_producto,
             dp.cantidad,
             dp.indicaciones, 
-            pr.nombre AS producto
+            pr.nombre AS producto,
+            pr.precio_unidad -- Incluir precio_unidad
           FROM pedido p
           LEFT JOIN detalle_pedido dp ON p.id_pedido = dp.id_pedido
           LEFT JOIN producto pr ON dp.id_producto = pr.id_producto
@@ -356,6 +358,7 @@ const pedidosRoute: FastifyPluginAsync = async (
             pedido.items.push({
               id_producto: row.id_producto,
               producto: row.producto,
+              precio_unidad: row.precio_unidad,
               cantidad: row.cantidad,
               indicaciones: row.indicaciones,
             });

@@ -48,6 +48,7 @@ export class AddToCartComponent {
   quantity: number = 1;
   note: string = '';
   id_pedido: number = 0;
+  excesoIndicaciones: boolean = false;
 
   increaseQuantity() {
     this.quantity++;
@@ -163,6 +164,9 @@ export class AddToCartComponent {
     this.carritoService.setCartCount(1);
   }
 
+  validarIndicaciones() {
+    this.excesoIndicaciones = this.note.length > 200;
+  }
   close() {
     this.closeModal.emit();
     this.quantity = 1;

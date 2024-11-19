@@ -5,6 +5,7 @@ export interface Producto {
   precio_unidad: number;
   id_categoria: number;
   foto: undefined | null | boolean;
+  cantidad: number;
 }
 
 export interface ProductoPost {

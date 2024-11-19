@@ -75,8 +75,18 @@
         [(ngModel)]="note"
         class="w-full p-2 text-sm border border-gray-300 rounded-md resize-none"
         rows="3"
+        maxlength="200"
         placeholder="Notas para el chef"
+        (input)="validarIndicaciones()"
       ></textarea>
+      <!-- Mostrar advertencia si se supera el límite -->
+      <p *ngIf="excesoIndicaciones" class="text-sm text-red-500 mt-1">
+        La nota no puede exceder los 200 caracteres.
+      </p>
+      <!-- Mostrar contador dinámico de caracteres restantes -->
+      <p class="text-sm text-gray-500 mt-1">
+        {{ 200 - note.length }} caracteres restantes
+      </p>
     </div>
     <button
       (click)="addToCart()"
