@@ -38,7 +38,15 @@ export class VerPedidosPage implements OnInit {
     this.wsSubject.subscribe(
       (message) => {
         if (message === 'Actualizacion_pedido') {
-          this.cargarPedidos();
+          if (this.isAdmin == false) {
+            const token = localStorage.getItem('token');
+            if (token) {
+              const idusuario = JSON.parse(atob(token.split('.')[1]));
+              this.cargarPedidosbyID(idusuario.id);
+            }
+          } else {
+            this.cargarPedidos();
+          }
         }
       }
     );
