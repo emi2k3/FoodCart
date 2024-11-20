@@ -9,11 +9,12 @@ import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
 import { GetProductosService } from '../../servicios/productos/get-productos.service';
 import { Router } from '@angular/router';
 import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
+import { ConfirmOrderComponent } from "../../componentes/confirm-order/confirm-order/confirm-order.component";
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgFor],
+  imports: [NavbarComponent, NgFor, ConfirmOrderComponent],
   templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
@@ -28,13 +29,14 @@ export class CarritoPage implements OnInit {
   private putPedido: PutPedidoService = inject(PutPedidoService);
 
   userId: number = this.getUserService.getUserId();
+  modalIsOpen: boolean = false;
   subTotal: number[] = [];
   id_pedido: number = 0;
   productosPedido: any[] = [];
   productos: any[] = [];
   pedidoaConfirmar: any;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit() {
     this.cargarProductosDelCarrito();
@@ -121,14 +123,20 @@ export class CarritoPage implements OnInit {
     }
     await this.cargarProductosDelCarrito();
   }
-
   onConfirmar() {
-    this.pedidoaConfirmar.estado = 'CONFIRMADO';
-    this.pedidoaConfirmar.importe_total = this.getTotal();
-    this.putPedido.put(
-      JSON.stringify(this.pedidoaConfirmar),
-      this.id_pedido.toString(),
-    );
-    this.router.navigate(['/pedidos/ver']);
+    this.modalIsOpen = true;
   }
+
+  closeModal() {
+    this.modalIsOpen = false;
+  }
+  // onConfirmar() {
+  //   this.pedidoaConfirmar.estado = 'CONFIRMADO';
+  //   this.pedidoaConfirmar.importe_total = this.getTotal();
+  //   this.putPedido.put(
+  //     JSON.stringify(this.pedidoaConfirmar),
+  //     this.id_pedido.toString(),
+  //   );
+  //   this.router.navigate(['/pedidos/ver']);
+  // }
 }
