@@ -17,10 +17,9 @@ import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.co
 @Component({
   selector: 'app-carrito', // Define el selector del componente, que se utiliza en el HTML
   standalone: true, // Indica que el componente es autónomo
-  imports: [NavbarComponent, NgFor], // Importa componentes necesarios
+  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent], // Importa componentes necesarios
   templateUrl: './carrito.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
 })
-
 export class CarritoPage implements OnInit {
   // Inyecta los servicios utilizando la función inject
   private detallePedidoService: GetDetallePedidosService = inject(
