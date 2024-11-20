@@ -9,10 +9,10 @@ import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
 
 @Component({
-  selector: 'app-ver-pedidos',
-  templateUrl: './ver-pedidos.page.html',
-  standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf],
+  selector: 'app-ver-pedidos', // Define el selector del componente, que se utiliza en el HTML
+  templateUrl: './ver-pedidos.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
+  standalone: true, // Indica que el componente es autónomo
+  imports: [NavbarComponent, NgFor, NgIf], // Importa componentes y directivas necesarias
 })
 export class VerPedidosPage implements OnInit {
   pedidos = signal<any[]>([]);
@@ -73,20 +73,25 @@ export class VerPedidosPage implements OnInit {
         !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
     ));
   }
+
+  // Método para cargar los pedidos por ID de usuario
   async cargarPedidosbyID(id_usuario: string) {
     let pedidossinfiltrar = await this.getPedidos.getPedidoById(id_usuario);
-
     this.pedidos.set(pedidossinfiltrar.filter(
       (pedido: any) =>
         !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
     ));
   }
+
+  // Método para manejar el cambio de estado del pedido
   onChange(pedido: any, Eventochange: Event) {
     const Elemento = Eventochange.target as HTMLSelectElement;
     const estado = Elemento.value;
     pedido.estado = estado;
-    this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido);
+    this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido); // Actualiza el estado del pedido
   }
+
+  // Método para ver los detalles del pedido
   verDetalles(id_pedido: string) {
     this.router.navigate(['pedidos/detalles/'], {
       queryParams: { id: id_pedido },

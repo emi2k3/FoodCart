@@ -1,23 +1,30 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CarritoService } from '../../servicios/carrito-service.service';
-import { AuthService } from '../../servicios/auth.service';
-import { NavbarComponent } from '../../componentes/navbar/navbar.component';
-import { NgFor, NgIf } from '@angular/common';
-import { FooterComponent } from '../../componentes/footer/footer.component';
-import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
-import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
-import { GetProductosService } from '../../servicios/productos/get-productos.service';
-import { Router } from '@angular/router';
-import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
+import { Component, OnInit, inject } from '@angular/core'; // Importa las funciones Component, OnInit e inject de Angular
+import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio CarritoService
+import { AuthService } from '../../servicios/auth.service'; // Importa el servicio AuthService
+import { NavbarComponent } from '../../componentes/navbar/navbar.component'; // Importa el componente NavbarComponent
+import { NgFor, NgIf } from '@angular/common'; // Importa las directivas NgFor y NgIf de Angular
+import { FooterComponent } from '../../componentes/footer/footer.component'; // Importa el componente FooterComponent
+import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service'; // Importa el servicio GetDetallePedidosService
+import GetPedidosService from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
+import { GetProductosService } from '../../servicios/productos/get-productos.service'; // Importa el servicio GetProductosService
+import { Router, RouterModule } from '@angular/router'; // Importa Router para la navegación de rutas
+import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service'; // Importa el servicio PutPedidoService
+import { HttpErrorResponse } from '@angular/common/http';
+import { Producto } from '../../interfaces/producto';
+import { Pedido } from '../../interfaces/pedido';
+import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 import { ConfirmOrderComponent } from "../../componentes/confirm-order/confirm-order/confirm-order.component";
 
+
 @Component({
-  selector: 'app-carrito',
-  standalone: true,
-  imports: [NavbarComponent, NgFor, ConfirmOrderComponent],
-  templateUrl: './carrito.page.html',
+  selector: 'app-carrito', // Define el selector del componente, que se utiliza en el HTML
+  standalone: true, // Indica que el componente es autónomo
+  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent], // Importa componentes necesarios
+  templateUrl: './carrito.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
+
 })
 export class CarritoPage implements OnInit {
+  // Inyecta los servicios utilizando la función inject
   private detallePedidoService: GetDetallePedidosService = inject(
     GetDetallePedidosService,
   );
@@ -28,6 +35,7 @@ export class CarritoPage implements OnInit {
   private router: Router = inject(Router);
   private putPedido: PutPedidoService = inject(PutPedidoService);
 
+  // Variables para almacenar los datos del carrito
   userId: number = this.getUserService.getUserId();
   modalIsOpen: boolean = false;
   subTotal: number[] = [];
@@ -35,74 +43,85 @@ export class CarritoPage implements OnInit {
   productosPedido: any[] = [];
   productos: any[] = [];
   pedidoaConfirmar: any;
+  modalIsOpendir: boolean = false;
+  actualizar: boolean = false;
+  productoSeleccionado: any = null;
 
   constructor() { }
 
+  // Método que se ejecuta al inicializar el componente
   ngOnInit() {
     this.cargarProductosDelCarrito();
   }
 
+  // Método para cargar los productos del carrito
   async cargarProductosDelCarrito() {
-    const pedidosUsuarioFiltrado = await this.pedidoUsuario.getPedidoById(
-      this.userId.toString(),
-    );
-
-    const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
-      ['PENDIENTE'].includes(pedido.estado),
-    );
-
-    this.id_pedido = pedidoPendiente[0].id_pedido;
-    this.pedidoaConfirmar = pedidoPendiente[0];
-
-    const productosPedido =
-      await this.detallePedidoService.getDetallePedidoByID(
-        this.id_pedido.toString(),
+    try {
+      const pedidoUsuario = await this.pedidoUsuario.getPedidoById(
+        this.userId.toString(),
       );
 
-    const productosLista = productosPedido.map(
-      async (detalle: { id_producto: string; cantidad: number }) => {
-        const producto = await this.cargarProducto.getProductoById(
-          detalle.id_producto,
+      if (pedidoUsuario.length > 0) {
+        const pedidoPendiente = pedidoUsuario.find(
+          (pedido: Pedido) => pedido.estado === 'PENDIENTE',
         );
-        return {
-          ...producto,
-          cantidad: detalle.cantidad,
-        };
-      },
-    );
 
-    this.productos = await Promise.all(productosLista);
-  }
-
-  decreaseQuantity(producto: any): void {
-    if (producto.cantidad > 1) {
-      producto.cantidad--;
+        if (pedidoPendiente && pedidoPendiente.items) {
+          this.id_pedido = pedidoPendiente.id_pedido;
+          this.productos = pedidoPendiente.items.map((item: any) => ({
+            id_producto: item.id_producto,
+            nombre: item.producto,
+            cantidad: item.cantidad,
+            precio_unidad: item.precio_unidad,
+            indicaciones: item.indicaciones,
+          }));
+          return;
+        }
+      }
+      this.resetearEstadoCarrito();
+    } catch (error) {
+      console.error('Error al cargar el carrito:', error);
+      this.resetearEstadoCarrito();
     }
   }
 
-  increaseQuantity(producto: any): void {
-    producto.cantidad++;
+  async editarProducto(producto: any) {
+    this.productoSeleccionado = producto;
+    this.modalIsOpen = true;
+    this.productoSeleccionado = {
+      ...producto,
+      cantidad: producto.cantidad,
+      nota: producto.indicaciones,
+    };
+    this.actualizar = true;
   }
 
-  getCantidad(id_producto: string) {
-    const producto = this.productosPedido.find(
-      (producto) => producto.id_producto == id_producto,
-    );
-    return producto.cantidad;
+  private resetearEstadoCarrito() {
+    this.productos = [];
+    this.id_pedido = 0;
+    this.pedidoaConfirmar = null;
   }
 
+  closeModal() {
+    this.productoSeleccionado = null;
+    this.modalIsOpen = false;
+  }
+
+  // Método para calcular el total del carrito
   getTotal(): number {
     return this.productos.reduce((total, producto) => {
       return total + producto.precio_unidad * producto.cantidad;
     }, 0);
   }
 
+  // Método para ver los detalles de un producto
   onDetalles(idProducto: string) {
     this.router.navigate(['producto/detalles/'], {
       queryParams: { id: idProducto },
     });
   }
 
+  // Método para confirmar la eliminación de un producto del carrito
   confirmarEliminacion(id_producto: string): void {
     const confirmacion = window.confirm(
       '¿Estás seguro de que deseas eliminar este producto del carrito?',
@@ -112,6 +131,7 @@ export class CarritoPage implements OnInit {
     }
   }
 
+  // Método para eliminar un producto del carrito
   async eliminarDetallePedido(id_producto: string): Promise<void> {
     try {
       await this.carritoService.eliminarDetallePedido(
@@ -121,14 +141,17 @@ export class CarritoPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
+    this.carritoService.decrementCart();
     await this.cargarProductosDelCarrito();
   }
+  // Método para confirmar el pedido
+
   onConfirmar() {
-    this.modalIsOpen = true;
+    this.modalIsOpendir = true;
   }
 
-  closeModal() {
-    this.modalIsOpen = false;
+  closeModalDir() {
+    this.modalIsOpendir = false;
   }
   // onConfirmar() {
   //   this.pedidoaConfirmar.estado = 'CONFIRMADO';

@@ -3,13 +3,13 @@
   <div
     class="bg-gray-100 flex flex-col md:flex-row rounded-2xl shadow-lg max-w-3xl p-5 max-h-[90vh] overflow-auto"
   >
-    <!-- Aca va el form -->
+    <!-- Aquí va el formulario -->
     <div class="w-full px-8">
       <h2 class="font-bold text-2xl text-slate-800 text-center">Productos</h2>
       <form id="formPost" class="flex flex-col gap-4" #formPost="ngForm">
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col">
-            <!-- Nombre -->
+            <!-- Campo para el nombre -->
             <label class="mt-5">Nombre</label>
             <input
               type="text"
@@ -21,10 +21,10 @@
               [(ngModel)]="nombre"
               #nombreCntrl="ngModel"
               [ngClass]="{
-            'border-red-500 bg-red-50': nombreCntrl.invalid && nombreCntrl.touched,
-            'border-gray-300': !nombreCntrl.touched,
-            'border-green-500 bg-green-50': nombreCntrl.valid && nombreCntrl.touched
-          }"
+                'border-red-500 bg-red-50': nombreCntrl.invalid && nombreCntrl.touched,
+                'border-gray-300': !nombreCntrl.touched,
+                'border-green-500 bg-green-50': nombreCntrl.valid && nombreCntrl.touched
+              }"
             />
             <label
               *ngIf="nombreCntrl.errors?.['required'] && nombreCntrl.touched"
@@ -34,7 +34,7 @@
             >
           </div>
           <div class="flex flex-col">
-            <!-- Descripcion -->
+            <!-- Campo para la descripción -->
             <label class="mt-5">Descripcion</label>
             <input
               type="text"
@@ -46,21 +46,21 @@
               [(ngModel)]="descripcion"
               #descripcionCntrl="ngModel"
               [ngClass]="{
-            'border-red-500 bg-red-50': descripcionCntrl.invalid && descripcionCntrl.touched,
-            'border-gray-300': !descripcionCntrl.touched,
-            'border-green-500 bg-green-50': descripcionCntrl.valid && descripcionCntrl.touched
-          }"
+                'border-red-500 bg-red-50': descripcionCntrl.invalid && descripcionCntrl.touched,
+                'border-gray-300': !descripcionCntrl.touched,
+                'border-green-500 bg-green-50': descripcionCntrl.valid && descripcionCntrl.touched
+              }"
             />
             <label
               *ngIf="descripcionCntrl.errors?.['required'] && descripcionCntrl.touched"
               for="Descripcion"
               class="text-red-500 text-sm"
-              >Tiene que colocar su Descripcion.</label
+              >Tiene que colocar la descripción del producto.</label
             >
           </div>
         </div>
 
-        <!-- Precio_Unidad -->
+        <!-- Campo para el precio por unidad -->
         <label class="mt-5">Precio Unidad</label>
         <input
           type="number"
@@ -81,16 +81,16 @@
           *ngIf="precio_unidadCntrl.errors?.['required'] && precio_unidadCntrl.touched"
           for="Precio_Unidad"
           class="text-red-500 text-sm"
-          >Tiene que colocar el Precio Unidad.</label
+          >Tiene que colocar el precio por unidad.</label
         >
         <label
           *ngIf="precio_unidadCntrl.errors?.['Precio_Unidad']"
           for="Precio_Unidad"
           class="text-red-500 text-sm"
-          >Tiene que colocar un Precio Unidad valido.</label
+          >Tiene que colocar un precio válido.</label
         >
 
-        <!-- Categoria -->
+        <!-- Campo para la categoría -->
         <label class="mt-5">Categoria</label>
         <select
           name="id_categoria"
@@ -99,10 +99,10 @@
           [(ngModel)]="categoria"
           #categoriaCntrl="ngModel"
           [ngClass]="{
-          'border-red-500 bg-red-50': categoriaCntrl.invalid && categoriaCntrl.touched,
-          'border-gray-300': !categoriaCntrl.touched,
-          'border-green-500 bg-green-50': categoriaCntrl.valid && categoriaCntrl.touched
-        }"
+            'border-red-500 bg-red-50': categoriaCntrl.invalid && categoriaCntrl.touched,
+            'border-gray-300': !categoriaCntrl.touched,
+            'border-green-500 bg-green-50': categoriaCntrl.valid && categoriaCntrl.touched
+          }"
         >
           <option value="1">Comida</option>
           <option value="2">Bebida</option>
@@ -112,10 +112,10 @@
           *ngIf="categoriaCntrl.errors?.['required'] && categoriaCntrl.touched"
           for="categoria"
           class="text-red-500 text-sm"
-          >Tiene que colocar su Categoria.</label
+          >Tiene que seleccionar una categoría.</label
         >
 
-        <!-- Foto -->
+        <!-- Campo para la foto -->
         <label class="mt-5">Foto</label>
         <input
           type="file"

@@ -1,7 +1,7 @@
 <section class="bg-gray-50 min-h-screen flex items-center justify-center">
   <!-- Contenedor del login -->
   <div class="bg-gray-100 flex rounded-2xl shadow-lg max-w-3xl p-5">
-    <!-- Aca va el form -->
+    <!-- Aquí va el formulario de inicio de sesión -->
     <div class="md:w-1/2 px-8">
       <h2 class="font-bold text-2xl text-slate-800 text-center">Login</h2>
       <form
@@ -10,6 +10,7 @@
         class="flex flex-col gap-4"
         #formlogin="ngForm"
       >
+        <!-- Campo para el email -->
         <input
           type="text"
           name="email"
@@ -36,13 +37,15 @@
           *ngIf="emailCntrl.errors?.['email']"
           for="email"
           class="text-red-500 text-sm"
-          >Tiene que colocar un email valido.</label
+          >Tiene que colocar un email válido.</label
         >
         <label
           *ngIf="this.loginOkay==false && passControl.touched"
           class="text-red-500 text-sm"
           >Su usuario o contraseña son incorrectos</label
         >
+
+        <!-- Campo para la contraseña -->
         <input
           type="password"
           name="contraseña"
@@ -76,6 +79,7 @@
           >Su contraseña debe ser más corta</label
         >
 
+        <!-- Botón para iniciar sesión -->
         <button
           type="submit"
           [disabled]="formlogin.invalid"
@@ -85,6 +89,7 @@
           Iniciar Sesión
         </button>
       </form>
+
       <!-- Divisor -->
       <div class="mt-8 grid grid-cols-3 items-center text-gray-500">
         <hr class="border-gray-500" />
@@ -92,7 +97,7 @@
         <hr class="border-gray-500" />
       </div>
 
-      <!--- Inicio Sesión con google -->
+      <!-- Botón para iniciar sesión con Google -->
       <button
         type="submit"
         id="boton"
@@ -103,7 +108,7 @@
         Iniciar Sesión con Google
       </button>
 
-      <!--- Inicio Sesión con facebook -->
+      <!-- Botón para iniciar sesión con Facebook -->
       <button
         type="submit"
         id="boton"
@@ -118,6 +123,8 @@
         />
         Iniciar Sesión con Facebook
       </button>
+
+      <!-- Divisor -->
       <hr class="border-gray-300 mt-4" />
       <div class="text-sm flex justify-between items-center mt-3">
         <p>¿No tiene una cuenta?</p>

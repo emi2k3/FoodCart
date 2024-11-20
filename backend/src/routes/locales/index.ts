@@ -13,7 +13,7 @@ const localesRoute: FastifyPluginAsync = async (
   opts
 ): Promise<void> => {
   // ################################################### GET ###################################################
-
+  // Ruta para obtener un listado de todos los locales
   fastify.get("/", {
     schema: {
       summary: "Listado de todos los locales",
@@ -32,7 +32,7 @@ const localesRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const response = await query("SELECT * FROM local");
       if (response.rows.length == 0 || !response.rows) {
@@ -44,7 +44,7 @@ const localesRoute: FastifyPluginAsync = async (
   });
 
   // ################################################### PUT ###################################################
-
+  // Ruta para actualizar un local existente por ID
   fastify.put("/:id", {
     schema: {
       summary: "Actualización de un local",
@@ -69,7 +69,7 @@ const localesRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const localId = (request.params as { id: string }).id;
       const updateLocal = request.body as LocalPostSchema;
@@ -83,7 +83,7 @@ const localesRoute: FastifyPluginAsync = async (
             "Resources",
             updateLocal.nombre + ".jpg"
           );
-          writeFileSync(fileName, fileBuffer);
+          writeFileSync(fileName, fileBuffer); // Guarda la imagen en el servidor
         } catch (error) {
           console.error("Error al intentar actualizar la imagen:", error);
           return reply
@@ -108,6 +108,7 @@ const localesRoute: FastifyPluginAsync = async (
 
         const { id_direccion, id_telefono } = localExists.rows[0];
 
+        // Actualiza la dirección
         await client.query(
           `UPDATE direccion 
            SET numero = $1, calle = $2
@@ -115,6 +116,7 @@ const localesRoute: FastifyPluginAsync = async (
           [updateLocal.numero, updateLocal.calle, id_direccion]
         );
 
+        // Actualiza el teléfono
         await client.query(
           `UPDATE telefono 
            SET numeroTel = $1
@@ -122,6 +124,7 @@ const localesRoute: FastifyPluginAsync = async (
           [updateLocal.telefono, id_telefono]
         );
 
+        // Actualiza el local
         const result = await client.query(
           `UPDATE local 
            SET nombre = $1
@@ -147,7 +150,7 @@ const localesRoute: FastifyPluginAsync = async (
   });
 
   // ################################################### DELETE ##################################################
-
+  // Ruta para borrar un local por ID
   fastify.delete("/:id", {
     schema: {
       summary: "Borrar un local",
@@ -165,7 +168,7 @@ const localesRoute: FastifyPluginAsync = async (
         200: {},
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id = (request.params as { id: string }).id;
       try {
@@ -178,7 +181,7 @@ const localesRoute: FastifyPluginAsync = async (
   });
 
   // ################################################### POST ###################################################
-
+  // Ruta para crear un nuevo local
   fastify.post("/", {
     schema: {
       summary: "Creación de un local",
@@ -196,7 +199,7 @@ const localesRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const postLocal = request.body as LocalPostSchema;
       const client = await pool.connect();
@@ -209,7 +212,7 @@ const localesRoute: FastifyPluginAsync = async (
             "Resources",
             postLocal.nombre + ".jpg"
           );
-          writeFileSync(fileName, fileBuffer);
+          writeFileSync(fileName, fileBuffer); // Guarda la imagen en el servidor
         } catch (error) {
           console.error("Error al intentar crear la imagen:", error);
           return reply
@@ -262,4 +265,5 @@ const localesRoute: FastifyPluginAsync = async (
     },
   });
 };
+
 export default localesRoute;
