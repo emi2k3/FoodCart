@@ -7,8 +7,12 @@ import { FooterComponent } from '../../componentes/footer/footer.component'; // 
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service'; // Importa el servicio GetDetallePedidosService
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
 import { GetProductosService } from '../../servicios/productos/get-productos.service'; // Importa el servicio GetProductosService
-import { Router } from '@angular/router'; // Importa Router para la navegación de rutas
+import { Router, RouterModule } from '@angular/router'; // Importa Router para la navegación de rutas
 import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service'; // Importa el servicio PutPedidoService
+import { HttpErrorResponse } from '@angular/common/http';
+import { Producto } from '../../interfaces/producto';
+import { Pedido } from '../../interfaces/pedido';
+import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 
 @Component({
   selector: 'app-carrito', // Define el selector del componente, que se utiliza en el HTML
@@ -16,6 +20,7 @@ import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service'; /
   imports: [NavbarComponent, NgFor], // Importa componentes necesarios
   templateUrl: './carrito.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
 })
+
 export class CarritoPage implements OnInit {
   // Inyecta los servicios utilizando la función inject
   private detallePedidoService: GetDetallePedidosService = inject(
@@ -35,6 +40,9 @@ export class CarritoPage implements OnInit {
   productosPedido: any[] = [];
   productos: any[] = [];
   pedidoaConfirmar: any;
+  modalIsOpen: boolean = false;
+  actualizar: boolean = false;
+  productoSeleccionado: any = null;
 
   constructor() {}
 
@@ -45,55 +53,55 @@ export class CarritoPage implements OnInit {
 
   // Método para cargar los productos del carrito
   async cargarProductosDelCarrito() {
-    const pedidosUsuarioFiltrado = await this.pedidoUsuario.getPedidoById(
-      this.userId.toString(),
-    );
-
-    const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
-      ['PENDIENTE'].includes(pedido.estado),
-    );
-
-    this.id_pedido = pedidoPendiente[0].id_pedido;
-    this.pedidoaConfirmar = pedidoPendiente[0];
-
-    const productosPedido =
-      await this.detallePedidoService.getDetallePedidoByID(
-        this.id_pedido.toString(),
+    try {
+      const pedidoUsuario = await this.pedidoUsuario.getPedidoById(
+        this.userId.toString(),
       );
 
-    const productosLista = productosPedido.map(
-      async (detalle: { id_producto: string; cantidad: number }) => {
-        const producto = await this.cargarProducto.getProductoById(
-          detalle.id_producto,
+      if (pedidoUsuario.length > 0) {
+        const pedidoPendiente = pedidoUsuario.find(
+          (pedido: Pedido) => pedido.estado === 'PENDIENTE',
         );
-        return {
-          ...producto,
-          cantidad: detalle.cantidad,
-        };
-      },
-    );
 
-    this.productos = await Promise.all(productosLista);
-  }
-
-  // Método para disminuir la cantidad de un producto
-  decreaseQuantity(producto: any): void {
-    if (producto.cantidad > 1) {
-      producto.cantidad--;
+        if (pedidoPendiente && pedidoPendiente.items) {
+          this.id_pedido = pedidoPendiente.id_pedido;
+          this.productos = pedidoPendiente.items.map((item: any) => ({
+            id_producto: item.id_producto,
+            nombre: item.producto,
+            cantidad: item.cantidad,
+            precio_unidad: item.precio_unidad,
+            indicaciones: item.indicaciones,
+          }));
+          return;
+        }
+      }
+      this.resetearEstadoCarrito();
+    } catch (error) {
+      console.error('Error al cargar el carrito:', error);
+      this.resetearEstadoCarrito();
     }
   }
 
-  // Método para aumentar la cantidad de un producto
-  increaseQuantity(producto: any): void {
-    producto.cantidad++;
+  async editarProducto(producto: any) {
+    this.productoSeleccionado = producto;
+    this.modalIsOpen = true;
+    this.productoSeleccionado = {
+      ...producto,
+      cantidad: producto.cantidad,
+      nota: producto.indicaciones,
+    };
+    this.actualizar = true;
   }
 
-  // Método para obtener la cantidad de un producto por su ID
-  getCantidad(id_producto: string) {
-    const producto = this.productosPedido.find(
-      (producto) => producto.id_producto == id_producto,
-    );
-    return producto.cantidad;
+  private resetearEstadoCarrito() {
+    this.productos = [];
+    this.id_pedido = 0;
+    this.pedidoaConfirmar = null;
+  }
+
+  closeModal() {
+    this.productoSeleccionado = null;
+    this.modalIsOpen = false;
   }
 
   // Método para calcular el total del carrito
@@ -130,6 +138,7 @@ export class CarritoPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
+    this.carritoService.decrementCart();
     await this.cargarProductosDelCarrito();
   }
 

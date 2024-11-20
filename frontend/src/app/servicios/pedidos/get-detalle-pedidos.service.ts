@@ -22,6 +22,7 @@ export class GetDetallePedidosService {
     }
   }
 
+
   // Constructor del servicio
   constructor() {}
 }

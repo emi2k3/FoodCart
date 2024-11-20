@@ -1,38 +1,54 @@
-import { NgIf } from '@angular/common'; // Importa la directiva NgIf de Angular
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core'; // Importa las funciones necesarias de Angular
-import { FormsModule } from '@angular/forms'; // Importa FormsModule para el manejo de formularios
-import { AuthService } from '../../servicios/auth.service'; // Importa el servicio AuthService
-import GetPedidosService from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
-import { PostPedidosService } from '../../servicios/pedidos/post-pedidos.service'; // Importa el servicio PostPedidosService
-import { PostDetallePedidoService } from '../../servicios/pedidos/post-detalle-pedido.service'; // Importa el servicio PostDetallePedidoService
-import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio CarritoService
-import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service'; // Importa el servicio GetDetallePedidosService
+import { NgClass, NgIf } from '@angular/common';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  inject,
+  SimpleChanges,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../servicios/auth.service';
+import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
+import { PostPedidosService } from '../../servicios/pedidos/post-pedidos.service';
+import { PostDetallePedidoService } from '../../servicios/pedidos/post-detalle-pedido.service';
+import { CarritoService } from '../../servicios/carrito-service.service';
+import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
+import { Pedido } from '../../interfaces/pedido';
+import { PutDetallePedidoService } from '../../servicios/pedidos/put-detalle-pedido.service';
 
 @Component({
-  selector: 'add-to-cart', // Define el selector del componente, que se utiliza en el HTML
-  standalone: true, // Indica que el componente es autónomo
-  imports: [NgIf, FormsModule], // Importa módulos necesarios
-  templateUrl: './add-to-cart.component.html', // Especifica la ubicación del archivo de plantilla HTML del componente
+  selector: 'add-to-cart',
+  standalone: true,
+  imports: [NgIf, FormsModule, NgClass],
+  templateUrl: './add-to-cart.component.html',
 })
 export class AddToCartComponent {
-  carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio CarritoService
-  authService: AuthService = inject(AuthService); // Inyecta el servicio AuthService
-  getDetallePedido: GetDetallePedidosService = inject(GetDetallePedidosService); // Inyecta el servicio GetDetallePedidosService
-  getPedidoService: GetPedidosService = inject(GetPedidosService); // Inyecta el servicio GetPedidosService
-  postPedido: PostPedidosService = inject(PostPedidosService); // Inyecta el servicio PostPedidosService
-  postDetallePedido: PostDetallePedidoService = inject(
+  private carritoService: CarritoService = inject(CarritoService);
+  private authService: AuthService = inject(AuthService);
+  private getDetallePedido: GetDetallePedidosService = inject(
+    GetDetallePedidosService,
+  );
+  private getPedidoService: GetPedidosService = inject(GetPedidosService);
+  private postPedidoService: PostPedidosService = inject(PostPedidosService);
+  private postDetallePedido: PostDetallePedidoService = inject(
     PostDetallePedidoService,
-  ); // Inyecta el servicio PostDetallePedidoService
+  );
+  private putDetallePedido: PutDetallePedidoService = inject(
+    PutDetallePedidoService,
+  );
 
-  @Input() product: any; // Define una propiedad de entrada para el producto
-  @Input() isOpen: boolean = false; // Define una propiedad de entrada para el estado del modal
-  @Input() showNote: boolean = true; // Define una propiedad de entrada para mostrar la nota
-  @Output() closeModal = new EventEmitter<void>(); // Define un EventEmitter para emitir eventos de cierre del modal
+  @Input() product: any;
+  @Input() isOpen: boolean = false;
+  @Input() showNote: boolean = true;
+  @Input() actualizar: boolean = false;
+  @Output() closeModal = new EventEmitter<void>();
 
-  userId: string = this.authService.getUserId(); // Obtiene el ID del usuario del servicio AuthService
-  quantity: number = 1; // Define la cantidad inicial del producto
-  note: string = ''; // Define la nota inicial del producto
-  id_pedido: number = 9; // Define un ID de pedido inicial (puede ser actualizado posteriormente)
+  userId: string = this.authService.getUserId();
+  quantity: number = 1;
+  note: string = '';
+  id_pedido: number = 0;
+  excesoIndicaciones: boolean = false;
 
   // Método para aumentar la cantidad del producto
   increaseQuantity() {
@@ -46,6 +62,15 @@ export class AddToCartComponent {
     }
   }
 
+ngOnChanges(changes: SimpleChanges): void {
+    if (changes['product'] && this.product) {
+      // cada vez que cambie product, se actualiza lo siguiente
+      this.quantity = this.product.cantidad || 1;
+      this.note = this.product.nota || '';
+    }
+  }
+
+
   // Método asincrónico para agregar el producto al carrito
   async addToCart() {
     let detallePedido = {
@@ -56,56 +81,101 @@ export class AddToCartComponent {
     };
 
     try {
-      const pedidosUsuarioFiltrado = await this.getPedidoService.getPedidoById(
+      const pedidosUsuario = await this.getPedidoService.getPedidoById(
         this.userId,
       );
 
-      const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
-        ['PENDIENTE'].includes(pedido.estado),
-      );
-      console.log('ACA LLEGO1');
-      if (pedidoPendiente.length > 0) {
-        detallePedido.id_pedido = pedidoPendiente[0].id_pedido;
-        const detalle = await this.postDetallePedido.postDetallePedido(
-          JSON.stringify(detallePedido),
+      if (pedidosUsuario.length > 0) {
+        const pedidoPendiente = pedidosUsuario.find(
+          (pedido: Pedido) => pedido.estado === 'PENDIENTE',
         );
-        console.log('ACA LLEGO2');
-        const detalleActualizado =
-          await this.getDetallePedido.getDetallePedidoByID(
-            pedidoPendiente[0].id_pedido,
+
+        console.log(
+          'Pedido pendiente' + JSON.stringify(pedidoPendiente, null, 2),
+        );
+
+        if (pedidoPendiente) {
+          detallePedido.id_pedido = pedidoPendiente.id_pedido;
+
+          const productoExistente = pedidoPendiente.items.find(
+            (producto: any) =>
+              producto.id_producto === detallePedido.id_producto,
           );
-        this.carritoService.setCartCount(detalleActualizado.length);
-      } else {
-        console.log('ACA LLEGO3');
-        const pedido = {
-          estado: 'PENDIENTE',
-          importe_total: 0,
-          id_local: 1,
-          id_usuario: parseInt(this.userId),
-        };
-        console.log('ACA LLEGO4');
-
-        const respuesta = await this.postPedido.postPedido(
-          JSON.stringify(pedido),
-        );
-
-        detallePedido.id_pedido = respuesta.id_pedido;
-        const detalle = await this.postDetallePedido.postDetallePedido(
-          JSON.stringify(detallePedido),
-        );
-
-        this.carritoService.setCartCount(1);
+          console.log('productoExistente' + JSON.stringify(productoExistente));
+          if (productoExistente) {
+            console.log('llego al put');
+            this.putDT(detallePedido);
+            this.closeModal.emit();
+            return;
+          }
+          console.log('llego al post');
+          this.postDT(detallePedido);
+          this.closeModal.emit();
+          return;
+        }
       }
+      this.postPedido(detallePedido);
     } catch (error) {
       console.log(error);
     }
     this.closeModal.emit(); // Emite el evento de cierre del modal
   }
 
-  // Método para cerrar el modal
+  async postDT(detallePedido: any) {
+    console.log(
+      `detallepedido post ${JSON.stringify(detallePedido, null, 2)} `,
+    );
+    const detalle = await this.postDetallePedido.postDetallePedido(
+      JSON.stringify(detallePedido),
+    );
+
+    const detalleActualizado = await this.getDetallePedido.getDetallePedidoByID(
+      detallePedido.id_pedido,
+    );
+    this.carritoService.setCartCount(detalleActualizado.length);
+  }
+
+  async putDT(detallePedido: any) {
+    console.log(`detallepedido put ${JSON.stringify(detallePedido, null, 2)} `);
+    const detalle = await this.putDetallePedido.putDT(
+      JSON.stringify(detallePedido),
+      detallePedido.id_pedido,
+      detallePedido.id_producto,
+    );
+
+    const detalleActualizado = await this.getDetallePedido.getDetallePedidoByID(
+      detallePedido.id_pedido,
+    );
+    this.carritoService.setCartCount(detalleActualizado.length);
+  }
+
+  async postPedido(detallePedido: any) {
+    const pedido = {
+      estado: 'PENDIENTE',
+      importe_total: 0,
+      id_local: 1,
+      id_usuario: parseInt(this.userId),
+    };
+
+    const respuesta = await this.postPedidoService.postPedido(
+      JSON.stringify(pedido),
+    );
+
+    detallePedido.id_pedido = respuesta.id_pedido;
+    const detalle = await this.postDetallePedido.postDetallePedido(
+      JSON.stringify(detallePedido),
+    );
+
+    this.carritoService.setCartCount(1);
+  }
+
+  validarIndicaciones() {
+    this.excesoIndicaciones = this.note.length > 200;
+  }
   close() {
-    this.closeModal.emit(); // Emite el evento de cierre del modal
-    this.quantity = 1; // Restablece la cantidad a 1
-    this.note = ''; // Restablece la nota a una cadena vacía
+    this.closeModal.emit();
+    this.quantity = 1;
+    this.note = '';
+    this.product = null;
   }
 }

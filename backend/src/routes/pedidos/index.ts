@@ -280,8 +280,9 @@ const pedidosRoute: FastifyPluginAsync = async (
   // Ruta para obtener todos los pedidos de un usuario por su ID
   fastify.get("/usuario/:id_usuario", {
     schema: {
-      summary: "Obtener todos los pedidos de un usuario por su ID",
-      description: "### Implementa y valida: \n " + "- token \n - params",
+      summary:
+        "Obtener todos los pedidos y sus detalles de un usuario por su ID",
+      description: "### Implementa y valida: \n - token \n - params",
       tags: ["Pedidos"],
       security: [{ BearerAuth: [] }],
       params: {
@@ -293,21 +294,30 @@ const pedidosRoute: FastifyPluginAsync = async (
       },
       response: {
         200: {
-          description: "Proporciona todos los productos y sus datos",
+          description: "Proporciona todos los pedidos y sus detalles",
           type: "array",
-          properties: {
-            ...PedidoSchema.properties,
-          },
-          examples: [
-            {
-              id_pedido: 1,
-              fecha_hora: "2024-10-27T15:30:00Z",
-              estado: "PENDIENTE",
-              importe_total: 1500,
-              id_local: 1,
-              id_usuario: 1,
+          items: {
+            type: "object",
+            properties: {
+              id_pedido: { type: "number" },
+              id_usuario: { type: "number" },
+              estado: { type: "string" },
+              fecha: { type: "string", format: "date-time" },
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id_producto: { type: "number" },
+                    producto: { type: "string" },
+                    precio_unidad: { type: "number" },
+                    cantidad: { type: "number" },
+                    indicaciones: { type: "string" },
+                  },
+                },
+              },
             },
-          ],
+          },
         },
       },
     },
@@ -318,18 +328,65 @@ const pedidosRoute: FastifyPluginAsync = async (
       try {
         // Consulta para obtener todos los pedidos de un usuario por su ID
         const response = await query(
-          "SELECT * FROM pedido WHERE id_usuario = $1",
+          `
+          SELECT 
+            p.id_pedido,
+            p.id_usuario,
+            p.estado,  
+            p.fecha_hora,
+            dp.id_producto,
+            dp.cantidad,
+            dp.indicaciones, 
+            pr.nombre AS producto,
+            pr.precio_unidad -- Incluir precio_unidad
+          FROM pedido p
+          LEFT JOIN detalle_pedido dp ON p.id_pedido = dp.id_pedido
+          LEFT JOIN producto pr ON dp.id_producto = pr.id_producto
+          WHERE p.id_usuario = $1
+          ORDER BY p.fecha_hora DESC
+          `,
           [id_usuario]
         );
 
         if (response.rows.length === 0) {
-          return reply.status(404).send("Pedido no encontrado");
+          return reply.status(404).send("Pedidos no encontrados");
         }
 
-        reply.code(200);
-        return response.rows;
+        // Agrupamos los pedidos y sus detalles
+        const pedidos = response.rows.reduce((acc, row) => {
+          // Verificamos si el pedido ya fue procesado
+          let pedido = acc.find((p: any) => p.id_pedido === row.id_pedido);
+
+          if (!pedido) {
+            // Si el pedido no está en la lista, lo añadimos con su estructura básica
+            pedido = {
+              id_pedido: row.id_pedido,
+              id_usuario: row.id_usuario,
+              estado: row.estado,
+              fecha: row.fecha_hora,
+              items: [],
+            };
+            acc.push(pedido);
+          }
+
+          // Si hay detalles, los agregamos al pedido
+          if (row.id_producto) {
+            pedido.items.push({
+              id_producto: row.id_producto,
+              producto: row.producto,
+              precio_unidad: row.precio_unidad,
+              cantidad: row.cantidad,
+              indicaciones: row.indicaciones,
+            });
+          }
+
+          return acc;
+        }, []);
+
+        reply.code(200).send(pedidos);
       } catch (error) {
-        return reply.status(500).send(error);
+        console.error(error);
+        return reply.status(500).send("Error al obtener los pedidos");
       }
     },
   });

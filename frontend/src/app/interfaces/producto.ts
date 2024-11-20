@@ -6,6 +6,7 @@ export interface Producto {
   precio_unidad: number; // Campo para el precio por unidad del producto
   id_categoria: number; // Campo para el ID de la categoría del producto
   foto: undefined | null | boolean; // Campo para la foto del producto (puede ser undefined, null o boolean)
+  cantidad: number;
 }
 
 // Define la interfaz para representar un producto a crear
