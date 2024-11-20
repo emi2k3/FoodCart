@@ -1,58 +1,55 @@
 <!-- Componente de la barra de navegación -->
 <app-navbar></app-navbar>
 
-<!-- Contenedor principal que aloja los pedidos -->
-<div
-  class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4"
->
-  <!-- Div para cada pedido -->
-  <div
-    class="border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black w-1/4 mb-3"
-    *ngFor="let pedido of pedidos"
-  >
-    <!-- Título del pedido -->
-    <h3 class="font-bold">Pedido</h3>
-    <div class="my-2 border-t border-gray-300"></div>
+<div class="flex justify-center">
+  <div class="grid grid-cols-1 gap-4 pb-40 w-full max-w-4xl overflow-y-auto max-h-screen [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:bg-gray-300
+  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+    <div class="bg-white p-6 rounded-lg shadow-lg flex items-center justify-between mb-8"
+      *ngFor="let pedido of pedidos(); let i = index">
+      <div class="flex-1">
+        <h2 class="text-lg font-semibold text-gray-900">
+          Pedido {{i + 1}}
+        </h2>
+        <p class="text-gray-600" *ngIf="this.isAdmin==false">{{pedido.estado}}</p>
+        <div class="flex items-center gap-2">
+          <div class="relative flex items-center max-w-[6rem]">
+            <select class="text-gray-600" (change)="onChange(pedido, $event)" *ngIf="this.isAdmin==true">
+              <option value="CONFIRMADO">Confirmado</option>
+              <option value="EN_PREPARACION" [selected]="pedido.estado === 'EN_PREPARACION'">
+                En Preparacion
+              </option>
+              <option value="LISTO" [selected]="pedido.estado === 'LISTO'">
+                Listo
+              </option>
+              <option value="EN_CAMINO" [selected]="pedido.estado === 'EN_CAMINO'">
+                En camino
+              </option>
+              <option value="ENTREGADO">Entregado</option>
+              <option value="CANCELADO">Cancelado</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex items-end justify-between w-full">
+          <span class="text-xl font-bold text-gray-900">
+            ${{ pedido.importe_total }}
+          </span>
 
-    <!-- Selector de estado del pedido para administradores -->
-    <select (change)="onChange(pedido, $event)" *ngIf="this.isAdmin==true">
-      <option value="CONFIRMADO">Confirmado</option>
-      <option
-        value="EN_PREPARACION"
-        [selected]="pedido.estado === 'EN_PREPARACION'"
-      >
-        En Preparación
-      </option>
-      <option value="LISTO" [selected]="pedido.estado === 'LISTO'">
-        Listo
-      </option>
-      <option value="EN_CAMINO" [selected]="pedido.estado === 'EN_CAMINO'">
-        En camino
-      </option>
-      <option value="ENTREGADO">Entregado</option>
-      <option value="CANCELADO">Cancelado</option>
-    </select>
-
-    <!-- Estado del pedido para usuarios -->
-    <p *ngIf="this.isAdmin==false">{{pedido.estado}}</p>
-
-    <!-- Precio del pedido -->
-    <p>Precio: <b>{{pedido.importe_total}}</b></p>
-
-    <!-- Botón para cancelar el pedido (solo para usuarios) -->
-    <button
-      class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
-      *ngIf="this.isAdmin==false"
-    >
-      Cancelar
-    </button>
-
-    <!-- Botón para ver los detalles del pedido -->
-    <button
-      class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-      (click)="verDetalles(pedido.id_pedido)"
-    >
-      Ver Detalles
-    </button>
+          <div class="flex gap-4">
+            <button (click)="verDetalles(pedido.id_pedido)"
+              class="bg-green-500 text-white px-3 py-2 rounded-md hover:bg-blue-800 transition-all flex items-center justify-center">
+              Ver detalle del pedido
+            </button>
+            <button
+              class="bg-red-600 text-white px-3 py-2 rounded-md hover:bg-red-700 transition-all flex items-center justify-center"
+              *ngIf="this.isAdmin==false && pedido.estado !='EN_PREPARACION'">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -8,7 +8,6 @@ import { CommonModule, NgFor } from '@angular/common'; // Importa CommonModule y
 @Component({
   selector: 'app-verdetalles-pedidos', // Define el selector del componente, que se utiliza en el HTML
   templateUrl: './verdetalles-pedidos.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrls: ['./verdetalles-pedidos.page.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
   standalone: true, // Indica que el componente es autónomo
   imports: [NavbarComponent, NgFor, CommonModule], // Importa componentes y directivas necesarias
 })
@@ -25,7 +24,7 @@ export class VerdetallesPedidosPage implements OnInit {
   detalle_pedidos: any[] = [];
   productos: any[] = [];
 
-  constructor() {}
+  constructor() { }
 
   // Método para obtener el nombre del producto por su ID
   getProducto(id_producto: string) {

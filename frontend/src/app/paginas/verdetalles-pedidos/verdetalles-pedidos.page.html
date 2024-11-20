@@ -1,28 +1,22 @@
 <!-- Componente de la barra de navegación -->
 <app-navbar></app-navbar>
-
-<!-- Contenedor principal que aloja los detalles del pedido -->
-<div
-  class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4"
->
-  <!-- Div para cada detalle del pedido -->
-  <div
-    class="w-1/4 border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black mt-20"
-    *ngFor="let detalle_pedido of detalle_pedidos"
-  >
-    <!-- Título del detalle del pedido -->
-    <h2 class="mt-2 text-lg font-semibold text-gray-800 text-center">
-      Detalles del pedido
-    </h2>
-    <!-- Información del producto en el pedido -->
-    <p class="text-left text-black">
-      Producto:{{this.getProducto(detalle_pedido.id_producto)}}
-    </p>
-    <!-- Cantidad del producto en el pedido -->
-    <p class="text-left text-black">Cantidad: {{detalle_pedido.cantidad}}</p>
-    <!-- Indicaciones adicionales para el producto en el pedido -->
-    <p class="text-left text-black">
-      Indicaciones:{{detalle_pedido.indicaciones}}
-    </p>
+<div class="flex justify-center">
+  <div class="grid grid-cols-1 gap-4 pb-40 w-full max-w-4xl overflow-y-auto max-h-screen [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-gray-100
+  [&::-webkit-scrollbar-thumb]:bg-gray-300
+  dark:[&::-webkit-scrollbar-track]:bg-neutral-700
+  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
+    <div class="bg-white p-6 rounded-lg shadow-lg flex items-center justify-between mb-8"
+      *ngFor="let detalle_pedido of detalle_pedidos">
+      <div class="flex-1">
+        <h2 class="text-lg font-semibold text-gray-900">
+          Detalles del pedido
+        </h2>
+        <p class="text-gray-600">Producto:{{this.getProducto(detalle_pedido.id_producto)}}</p>
+        <p class="text-black">
+          Indicaciones:{{detalle_pedido.indicaciones}}
+        </p>
+      </div>
+    </div>
   </div>
 </div>

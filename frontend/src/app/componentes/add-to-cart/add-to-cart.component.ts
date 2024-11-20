@@ -62,7 +62,7 @@ export class AddToCartComponent {
     }
   }
 
-ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] && this.product) {
       // cada vez que cambie product, se actualiza lo siguiente
       this.quantity = this.product.cantidad || 1;

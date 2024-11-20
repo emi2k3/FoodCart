@@ -177,6 +177,14 @@ const pedidosRoute: FastifyPluginAsync = async (
         );
 
         await query("COMMIT");
+        const server = fastify.websocketServer;
+
+        for (const socket of server.clients) {
+
+          socket.send("Actualizacion_pedido");
+
+        }
+
         reply.code(200).send(result.rows[0]);
       } catch (error) {
         await query("ROLLBACK");
