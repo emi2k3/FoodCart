@@ -1,21 +1,21 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { GetProductosService } from '../../servicios/productos/get-productos.service';
-import { NavbarComponent } from '../../componentes/navbar/navbar.component';
-import { NgFor, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
-import { AuthService } from '../../servicios/auth.service';
-import { RouterLink } from '@angular/router';
-import { DeleteProductoService } from '../../servicios/productos/delete-producto.service';
-import { Producto } from '../../interfaces/producto';
-import { FooterComponent } from '../../componentes/footer/footer.component';
-import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
-import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
+import { Component, inject, OnInit } from '@angular/core'; // Importa las funciones Component, inject y OnInit de Angular
+import { GetProductosService } from '../../servicios/productos/get-productos.service'; // Importa el servicio GetProductosService
+import { NavbarComponent } from '../../componentes/navbar/navbar.component'; // Importa el componente NavbarComponent
+import { NgFor, NgIf } from '@angular/common'; // Importa las directivas NgFor y NgIf de Angular
+import { Router } from '@angular/router'; // Importa Router para la navegación de rutas
+import { AuthService } from '../../servicios/auth.service'; // Importa el servicio AuthService
+import { RouterLink } from '@angular/router'; // Importa RouterLink para el enlace de rutas
+import { DeleteProductoService } from '../../servicios/productos/delete-producto.service'; // Importa el servicio DeleteProductoService
+import { Producto } from '../../interfaces/producto'; // Importa la interfaz Producto
+import { FooterComponent } from '../../componentes/footer/footer.component'; // Importa el componente FooterComponent
+import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component'; // Importa el componente AddToCartComponent
+import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import { Pedido, PedidoItem } from '../../interfaces/pedido';
 
 @Component({
-  selector: 'app-comidas',
-  standalone: true,
+  selector: 'app-comidas', // Define el selector del componente, que se utiliza en el HTML
+  standalone: true, // Indica que el componente es autónomo
   imports: [
     NavbarComponent,
     NgFor,
@@ -23,30 +23,32 @@ import { Pedido, PedidoItem } from '../../interfaces/pedido';
     NgIf,
     AddToCartComponent,
     FooterComponent,
-  ],
-  templateUrl: './comidas.page.html',
+  ], // Importa componentes necesarios
+  templateUrl: './comidas.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
 })
 export class ComidasPage implements OnInit {
-  productos: Producto[] = [];
-  productosFiltrados: Producto[] = [];
+  productos: Producto[] = []; // Define un array para almacenar los productos
+  productosFiltrados: Producto[] = []; // Define un array para almacenar los productos filtrados
   productoSeleccionado: any = null;
-  isAdmin: boolean = false;
-  modalIsOpen: boolean = false;
+  isAdmin: boolean = false; // Define una propiedad para verificar si el usuario es administrador
+  modalIsOpen: boolean = false; // Define una propiedad para controlar el estado del modal
   actualizar: boolean = false;
-  authService: AuthService = inject(AuthService);
-  getPedidoService: GetPedidosService = inject(GetPedidosService);
+  authService: AuthService = inject(AuthService); // Inyecta el servicio AuthService
+  getPedidoService: GetPedidosService = inject(GetPedidosService); // Inyecta el servicio GetPedidosService
 
-  private cargarTabla: GetProductosService = inject(GetProductosService);
+  private cargarTabla: GetProductosService = inject(GetProductosService); // Inyecta el servicio GetProductosService
   private getDetallePedido: GetDetallePedidosService = inject(
     GetDetallePedidosService,
   );
-  private router: Router = inject(Router);
-  private deleteProduct: DeleteProductoService = inject(DeleteProductoService);
+  private router: Router = inject(Router); // Inyecta la clase Router
+  private deleteProduct: DeleteProductoService = inject(DeleteProductoService); // Inyecta el servicio DeleteProductoService
 
+  // Método que se ejecuta al inicializar el componente
   ngOnInit(): void {
     this.cargarProductos();
   }
 
+  // Método para cargar los productos
   cargarProductos(): void {
     this.cargarTabla.getProductosByCategoria('1').then((data) => {
       this.productos = data;
@@ -55,6 +57,7 @@ export class ComidasPage implements OnInit {
     });
   }
 
+  // Método para actualizar el filtro de productos
   actualizarFiltroDeProductos(searchValue: string) {
     this.productosFiltrados = this.productos.filter((producto) =>
       producto.nombre.toLowerCase().includes(searchValue.toLowerCase()),
@@ -111,17 +114,20 @@ export class ComidasPage implements OnInit {
     this.productoSeleccionado = { ...producto, cantidad: 1, nota: '' };
   }
 
+  // Método para cerrar el modal
   closeModal() {
     this.productoSeleccionado = null;
     this.modalIsOpen = false;
   }
 
+  // Método para ver los detalles de un producto
   onDetalles(idProducto: string) {
     this.router.navigate(['producto/detalles/'], {
       queryParams: { id: idProducto },
     });
   }
 
+  // Método para confirmar la eliminación de un producto
   confirmarEliminacion(productoId: string): void {
     const confirmacion = window.confirm(
       '¿Estás seguro de que deseas eliminar este producto?',
@@ -131,6 +137,7 @@ export class ComidasPage implements OnInit {
     }
   }
 
+  // Método para eliminar un producto
   async eliminarProducto(productoId: string): Promise<void> {
     try {
       await this.deleteProduct.deleteProducto(productoId);
@@ -140,6 +147,7 @@ export class ComidasPage implements OnInit {
     }
   }
 
+  // Método para navegar a la página de creación de productos
   onCreate() {
     this.router.navigate(['productos/ingresar']);
   }

@@ -36,8 +36,9 @@
             *ngIf="currentPasswordCntrl.errors?.['required'] && currentPasswordCntrl.touched"
             for="currentPassword"
             class="text-red-500 text-sm"
-            >Debe ingresar su contraseña actual.</label
           >
+            Debe ingresar su contraseña actual.
+          </label>
         </div>
 
         <!-- Nueva Contraseña -->
@@ -62,8 +63,9 @@
             *ngIf="newPasswordCntrl.errors?.['required'] && newPasswordCntrl.touched"
             for="newPassword"
             class="text-red-500 text-sm"
-            >Debe ingresar una nueva contraseña.</label
           >
+            Debe ingresar una nueva contraseña.
+          </label>
         </div>
 
         <!-- Repetir Nueva Contraseña -->
@@ -90,14 +92,16 @@
             *ngIf="confirmPasswordCntrl.errors?.['required'] && confirmPasswordCntrl.touched"
             for="confirmPassword"
             class="text-red-500 text-sm"
-            >Debe repetir su nueva contraseña.</label
           >
+            Debe repetir su nueva contraseña.
+          </label>
           <label
             *ngIf="user.newPassword !== user.confirmPassword && confirmPasswordCntrl.touched"
             for="confirmPassword"
             class="text-red-500 text-sm"
-            >Las contraseñas no coinciden.</label
           >
+            Las contraseñas no coinciden.
+          </label>
         </div>
 
         <!-- Botón de Restablecer Contraseña -->

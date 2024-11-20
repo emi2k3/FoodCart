@@ -1,5 +1,6 @@
 import { Static, Type } from "@sinclair/typebox";
 
+// Define el esquema para el identificador del pedido
 export const IdPedidoSchema = Type.Object({
   id: Type.Integer({
     description: "Identificador único del pedido",
@@ -7,6 +8,7 @@ export const IdPedidoSchema = Type.Object({
 });
 export type IdPedidoType = Static<typeof IdPedidoSchema>;
 
+// Define el esquema para crear un nuevo pedido
 export const PedidoPostSchema = Type.Object(
   {
     estado: Type.String({
@@ -32,11 +34,11 @@ export const PedidoPostSchema = Type.Object(
       description: "Identificador del usuario",
     }),
   },
-  { additionalProperties: false }
+  { additionalProperties: false } // No se permiten propiedades adicionales
 );
-
 export type PedidoPostType = Static<typeof PedidoPostSchema>;
 
+// Define el esquema para representar un pedido
 export const PedidoSchema = Type.Object(
   {
     id_pedido: Type.Integer({
@@ -69,7 +71,6 @@ export const PedidoSchema = Type.Object(
       description: "Identificador del usuario",
     }),
   },
-  { additionalProperties: false }
+  { additionalProperties: false } // No se permiten propiedades adicionales
 );
-
 export type PedidoSchema = Static<typeof PedidoSchema>;

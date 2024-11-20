@@ -1,13 +1,27 @@
+<!-- Componente de la barra de navegación -->
 <app-navbar></app-navbar>
-<div class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4">
-  <div class="border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black w-1/4 mb-3"
-    *ngFor="let pedido of pedidos">
+
+<!-- Contenedor principal que aloja los pedidos -->
+<div
+  class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4"
+>
+  <!-- Div para cada pedido -->
+  <div
+    class="border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black w-1/4 mb-3"
+    *ngFor="let pedido of pedidos"
+  >
+    <!-- Título del pedido -->
     <h3 class="font-bold">Pedido</h3>
     <div class="my-2 border-t border-gray-300"></div>
+
+    <!-- Selector de estado del pedido para administradores -->
     <select (change)="onChange(pedido, $event)" *ngIf="this.isAdmin==true">
       <option value="CONFIRMADO">Confirmado</option>
-      <option value="EN_PREPARACION" [selected]="pedido.estado === 'EN_PREPARACION'">
-        En Preparacion
+      <option
+        value="EN_PREPARACION"
+        [selected]="pedido.estado === 'EN_PREPARACION'"
+      >
+        En Preparación
       </option>
       <option value="LISTO" [selected]="pedido.estado === 'LISTO'">
         Listo
@@ -18,13 +32,26 @@
       <option value="ENTREGADO">Entregado</option>
       <option value="CANCELADO">Cancelado</option>
     </select>
+
+    <!-- Estado del pedido para usuarios -->
     <p *ngIf="this.isAdmin==false">{{pedido.estado}}</p>
-    <p>Precio:<b>{{pedido.importe_total}}</b></p>
-    <button class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700" *ngIf="this.isAdmin==false">
+
+    <!-- Precio del pedido -->
+    <p>Precio: <b>{{pedido.importe_total}}</b></p>
+
+    <!-- Botón para cancelar el pedido (solo para usuarios) -->
+    <button
+      class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
+      *ngIf="this.isAdmin==false"
+    >
       Cancelar
     </button>
-    <button class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
-      (click)="verDetalles(pedido.id_pedido)">
+
+    <!-- Botón para ver los detalles del pedido -->
+    <button
+      class="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+      (click)="verDetalles(pedido.id_pedido)"
+    >
       Ver Detalles
     </button>
   </div>

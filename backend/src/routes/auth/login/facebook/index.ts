@@ -4,16 +4,18 @@ import {
   FastifyRequest,
   FastifyPluginAsync,
 } from "fastify";
-import got from "got";
+import got from "got"; // Librería para hacer solicitudes HTTP.
 import { query } from "../../../../services/database.js";
 import { OAuth2Namespace } from "@fastify/oauth2";
 
+// Declara el namespace para usar Facebook OAuth2.
 declare module "fastify" {
   interface FastifyInstance {
     facebookOAuth2: OAuth2Namespace;
   }
 }
 
+// Interface que describe la información del usuario obtenida de Facebook.
 interface FacebookUserInfo {
   id: string;
   email: string;
@@ -27,14 +29,16 @@ interface FacebookUserInfo {
   };
 }
 
+// Plugin de rutas para manejar la autenticación con Facebook.
 const facebookRoutes: FastifyPluginAsync = async (
   fastify: FastifyInstance,
   opts: any
 ): Promise<void> => {
   fastify.get(
-    "/callback",
+    "/callback", // Ruta de callback para Facebook OAuth.
     async function (request: FastifyRequest, reply: FastifyReply) {
       try {
+        // Obtiene el token de acceso desde el flujo de autorización.
         const { token: facebookToken } =
           await fastify.facebookOAuth2.getAccessTokenFromAuthorizationCodeFlow(
             request
@@ -42,6 +46,7 @@ const facebookRoutes: FastifyPluginAsync = async (
 
         console.log({ facebookToken });
 
+        // Solicita la información del usuario a Facebook.
         const userInfo: FacebookUserInfo = await got
           .get(
             "https://graph.facebook.com/me?fields=id,email,first_name,last_name,picture",
@@ -54,10 +59,13 @@ const facebookRoutes: FastifyPluginAsync = async (
           .json();
 
         console.log({ userInfo });
+
+        // Verifica si el usuario ya existe en la base de datos.
         const res = await query("SELECT * FROM usuario WHERE email=$1", [
           userInfo.email,
         ]);
 
+        // Si no existe, redirige al formulario de registro.
         if (res.rowCount === 0) {
           const formUrl = `https://localhost/registro?email=${encodeURIComponent(
             userInfo.email
@@ -67,6 +75,7 @@ const facebookRoutes: FastifyPluginAsync = async (
           return reply.redirect(formUrl);
         }
 
+        // Si existe, genera un token JWT y redirige al cliente.
         const payload = {
           id: res.rows[0].id,
           email: res.rows[0].email,
@@ -78,7 +87,7 @@ const facebookRoutes: FastifyPluginAsync = async (
         const url = `https://localhost/?token=${token}`;
         return reply.redirect(url);
       } catch (error) {
-        return reply.redirect("https://localhost");
+        return reply.redirect("https://localhost"); // Si ocurre un error, redirige al inicio.
       }
     }
   );

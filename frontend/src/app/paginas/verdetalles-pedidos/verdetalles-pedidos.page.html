@@ -1,18 +1,26 @@
+<!-- Componente de la barra de navegación -->
 <app-navbar></app-navbar>
+
+<!-- Contenedor principal que aloja los detalles del pedido -->
 <div
   class="flex flex-wrap justify-center space-x-4 max-h-screen overflow-y-auto mt-4"
 >
+  <!-- Div para cada detalle del pedido -->
   <div
     class="w-1/4 border-2 border-blue-400 rounded-lg p-4 shadow-lg bg-white text-black mt-20"
     *ngFor="let detalle_pedido of detalle_pedidos"
   >
+    <!-- Título del detalle del pedido -->
     <h2 class="mt-2 text-lg font-semibold text-gray-800 text-center">
       Detalles del pedido
     </h2>
+    <!-- Información del producto en el pedido -->
     <p class="text-left text-black">
       Producto:{{this.getProducto(detalle_pedido.id_producto)}}
     </p>
+    <!-- Cantidad del producto en el pedido -->
     <p class="text-left text-black">Cantidad: {{detalle_pedido.cantidad}}</p>
+    <!-- Indicaciones adicionales para el producto en el pedido -->
     <p class="text-left text-black">
       Indicaciones:{{detalle_pedido.indicaciones}}
     </p>

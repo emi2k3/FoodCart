@@ -6,6 +6,8 @@ const detallePedidoRoute: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
+  // ################################################### GET ###################################################
+  // Ruta para obtener un listado de detalle de pedidos por ID de pedido
   fastify.get("/:id_pedido", {
     schema: {
       summary: "Listado de detalle de pedidos conseguidos por id",
@@ -30,11 +32,12 @@ const detallePedidoRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_pedido = (request.params as { id_pedido: string }).id_pedido;
 
       try {
+        // Consulta para obtener el detalle del pedido por ID de pedido
         const response = await query(
           "SELECT * FROM detalle_pedido WHERE id_pedido = $1",
           [id_pedido]
@@ -51,6 +54,8 @@ const detallePedidoRoute: FastifyPluginAsync = async (
     },
   });
 
+  // ################################################### POST ###################################################
+  // Ruta para crear un nuevo detalle de pedido
   fastify.post("/", {
     schema: {
       summary: "Crear un nuevo detalle de pedido",
@@ -77,7 +82,7 @@ const detallePedidoRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const { cantidad, indicaciones, id_pedido, id_producto } =
         request.body as {
@@ -88,7 +93,6 @@ const detallePedidoRoute: FastifyPluginAsync = async (
         };
 
       try {
-        console.log(request.body);
         // Verificar si el pedido existe
         const pedidoExists = await query(
           "SELECT id_pedido FROM pedido WHERE id_pedido = $1",
@@ -109,6 +113,7 @@ const detallePedidoRoute: FastifyPluginAsync = async (
           return reply.status(404).send("El producto especificado no existe");
         }
 
+        // Inserta el nuevo detalle de pedido en la base de datos
         const response = await query(
           `INSERT INTO detalle_pedido(
                         cantidad,
@@ -192,6 +197,10 @@ const detallePedidoRoute: FastifyPluginAsync = async (
     },
   });
 
+
+  // ################################################### DELETE ###################################################
+  // Ruta para eliminar un detalle de pedido por ID de pedido e ID de producto
+  
   fastify.delete("/:id_pedido/:id_producto", {
     schema: {
       summary: "Eliminar un detalle de pedido por Id pedido y Id producto",
@@ -223,7 +232,7 @@ const detallePedidoRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const { id_pedido, id_producto } = request.params as {
         id_pedido: number;

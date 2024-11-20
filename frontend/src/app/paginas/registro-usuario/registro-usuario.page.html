@@ -3,7 +3,7 @@
   <div
     class="bg-gray-100 flex flex-col md:flex-row rounded-2xl shadow-lg max-w-3xl p-5 max-h-[90vh] overflow-auto"
   >
-    <!-- Aca va el form -->
+    <!-- Aquí va el formulario de registro -->
     <div class="w-full px-8">
       <h2 class="font-bold text-2xl text-slate-800 text-center">Registro</h2>
       <form
@@ -14,7 +14,7 @@
       >
         <div class="grid grid-cols-2 gap-4">
           <div class="flex flex-col">
-            <!-- Nombre -->
+            <!-- Campo para el nombre -->
             <label class="mt-5">Nombre</label>
             <input
               type="text"
@@ -27,10 +27,10 @@
               [(ngModel)]="nombre"
               #nombreCntrl="ngModel"
               [ngClass]="{
-            'border-red-500 bg-red-50': nombreCntrl.invalid && nombreCntrl.touched,
-            'border-gray-300': !nombreCntrl.touched,
-            'border-green-500 bg-green-50': nombreCntrl.valid && nombreCntrl.touched
-          }"
+                'border-red-500 bg-red-50': nombreCntrl.invalid && nombreCntrl.touched,
+                'border-gray-300': !nombreCntrl.touched,
+                'border-green-500 bg-green-50': nombreCntrl.valid && nombreCntrl.touched
+              }"
             />
             <label
               *ngIf="nombreCntrl.errors?.['required'] && nombreCntrl.touched"
@@ -46,7 +46,7 @@
             >
           </div>
           <div class="flex flex-col">
-            <!-- Apellido -->
+            <!-- Campo para el apellido -->
             <label class="mt-5">Apellido</label>
             <input
               type="text"
@@ -59,10 +59,10 @@
               [(ngModel)]="apellido"
               #apellidoCntrl="ngModel"
               [ngClass]="{
-            'border-red-500 bg-red-50': apellidoCntrl.invalid && apellidoCntrl.touched,
-            'border-gray-300': !apellidoCntrl.touched,
-            'border-green-500 bg-green-50': apellidoCntrl.valid && apellidoCntrl.touched
-          }"
+                'border-red-500 bg-red-50': apellidoCntrl.invalid && apellidoCntrl.touched,
+                'border-gray-300': !apellidoCntrl.touched,
+                'border-green-500 bg-green-50': apellidoCntrl.valid && apellidoCntrl.touched
+              }"
             />
             <label
               *ngIf="apellidoCntrl.errors?.['required'] && apellidoCntrl.touched"
@@ -79,7 +79,7 @@
           </div>
         </div>
 
-        <!-- Email -->
+        <!-- Campo para el email -->
         <label class="mt-5">Email</label>
         <input
           type="text"
@@ -107,10 +107,10 @@
           *ngIf="emailCntrl.errors?.['email']"
           for="email"
           class="text-red-500 text-sm"
-          >Tiene que colocar un email valido.</label
+          >Tiene que colocar un email válido.</label
         >
 
-        <!-- Teléfono -->
+        <!-- Campo para el teléfono -->
         <label class="mt-5">Teléfono</label>
         <input
           type="text"
@@ -138,10 +138,10 @@
           *ngIf="telefonoCntrl.errors?.['pattern'] && telefonoCntrl.touched"
           for="telefono"
           class="text-red-500 text-sm"
-          >Su telefono solo puede tener números.</label
+          >Su teléfono solo puede tener números.</label
         >
 
-        <!-- Calle -->
+        <!-- Campo para la calle -->
         <label class="mt-5">Calle</label>
         <input
           type="text"
@@ -165,7 +165,7 @@
           >Tiene que colocar su calle.</label
         >
 
-        <!-- Número -->
+        <!-- Campo para el número -->
         <label class="mt-5">Número</label>
         <input
           type="text"
@@ -189,8 +189,7 @@
           class="text-red-500 text-sm"
           >Tiene que colocar su número.</label
         >
-
-        <!-- Apto -->
+        <!-- Campo para el apartamento -->
         <label class="mt-5">Apto</label>
         <input
           type="text"
@@ -213,7 +212,7 @@
           >Máximo de 5 caracteres.</label
         >
 
-        <!-- Contraseña -->
+        <!-- Campo para la contraseña -->
         <label class="mt-5">Contraseña</label>
         <input
           type="password"
@@ -253,10 +252,10 @@
           *ngIf="passControl.errors?.['pattern'] && passControl.touched"
           class="text-red-500 text-sm inline-block w-auto"
           >Su contraseña debe contener una minúscula y mayúscula, un número y
-          caracter especial.</label
+          carácter especial.</label
         >
 
-        <!-- Confirmar Contraseña -->
+        <!-- Campo para confirmar la contraseña -->
         <label class="mt-5">Confirmar Contraseña</label>
         <input
           type="password"
@@ -297,14 +296,8 @@
           class="text-red-500 text-sm"
           >Su contraseña debe ser igual.</label
         >
-        <!-- <label class="mt-5">Foto:</label>
-        <input
-          type="file"
-          name="Foto"
-          id="Foto"
-          class="p-2 rounded-xl border w-full"
-          [(ngModel)]="foto"
-        /> -->
+
+        <!-- Botón de envío -->
         <button
           type="submit"
           [disabled]="formregister.invalid"

@@ -8,6 +8,8 @@ const usuarioRoute: FastifyPluginAsync = async (
   fastify,
   opts
 ): Promise<void> => {
+  // ################################################### POST ###################################################
+  // Ruta para crear un nuevo usuario
   fastify.post("/", {
     schema: {
       summary: "Crear un usuario",
@@ -22,12 +24,15 @@ const usuarioRoute: FastifyPluginAsync = async (
     },
     handler: async function (request, reply) {
       const postUsuario = request.body as UsuarioPostSchema;
+
+      // Verifica si las contraseñas coinciden
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
         return reply
           .status(400)
           .send({ error: "Las contraseñas no coinciden" });
       }
 
+      // Guarda la foto de usuario si existe
       if (postUsuario.foto && Object.keys(postUsuario.foto).length > 0) {
         try {
           const fileBuffer = postUsuario.foto as Buffer;
@@ -36,7 +41,7 @@ const usuarioRoute: FastifyPluginAsync = async (
             "Resources",
             postUsuario.email + ".jpg"
           );
-          writeFileSync(fileName, fileBuffer);
+          writeFileSync(fileName, fileBuffer); // Guarda la imagen en el servidor
         } catch (error) {
           console.error("Error al intentar crear la imagen:", error);
           return reply
@@ -50,6 +55,7 @@ const usuarioRoute: FastifyPluginAsync = async (
       try {
         await client.query("BEGIN");
 
+        // Inserta la nueva dirección y teléfono, y crea el usuario
         const baseQuery = `
           WITH direccionid AS (
             INSERT INTO direccion (numero, calle${
@@ -107,6 +113,7 @@ const usuarioRoute: FastifyPluginAsync = async (
 
         var recipient = postUsuario.email;
 
+        // Envía un correo de confirmación al usuario
         fastify.mailer.sendMail({
           from: process.env.user,
           to: recipient,
@@ -127,6 +134,8 @@ const usuarioRoute: FastifyPluginAsync = async (
     },
   });
 
+  // ################################################### GET ###################################################
+  // Ruta para obtener todos los usuarios
   fastify.get("/", {
     schema: {
       summary: "Obtener todos los usuarios",
@@ -137,7 +146,7 @@ const usuarioRoute: FastifyPluginAsync = async (
         200: {},
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const response = await query("SELECT * from usuario");
       reply.code(200);

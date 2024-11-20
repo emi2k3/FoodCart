@@ -1,6 +1,10 @@
+<!-- Componente de la barra de navegación -->
 <app-navbar></app-navbar>
+<!-- Contenedor principal -->
 <div class="w-full h-[calc(100vh-64px)] bg-gray-900 overflow-auto">
+  <!-- Contenido principal -->
   <main class="bg-gray-900 max-w-7xl mx-auto px-4 py-8">
+    <!-- Título del carrito de compras -->
     <h1 class="text-2xl font-bold mb-4 text-white">Carrito de Compras</h1>
 
     <div *ngIf="productos.length === 0; else carritoContenido">
@@ -71,6 +75,7 @@
       (closeModal)="closeModal()"
     >
     </add-to-cart>
+
     <div
       *ngIf="productos.length > 0"
       class="fixed bottom-0 left-0 right-0 bg-gray-900 p-4 border-t border-gray-800"

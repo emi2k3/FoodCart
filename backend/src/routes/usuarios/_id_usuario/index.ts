@@ -1,5 +1,10 @@
 import { FastifyPluginAsync } from "fastify";
-import { IdUsuario, IdUsuarioSchema, usuarioGet, UsuarioPostSchema } from "../../../types/usuario.js";
+import {
+  IdUsuario,
+  IdUsuarioSchema,
+  usuarioGet,
+  UsuarioPostSchema,
+} from "../../../types/usuario.js";
 import { join } from "node:path";
 import { writeFileSync } from "node:fs";
 import { query } from "../../../services/database.js";
@@ -9,9 +14,9 @@ const usuarioIdRoute: FastifyPluginAsync = async (
   opts
 ): Promise<void> => {
   // ####################################################### PUT #####################################################
-
+  // Ruta para editar un usuario por su ID
   fastify.put("/", {
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     schema: {
       summary: "Editar un usuario por su id",
       tags: ["Usuarios"],
@@ -27,21 +32,24 @@ const usuarioIdRoute: FastifyPluginAsync = async (
     },
     handler: async function (request, reply) {
       const postUsuario = request.body as UsuarioPostSchema;
-
       const id = request.params as IdUsuario;
       const idt = request.user.id;
+
+      // Verifica si el usuario tiene permisos para editar
       if (id.id_usuario != parseInt(idt)) {
         return reply
           .status(401)
           .send({ error: "No tiene permisos para hacer esto." });
       }
 
+      // Verifica si las contraseñas coinciden
       if (postUsuario.contraseña != postUsuario.repetirContraseña) {
         return reply
           .status(400)
           .send({ error: "Las contraseñas no coinciden" });
       }
 
+      // Guarda la foto de usuario si existe
       try {
         if (postUsuario.foto && Object.keys(postUsuario.foto).length > 0) {
           const fileBuffer = postUsuario.foto as Buffer;
@@ -59,6 +67,7 @@ const usuarioIdRoute: FastifyPluginAsync = async (
           .send("Hubo un error al intentar crear la imagen");
       }
 
+      // Actualiza la dirección
       if (postUsuario.apto != null || postUsuario.apto != undefined) {
         try {
           await query(
@@ -83,6 +92,7 @@ const usuarioIdRoute: FastifyPluginAsync = async (
         }
       }
 
+      // Actualiza el teléfono
       try {
         await query(
           "UPDATE telefono set numeroTel = $1 WHERE id_usuario = $2",
@@ -94,6 +104,7 @@ const usuarioIdRoute: FastifyPluginAsync = async (
           .send("Hubo un error al intentar actualizar el teléfono.");
       }
 
+      // Actualiza la información del usuario
       try {
         await query(
           "UPDATE usuario set nombre = $1, email = $2, contraseña = crypt($3, gen_salt('bf')) WHERE id = $4",
@@ -107,24 +118,27 @@ const usuarioIdRoute: FastifyPluginAsync = async (
   });
 
   // ##################################################### DELETE #####################################################
-
+  // Ruta para borrar un usuario por su ID
   fastify.delete("/", {
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     schema: {
       summary: "Borrar un usuario por su id",
       tags: ["Usuarios"],
       security: [{ BearerAuth: [] }],
       description: "Borrar un usuario",
-      params: IdUsuarioSchema
+      params: IdUsuarioSchema,
     },
     handler: async function (request, reply) {
       const id = request.params as IdUsuario;
       const idt = request.user.id;
+
+      // Verifica si el usuario tiene permisos para borrar
       if (id.id_usuario != parseInt(idt)) {
         return reply
           .status(401)
           .send({ error: "No tiene permisos para hacer esto." });
       }
+
       try {
         await query("DELETE FROM usuario WHERE id = $1", [idt]);
       } catch (error) {
@@ -134,6 +148,8 @@ const usuarioIdRoute: FastifyPluginAsync = async (
     },
   });
 
+  // #################################################### GET #####################################################
+  // Ruta para obtener los datos de un usuario por su ID
   fastify.get("/:id_usuario", {
     schema: {
       summary: "Se consiguen los datos del usuario",
@@ -148,9 +164,7 @@ const usuarioIdRoute: FastifyPluginAsync = async (
           properties: {
             ...usuarioGet.properties,
           },
-          example:
-          {
-
+          example: {
             id: 1,
             nombre: "ad",
             apellido: "min",
@@ -158,22 +172,23 @@ const usuarioIdRoute: FastifyPluginAsync = async (
             id_direccion: 1,
             id_telefono: 1,
             foto: false,
-            admin: true
-
+            admin: true,
           },
-
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const { id_usuario } = request.params as IdUsuario;
       const idt = request.user.id;
+
+      // Verifica si el usuario tiene permisos para acceder
       if (id_usuario != parseInt(idt)) {
         return reply
           .status(401)
           .send({ error: "No tiene permisos para hacer esto." });
       }
+
       const response = await query("SELECT * from usuario WHERE id=$1", [idt]);
 
       reply.status(200);
@@ -181,7 +196,5 @@ const usuarioIdRoute: FastifyPluginAsync = async (
     },
   });
 };
-
-
 
 export default usuarioIdRoute;

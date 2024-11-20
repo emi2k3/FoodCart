@@ -8,12 +8,14 @@ import got from "got";
 import { query } from "../../../../services/database.js";
 import { OAuth2Namespace } from "@fastify/oauth2";
 
+// Declara el namespace para usar Google OAuth2.
 declare module "fastify" {
   interface FastifyInstance {
     googleOAuth2: OAuth2Namespace;
   }
 }
 
+// Interface que describe la información del usuario obtenida de Google.
 interface GoogleUserInfo {
   id: string;
   email: string;
@@ -25,12 +27,13 @@ interface GoogleUserInfo {
   locale: string;
 }
 
+// Plugin de rutas para manejar la autenticación con Google.
 const googleRoutes: FastifyPluginAsync = async (
   fastify: FastifyInstance,
   opts: any
 ): Promise<void> => {
   fastify.get(
-    "/callback",
+    "/callback", // Ruta de callback para Google OAuth.
     async function (request: FastifyRequest, reply: FastifyReply) {
       const { token: googletoken } =
         await fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(
@@ -38,8 +41,8 @@ const googleRoutes: FastifyPluginAsync = async (
         );
 
       console.log({ googletoken });
-      //En caso de obtenerlo, muestra que funcionó todo bien
 
+      // Solicita la información del usuario a Google.
       const userInfo: GoogleUserInfo = await got
         .get("https://www.googleapis.com/oauth2/v2/userinfo", {
           headers: {
@@ -49,13 +52,14 @@ const googleRoutes: FastifyPluginAsync = async (
         .json();
 
       console.log({ userInfo });
+
+      // Verifica si el usuario ya existe en la base de datos.
       const res = await query("SELECT * FROM usuario WHERE email=$1", [
         userInfo.email,
       ]);
 
-      //Si no existe el mail en la bd
+      // Si no existe, redirige al formulario de registro.
       if (res.rowCount === 0) {
-        ``;
         const formUrl = `https://localhost/registro?email=${encodeURIComponent(
           userInfo.email
         )}&given_name=${encodeURIComponent(
@@ -64,6 +68,7 @@ const googleRoutes: FastifyPluginAsync = async (
         return reply.redirect(formUrl);
       }
 
+      // Si existe, genera un token JWT y redirige al cliente.
       const payload = {
         id: res.rows[0].id,
         email: res.rows[0].email,

@@ -15,7 +15,7 @@ const productosRoute: FastifyPluginAsync = async (
   opts
 ): Promise<void> => {
   // ################################################### GET ###################################################
-
+  // Ruta para obtener un listado completo de productos
   fastify.get("/", {
     schema: {
       summary: "Listado de productos completo",
@@ -44,7 +44,7 @@ const productosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const response = await query("SELECT * FROM producto");
       if (response.rows.length == 0 || !response.rows) {
@@ -55,8 +55,8 @@ const productosRoute: FastifyPluginAsync = async (
     },
   });
 
-  // ################################################### GET BY ID_CATEGORIA ########################################################################
-
+  // ################################################### GET BY ID_CATEGORIA ###################################################
+  // Ruta para obtener un listado de productos filtrados por categoría
   fastify.get("/categoria/:id_categoria", {
     schema: {
       summary: "Listado de productos filtrados por categoría",
@@ -95,11 +95,10 @@ const productosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_categoria = (request.params as { id_categoria: string })
         .id_categoria;
-      // const fs = require('fs');
       try {
         const response = await query(
           "SELECT * FROM producto WHERE id_categoria = $1",
@@ -111,16 +110,6 @@ const productosRoute: FastifyPluginAsync = async (
             error: "No se encontraron productos para la categoría especificada",
           });
         }
-        // response.rows.forEach(element => {
-        //   if (element.foto) {
-        //     let filePath = join(process.cwd(), 'Resources', 'img', 'productos', `${element.id_producto}.png`);
-        //     let fileBuffer = fs.readFileSync(filePath);
-        //     if (fs.existsSync(filePath)) {
-        //       let base64Image = `data:image/png;base64,${fileBuffer.toString('base64')}`;
-        //     }
-        //   }
-
-        // });
         reply.code(200).send(response.rows);
       } catch (error) {
         return reply.status(500).send(error);
@@ -128,11 +117,11 @@ const productosRoute: FastifyPluginAsync = async (
     },
   });
 
-  // ######################################################### GET BY ID_PRODUCTO ####################################################################
-
+  // ######################################################### GET BY ID_PRODUCTO #########################################################
+  // Ruta para obtener un producto por su ID
   fastify.get("/:id_producto", {
     schema: {
-      summary: "Listado de productos filtrados por categoría",
+      summary: "Obtener un producto por su ID",
       description: "### Implementa y valida: \n" + "- token \n" + "- params",
       tags: ["Productos"],
       security: [{ BearerAuth: [] }],
@@ -145,14 +134,13 @@ const productosRoute: FastifyPluginAsync = async (
       },
       response: {
         200: {
-          description: "Proporciona los productos filtrados por categoría",
+          description: "Proporciona el producto con el ID especificado",
           type: "object",
           properties: {
             ...IdProductoSchema.properties,
             ...productoGet.properties,
           },
-          example:
-          {
+          example: {
             id_producto: 1,
             nombre: "Hamburgesa Triple",
             descripcion:
@@ -161,11 +149,10 @@ const productosRoute: FastifyPluginAsync = async (
             id_categoria: 1,
             foto: true,
           },
-
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_producto = (request.params as { id_producto: string })
         .id_producto;
@@ -189,8 +176,8 @@ const productosRoute: FastifyPluginAsync = async (
     },
   });
 
-  // ########################################################### PUT #################################################################################
-
+  // ########################################################### PUT ###########################################################
+  // Ruta para modificar un producto por su ID
   fastify.put("/:id_producto", {
     schema: {
       summary: "Modificación de un producto por su id",
@@ -222,7 +209,7 @@ const productosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const bodyProducto: productoPostType = request.body as productoPostType;
       const id_producto = (request.params as { id_producto: string })
@@ -240,7 +227,7 @@ const productosRoute: FastifyPluginAsync = async (
           // var fileUrl = `/Resources/${fileName}`;
         }
 
-        //para que no funcione como un post verificamos que el producto exista
+        // Para que no funcione como un post verificamos que el producto exista
         const existingProduct = await query(
           "SELECT * FROM producto WHERE id_producto = $1",
           [id_producto]
@@ -250,6 +237,7 @@ const productosRoute: FastifyPluginAsync = async (
           return reply.status(404).send({ error: "Producto no encontrado" });
         }
 
+        // Actualiza el producto en la base de datos
         const result = await query(
           `UPDATE producto SET
             nombre = $1,
@@ -275,10 +263,10 @@ const productosRoute: FastifyPluginAsync = async (
   });
 
   // ################################################### DELETE #################################################
-
+  // Ruta para eliminar un producto por su ID
   fastify.delete("/:id_producto", {
     schema: {
-      summary: "Eliminación un producto por su id",
+      summary: "Eliminación de un producto por su id",
       description:
         "### Implementa y valida: \n " +
         " - token \n " +
@@ -294,7 +282,6 @@ const productosRoute: FastifyPluginAsync = async (
         },
         required: ["id_producto"],
       },
-
       response: {
         204: {
           description: "Producto eliminado correctamente",
@@ -302,7 +289,7 @@ const productosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const id_producto = (request.params as { id_producto: string })
         .id_producto;
@@ -319,7 +306,7 @@ const productosRoute: FastifyPluginAsync = async (
   });
 
   // ################################################### POST ###################################################
-
+  // Ruta para crear un nuevo producto
   fastify.post("/", {
     schema: {
       summary: "Creación de un producto",
@@ -337,7 +324,7 @@ const productosRoute: FastifyPluginAsync = async (
         },
       },
     },
-    onRequest: [fastify.authenticate],
+    onRequest: [fastify.authenticate], // Middleware para autenticar
     handler: async function (request, reply) {
       const bodyProducto: productoPostType = request.body as productoPostType;
       var tieneFoto: boolean = false;
@@ -350,12 +337,12 @@ const productosRoute: FastifyPluginAsync = async (
 
       const result = await query(
         `INSERT INTO producto(
-          nombre,
-          descripcion,
-          precio_unidad,
-          id_categoria, 
-          foto
-        ) VALUES($1,$2,$3,$4,$5) RETURNING *`,
+        nombre,
+        descripcion,
+        precio_unidad,
+        id_categoria, 
+        foto
+      ) VALUES($1,$2,$3,$4,$5) RETURNING *`,
         [
           bodyProducto.nombre,
           bodyProducto.descripcion,
@@ -377,6 +364,7 @@ const productosRoute: FastifyPluginAsync = async (
             filename
           );
 
+          // Guarda la foto del producto en el servidor
           writeFileSync(filePath, fileBuffer);
         }
 

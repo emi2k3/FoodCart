@@ -50,17 +50,19 @@ export class AddToCartComponent {
   id_pedido: number = 0;
   excesoIndicaciones: boolean = false;
 
+  // Método para aumentar la cantidad del producto
   increaseQuantity() {
     this.quantity++;
   }
 
+  // Método para disminuir la cantidad del producto
   decreaseQuantity() {
     if (this.quantity > 1) {
       this.quantity--;
     }
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+ngOnChanges(changes: SimpleChanges): void {
     if (changes['product'] && this.product) {
       // cada vez que cambie product, se actualiza lo siguiente
       this.quantity = this.product.cantidad || 1;
@@ -68,6 +70,8 @@ export class AddToCartComponent {
     }
   }
 
+
+  // Método asincrónico para agregar el producto al carrito
   async addToCart() {
     let detallePedido = {
       cantidad: this.quantity,
@@ -85,6 +89,7 @@ export class AddToCartComponent {
         const pedidoPendiente = pedidosUsuario.find(
           (pedido: Pedido) => pedido.estado === 'PENDIENTE',
         );
+
         console.log(
           'Pedido pendiente' + JSON.stringify(pedidoPendiente, null, 2),
         );
@@ -113,7 +118,7 @@ export class AddToCartComponent {
     } catch (error) {
       console.log(error);
     }
-    this.closeModal.emit();
+    this.closeModal.emit(); // Emite el evento de cierre del modal
   }
 
   async postDT(detallePedido: any) {

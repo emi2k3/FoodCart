@@ -2,7 +2,10 @@ import fp from "fastify-plugin";
 import sensible, { FastifySensibleOptions } from "@fastify/sensible";
 
 /**
- * This plugins adds some utilities to handle http errors
+ * Plugin para manejar errores HTTP de manera más eficiente.
+ *
+ * Este plugin agrega utilidades para devolver respuestas de error
+ * con códigos HTTP y mensajes consistentes.
  *
  * @see https://github.com/fastify/fastify-sensible
  */
