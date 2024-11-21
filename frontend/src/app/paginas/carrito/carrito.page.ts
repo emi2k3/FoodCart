@@ -13,15 +13,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Producto } from '../../interfaces/producto';
 import { Pedido } from '../../interfaces/pedido';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
-import { ConfirmOrderComponent } from "../../componentes/confirm-order/confirm-order/confirm-order.component";
-
+import { ConfirmOrderComponent } from '../../componentes/confirm-order/confirm-order/confirm-order.component';
 
 @Component({
   selector: 'app-carrito', // Define el selector del componente, que se utiliza en el HTML
   standalone: true, // Indica que el componente es autónomo
   imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent], // Importa componentes necesarios
   templateUrl: './carrito.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-
 })
 export class CarritoPage implements OnInit {
   // Inyecta los servicios utilizando la función inject
@@ -47,7 +45,7 @@ export class CarritoPage implements OnInit {
   actualizar: boolean = false;
   productoSeleccionado: any = null;
 
-  constructor() { }
+  constructor() {}
 
   // Método que se ejecuta al inicializar el componente
   ngOnInit() {

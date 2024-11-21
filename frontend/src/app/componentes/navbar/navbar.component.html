@@ -130,7 +130,9 @@
           </a>
         </li>
       </ul>
-      <app-search (searchTask)="onSearchValue($event)"></app-search>
+      <div *ngIf="withSearch">
+        <app-search (searchTask)="onSearchValue($event)"></app-search>
+      </div>
     </div>
   </div>
 </nav>

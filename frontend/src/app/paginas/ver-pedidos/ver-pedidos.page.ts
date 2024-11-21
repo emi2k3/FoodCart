@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { NavbarComponent } from '../../componentes/navbar/navbar.component';
 import { AuthService } from '../../servicios/auth.service';
 import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
@@ -7,6 +7,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
+import { VerPedido } from '../../interfaces/pedido';
 
 @Component({
   selector: 'app-ver-pedidos', // Define el selector del componente, que se utiliza en el HTML
@@ -15,7 +16,8 @@ import { WebSocketSubject, WebSocketSubjectConfig } from 'rxjs/webSocket';
   imports: [NavbarComponent, NgFor, NgIf], // Importa componentes y directivas necesarias
 })
 export class VerPedidosPage implements OnInit {
-  pedidos = signal<any[]>([]);
+  pedidos = signal<VerPedido[]>([]);
+  pedidosFiltrados = signal<VerPedido[]>([]);
   detalle_pedidos: any[] = [];
   isAdmin: boolean = false;
   authService: AuthService = inject(AuthService);
@@ -35,23 +37,23 @@ export class VerPedidosPage implements OnInit {
 
     this.wsSubject = new WebSocketSubject(config);
 
-    this.wsSubject.subscribe(
-      (message) => {
-        if (message === 'Actualizacion_pedido') {
-          if (this.isAdmin == false) {
-            const token = localStorage.getItem('token');
-            if (token) {
-              const idusuario = JSON.parse(atob(token.split('.')[1]));
-              this.cargarPedidosbyID(idusuario.id);
-            }
-          } else {
-            this.cargarPedidos();
+    this.wsSubject.subscribe((message) => {
+      if (message === 'Actualizacion_pedido') {
+        if (this.isAdmin == false) {
+          const token = localStorage.getItem('token');
+          if (token) {
+            const idusuario = JSON.parse(atob(token.split('.')[1]));
+            this.cargarPedidosbyID(idusuario.id);
           }
+        } else {
+          this.cargarPedidos();
         }
       }
-    );
+    });
+    effect(() => {
+      console.log('Pedidos actualizados:', this.pedidos());
+    });
   }
-
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
@@ -68,19 +70,42 @@ export class VerPedidosPage implements OnInit {
 
   async cargarPedidos() {
     let pedidossinfiltrar = await this.getPedidos.getAllPedidos();
-    this.pedidos.set(pedidossinfiltrar.filter(
-      (pedido: any) =>
-        !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
-    ));
+    pedidossinfiltrar = pedidossinfiltrar.map(
+      (pedido: VerPedido, index: number) => {
+        return { ...pedido, nombre: 'Pedido ' + index };
+      },
+    );
+    this.pedidos.set(
+      pedidossinfiltrar.filter(
+        (pedido: any) =>
+          !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
+      ),
+    );
+    this.pedidosFiltrados.set(this.pedidos());
   }
 
   // Método para cargar los pedidos por ID de usuario
   async cargarPedidosbyID(id_usuario: string) {
     let pedidossinfiltrar = await this.getPedidos.getPedidoById(id_usuario);
-    this.pedidos.set(pedidossinfiltrar.filter(
-      (pedido: any) =>
-        !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
-    ));
+    pedidossinfiltrar = pedidossinfiltrar.map(
+      (pedido: VerPedido, index: number) => {
+        return { ...pedido, nombre: 'Pedido ' + (index + 1) };
+      },
+    );
+    this.pedidos.set(
+      pedidossinfiltrar.filter(
+        (pedido: any) =>
+          !['PENDIENTE', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
+      ),
+    );
+    this.pedidosFiltrados.set(this.pedidos());
+  }
+
+  actualizarFiltroDePedidos(searchValue: string) {
+    const filtrados = this.pedidos().filter((pedido: VerPedido) =>
+      pedido.nombre.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+    this.pedidosFiltrados.set(filtrados);
   }
 
   // Método para manejar el cambio de estado del pedido

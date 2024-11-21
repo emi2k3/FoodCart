@@ -19,3 +19,13 @@ export interface Pedido {
   fecha: string;
   items: PedidoItem[];
 }
+
+export interface VerPedido {
+  id_pedido: string;
+  nombre: string;
+  fecha_hora: string;
+  id_local: number;
+  id_usuario: number;
+  importe_total: string;
+  estado: string;
+}
