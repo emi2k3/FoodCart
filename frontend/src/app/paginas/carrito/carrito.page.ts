@@ -13,13 +13,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Producto } from '../../interfaces/producto';
 import { Pedido } from '../../interfaces/pedido';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
-import { ConfirmOrderComponent } from '../../componentes/confirm-order/confirm-order/confirm-order.component';
 import { CartoDB } from 'ol/source';
+import { ConfirmOrderComponent } from '../../componentes/confirm-order/confirm-order.component';
 
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent, RouterModule, ConfirmOrderComponent],
+  imports: [
+    NavbarComponent,
+    NgFor,
+    NgIf,
+    AddToCartComponent,
+    RouterModule,
+    ConfirmOrderComponent,
+  ],
   templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
