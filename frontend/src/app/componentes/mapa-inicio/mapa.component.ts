@@ -39,7 +39,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    this.initializeMap(); // Inicializa el mapa después de que la vista se haya inicializado
+    setTimeout(() => {
+      this.initializeMap(); // Inicializa el mapa
+    }, 100); // Retraso de 100 ms
   }
 
   // Método para inicializar el mapa

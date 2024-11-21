@@ -4,7 +4,7 @@
     class="flex flex-wrap justify-between items-center mx-auto max-w-[96%] p-4"
   >
     <!-- Logotipo y nombre del sitio -->
-    <a class="flex items-center space-x-3 rtl:space-x-reverse" href="/">
+    <a class="flex items-center space-x-3 rtl:space-x-reverse" routerLink="/">
       <img src="assets/logo.jpeg" class="h-20" alt="FoodCart Logo" />
       <span
         class="self-center text-2xl font-semibold whitespace-nowrap text-white dark:text-white"
@@ -16,7 +16,7 @@
     <div class="flex items-center space-x-6 rtl:space-x-reverse">
       <!-- Carrito de compras -->
       <a
-        href="/carrito"
+        routerLink="/carrito"
         class="text-lg hover:text-gray-700 flex items-center relative"
       >
         <img src="assets/carrito.png" alt="Cart" class="h-7 w-7" />
@@ -51,7 +51,7 @@
           class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50"
         >
           <a
-            href="/editarPerfil"
+            routerLink="/editarPerfil"
             class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
           >
             <img
@@ -63,7 +63,7 @@
           </a>
 
           <a
-            href="/settings"
+            routerLink="/settings"
             class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
           >
             <img
@@ -75,7 +75,7 @@
           </a>
 
           <a
-            href="/help"
+            routerLink="/help"
             class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
           >
             <img src="assets/help.png" alt="Help Icon" class="h-5 w-5 mr-2" />
@@ -106,7 +106,7 @@
       <ul class="flex items-center space-x-8 rtl:space-x-reverse">
         <li>
           <a
-            href="/comidas"
+            routerLink="/comidas"
             class="text-white font-bold text-base hover:text-blue-950"
             aria-current="page"
           >
@@ -115,7 +115,7 @@
         </li>
         <li>
           <a
-            href="/bebidas"
+            routerLink="/bebidas"
             class="text-white font-bold text-base hover:text-blue-950"
           >
             Bebidas
@@ -123,7 +123,7 @@
         </li>
         <li>
           <a
-            href="/pedidos/ver"
+            routerLink="/pedidos/ver"
             class="text-white font-bold text-base hover:text-blue-950"
           >
             Ver pedidos
