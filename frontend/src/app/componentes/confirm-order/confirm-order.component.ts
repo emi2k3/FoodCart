@@ -21,6 +21,7 @@ export class ConfirmOrderComponent implements OnInit {
   getDireccionesUser: CRUDdireccionesService = inject(CRUDdireccionesService);
   router: Router = inject(Router);
   direccionBool: boolean = false;
+  id_direccion: string = '';
   @Input() isOpen: boolean = false;
   @Input() pedido: any;
   @Input() importe_total: number = 0;
@@ -30,15 +31,15 @@ export class ConfirmOrderComponent implements OnInit {
 
   direcciones = signal<any[]>([]);
 
-  onCambiarDireccion() {
+  onCambiarDireccion(evento: Event) {
+    this.id_direccion = (evento.target as HTMLSelectElement).value;
     this.direccionBool = true;
-    console.log(this.direccionBool)
-
   }
 
   async confirmarPedido() {
     console.log(JSON.stringify(this.pedido));
     this.pedido.estado = 'CONFIRMADO';
+    this.pedido.id_direccion = this.id_direccion;
     this.pedido.importe_total = this.importe_total;
     this.putPedido.put(
       JSON.stringify(this.pedido),
