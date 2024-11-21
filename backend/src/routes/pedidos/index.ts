@@ -309,6 +309,8 @@ const pedidosRoute: FastifyPluginAsync = async (
             properties: {
               id_pedido: { type: "number" },
               id_usuario: { type: "number" },
+              id_local: { type: "number" },
+              importe_total: { type: "number" },
               estado: { type: "string" },
               fecha: { type: "string", format: "date-time" },
               items: {
@@ -339,7 +341,9 @@ const pedidosRoute: FastifyPluginAsync = async (
           `
           SELECT 
             p.id_pedido,
+            p.id_local,
             p.id_usuario,
+            p.importe_total,
             p.estado,  
             p.fecha_hora,
             dp.id_producto,
@@ -369,7 +373,9 @@ const pedidosRoute: FastifyPluginAsync = async (
             // Si el pedido no está en la lista, lo añadimos con su estructura básica
             pedido = {
               id_pedido: row.id_pedido,
+              id_local: row.id_local,
               id_usuario: row.id_usuario,
+              importe_total: row.importe_total,
               estado: row.estado,
               fecha: row.fecha_hora,
               items: [],
