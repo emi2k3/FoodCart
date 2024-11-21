@@ -5,7 +5,6 @@ import { Component, OnInit } from '@angular/core'; // Importa las funciones nece
   standalone: true, // Indica que el componente es autónomo
   imports: [], // Lista de módulos importados (vacía en este caso)
   templateUrl: './footer.component.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrls: ['./footer.component.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
 })
 export class FooterComponent implements OnInit {
   constructor() {}

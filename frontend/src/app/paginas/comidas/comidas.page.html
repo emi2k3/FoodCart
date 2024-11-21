@@ -1,4 +1,10 @@
-<div class="flex flex-col h-screen overflow-hidden bg-gray-900">
+<div
+  class="flex flex-col bg-gray-900"
+  [ngClass]="{
+    'h-screen': productosFiltrados.length > 0,
+    'min-h-screen': productosFiltrados.length === 0
+  }"
+>
   <app-navbar
     (searchValueChange)="actualizarFiltroDeProductos($event)"
   ></app-navbar>
@@ -7,9 +13,14 @@
       <!-- Mensaje cuando no hay productos -->
       <div
         *ngIf="productosFiltrados.length === 0"
-        class="text-center text-white text-xl flex-grow flex items-center justify-center"
+        class="text-center text-white text-xl flex-grow flex items-center justify-center my-10"
       >
-        No se encontraron productos.
+        <img
+          src="/assets/error.png"
+          alt="Product Image"
+          class="w-48 h-48 object-cover rounded-md"
+        />
+        <h2 class="text-3xl font-bold mb-2">Productos no encontrados</h2>
       </div>
       <!-- Grid de productos -->
       <div
@@ -62,7 +73,7 @@
                 <img src="assets/see-more.png" alt="Icono" class="w-5 h-5" />
               </button>
               <!-- Acciones adicionales si el usuario es administrador -->
-              <ng-container *ngIf="authService.isAdmin()">
+              <ng-container *ngIf="isAdmin">
                 <button
                   [routerLink]="['/productos/editar', producto.id_producto]"
                   class="bg-orange-600 text-white px-5 py-2 rounded-md hover:bg-orange-800 duration-300 flex items-center justify-center"
@@ -92,17 +103,15 @@
             </div>
           </div>
         </div>
+        <button
+          class="fixed bottom-0 right-0 m-4 p-6 bg-blue-500 text-white rounded-full"
+          (click)="onCreate()"
+          *ngIf="this.isAdmin"
+        >
+          +
+        </button>
       </div>
     </main>
+    <app-footer></app-footer>
   </div>
-  <!-- Componente de pie de página -->
-  <app-footer></app-footer>
-  <!-- Botón para crear un nuevo producto (visible solo para administradores) -->
-  <button
-    class="fixed bottom-0 right-0 m-4 p-6 bg-blue-500 text-white rounded-full"
-    (click)="onCreate()"
-    *ngIf="this.isAdmin==true"
-  >
-    +
-  </button>
 </div>
