@@ -79,10 +79,13 @@ CREATE TABLE IF NOT EXISTS pedido (
     importe_total NUMERIC(10,2) CHECK (importe_total >= 0),
     id_local INTEGER NOT NULL,
     id_usuario INTEGER NOT NULL,
+    id_direccion INTEGER NOT NULL,
     CONSTRAINT fk_local FOREIGN KEY (id_local) 
         REFERENCES local (id_local) ON DELETE RESTRICT,
     CONSTRAINT fk_usuario FOREIGN KEY (id_usuario) 
-        REFERENCES usuario (id) ON DELETE RESTRICT
+        REFERENCES usuario (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_direccion FOREIGN KEY (id_direccion) 
+        REFERENCES direccion (id) ON DELETE RESTRICT
 );
 
 -- Crear la tabla detalle_pedido con claves foráneas a pedido y producto
@@ -131,9 +134,9 @@ INSERT INTO direccion (numero, calle) VALUES('450', 'Brasil');
 INSERT INTO local (nombre, id_telefono, id_direccion) VALUES('Barsito', 2, 2);
 
 -- Insertar pedidos y detalles de pedidos
-INSERT INTO pedido (estado, importe_total, id_local, id_usuario) VALUES('CONFIRMADO', 200, 1, 1);
+INSERT INTO pedido (estado, importe_total, id_local, id_usuario,id_direccion) VALUES('CONFIRMADO', 200, 1, 1,1);
 INSERT INTO detalle_pedido (cantidad, indicaciones, id_pedido, id_producto) VALUES(1, 'Sin mostaza el pancho', 1, 3);
 
-INSERT INTO pedido (estado, importe_total, id_local, id_usuario) VALUES('CONFIRMADO', 220, 1, 1);
+INSERT INTO pedido (estado, importe_total, id_local, id_usuario, id_direccion) VALUES('CONFIRMADO', 220, 1, 1,1);
 INSERT INTO detalle_pedido (cantidad, indicaciones, id_pedido, id_producto) VALUES(1, 'Sin pan, sin mostaza, sin pancho', 2, 4);
 INSERT INTO detalle_pedido (cantidad, indicaciones, id_pedido, id_producto) VALUES(2, 'Sin pan, sin mostaza, con pancho', 2, 3);

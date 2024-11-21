@@ -13,13 +13,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Producto } from '../../interfaces/producto';
 import { Pedido } from '../../interfaces/pedido';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
-import { ConfirmOrderComponent } from "../../componentes/confirm-order/confirm-order/confirm-order.component";
+import { ConfirmOrderComponent } from "../../componentes/confirm-order/confirm-order.component";
 
 
 @Component({
   selector: 'app-carrito', // Define el selector del componente, que se utiliza en el HTML
   standalone: true, // Indica que el componente es autónomo
-  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent], // Importa componentes necesarios
+  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent, ConfirmOrderComponent], // Importa componentes necesarios
   templateUrl: './carrito.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
 
 })
@@ -30,16 +30,16 @@ export class CarritoPage implements OnInit {
   );
   private getUserService: AuthService = inject(AuthService);
   private pedidoUsuario: GetPedidosService = inject(GetPedidosService);
-  private cargarProducto: GetProductosService = inject(GetProductosService);
   private carritoService: CarritoService = inject(CarritoService);
   private router: Router = inject(Router);
-  private putPedido: PutPedidoService = inject(PutPedidoService);
+
 
   // Variables para almacenar los datos del carrito
   userId: number = this.getUserService.getUserId();
   modalIsOpen: boolean = false;
   subTotal: number[] = [];
   id_pedido: number = 0;
+  importe_total: number = 0;
   productosPedido: any[] = [];
   productos: any[] = [];
   pedidoaConfirmar: any;
@@ -75,6 +75,7 @@ export class CarritoPage implements OnInit {
             precio_unidad: item.precio_unidad,
             indicaciones: item.indicaciones,
           }));
+          this.pedidoaConfirmar = pedidoPendiente;
           return;
         }
       }
@@ -147,6 +148,7 @@ export class CarritoPage implements OnInit {
   // Método para confirmar el pedido
 
   onConfirmar() {
+    this.importe_total = this.getTotal();
     this.modalIsOpendir = true;
   }
 
