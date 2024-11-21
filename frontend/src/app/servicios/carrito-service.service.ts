@@ -12,21 +12,6 @@ export class CarritoService {
   // Signal para el número de productos en el carrito
   cartCount = signal(0);
 
-  // Método para incrementar el número de productos en el carrito
-  incrementCart() {
-    this.cartCount.update((count) => count + 1);
-  }
-
-  // Método para decrementar el número de productos en el carrito
-  decrementCart() {
-    this.cartCount.update((count) => Math.max(0, count - 1));
-  }
-
-  // Método para establecer el número de productos en el carrito
-  setCartCount(count: number) {
-    this.cartCount.set(count);
-  }
-
   // #####################################
 
   // Método para eliminar un detalle de pedido por ID de pedido e ID de producto

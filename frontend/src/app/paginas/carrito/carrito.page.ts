@@ -1,40 +1,29 @@
-import { Component, OnInit, inject } from '@angular/core'; // Importa las funciones Component, OnInit e inject de Angular
-import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio CarritoService
-import { AuthService } from '../../servicios/auth.service'; // Importa el servicio AuthService
-import { NavbarComponent } from '../../componentes/navbar/navbar.component'; // Importa el componente NavbarComponent
-import { NgFor, NgIf } from '@angular/common'; // Importa las directivas NgFor y NgIf de Angular
-import { FooterComponent } from '../../componentes/footer/footer.component'; // Importa el componente FooterComponent
-import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service'; // Importa el servicio GetDetallePedidosService
-import GetPedidosService from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
-import { GetProductosService } from '../../servicios/productos/get-productos.service'; // Importa el servicio GetProductosService
-import { Router, RouterModule } from '@angular/router'; // Importa Router para la navegación de rutas
-import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service'; // Importa el servicio PutPedidoService
+import { Component, OnInit, inject } from '@angular/core';
+import { CarritoService } from '../../servicios/carrito-service.service';
+import { AuthService } from '../../servicios/auth.service';
+import { NavbarComponent } from '../../componentes/navbar/navbar.component';
+import { NgFor, NgIf } from '@angular/common';
+import { FooterComponent } from '../../componentes/footer/footer.component';
+import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
+import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
+import { Router, RouterModule } from '@angular/router';
+import { PutPedidoService } from '../../servicios/pedidos/put-pedido.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Producto } from '../../interfaces/producto';
 import { Pedido } from '../../interfaces/pedido';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 import { ConfirmOrderComponent } from '../../componentes/confirm-order/confirm-order/confirm-order.component';
+import { CartoDB } from 'ol/source';
 
 @Component({
-  selector: 'app-carrito', // Define el selector del componente, que se utiliza en el HTML
-  standalone: true, // Indica que el componente es autónomo
-  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent], // Importa componentes necesarios
-  templateUrl: './carrito.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
+  selector: 'app-carrito',
+  standalone: true,
+  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent, RouterModule],
+  templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
-  // Inyecta los servicios utilizando la función inject
-  private detallePedidoService: GetDetallePedidosService = inject(
-    GetDetallePedidosService,
-  );
-  private getUserService: AuthService = inject(AuthService);
-  private pedidoUsuario: GetPedidosService = inject(GetPedidosService);
-  private cargarProducto: GetProductosService = inject(GetProductosService);
-  private carritoService: CarritoService = inject(CarritoService);
-  private router: Router = inject(Router);
-  private putPedido: PutPedidoService = inject(PutPedidoService);
-
-  // Variables para almacenar los datos del carrito
-  userId: number = this.getUserService.getUserId();
+  userId: number = 0;
   modalIsOpen: boolean = false;
   subTotal: number[] = [];
   id_pedido: number = 0;
@@ -45,10 +34,19 @@ export class CarritoPage implements OnInit {
   actualizar: boolean = false;
   productoSeleccionado: any = null;
 
-  constructor() {}
+  constructor(
+    private detallePedidoService: GetDetallePedidosService,
+    private getUserService: AuthService,
+    private pedidoUsuario: GetPedidosService,
+    private cargarProducto: GetProductosService,
+    private carritoService: CarritoService,
+    private router: Router,
+    private putPedido: PutPedidoService,
+  ) {}
 
   // Método que se ejecuta al inicializar el componente
   ngOnInit() {
+    this.userId = this.getUserService.getUserId();
     this.cargarProductosDelCarrito();
   }
 
@@ -120,17 +118,20 @@ export class CarritoPage implements OnInit {
   }
 
   // Método para confirmar la eliminación de un producto del carrito
-  confirmarEliminacion(id_producto: string): void {
+  confirmarEliminacion(id_producto: string, cantidad: number): void {
     const confirmacion = window.confirm(
       '¿Estás seguro de que deseas eliminar este producto del carrito?',
     );
     if (confirmacion) {
-      this.eliminarDetallePedido(id_producto);
+      this.eliminarDetallePedido(id_producto, cantidad);
     }
   }
 
   // Método para eliminar un producto del carrito
-  async eliminarDetallePedido(id_producto: string): Promise<void> {
+  async eliminarDetallePedido(
+    id_producto: string,
+    cantidad: number,
+  ): Promise<void> {
     try {
       await this.carritoService.eliminarDetallePedido(
         this.id_pedido.toString(),
@@ -139,7 +140,9 @@ export class CarritoPage implements OnInit {
     } catch (error) {
       console.error('Error eliminando el producto:', error);
     }
-    this.carritoService.decrementCart();
+
+    const cartActualizado = this.carritoService.cartCount() - cantidad;
+    this.carritoService.cartCount.set(cartActualizado);
     await this.cargarProductosDelCarrito();
   }
   // Método para confirmar el pedido

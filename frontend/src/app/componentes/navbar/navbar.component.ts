@@ -77,7 +77,7 @@ export class NavbarComponent implements OnInit {
                 (total: number, item: any) => total + item.cantidad,
                 0,
               );
-              this.carritoService.setCartCount(totalItems);
+              this.carritoService.cartCount.set(totalItems);
             }
           }
         }

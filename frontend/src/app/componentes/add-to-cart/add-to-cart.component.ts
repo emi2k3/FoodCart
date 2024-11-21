@@ -70,7 +70,6 @@ export class AddToCartComponent {
     }
   }
 
-
   // Método asincrónico para agregar el producto al carrito
   async addToCart() {
     let detallePedido = {
@@ -122,9 +121,6 @@ export class AddToCartComponent {
   }
 
   async postDT(detallePedido: any) {
-    console.log(
-      `detallepedido post ${JSON.stringify(detallePedido, null, 2)} `,
-    );
     const detalle = await this.postDetallePedido.postDetallePedido(
       JSON.stringify(detallePedido),
     );
@@ -132,11 +128,15 @@ export class AddToCartComponent {
     const detalleActualizado = await this.getDetallePedido.getDetallePedidoByID(
       detallePedido.id_pedido,
     );
-    this.carritoService.setCartCount(detalleActualizado.length);
+
+    const totalItems = detalleActualizado.reduce(
+      (total: number, item: any) => total + item.cantidad,
+      0,
+    );
+    this.carritoService.cartCount.set(totalItems);
   }
 
   async putDT(detallePedido: any) {
-    console.log(`detallepedido put ${JSON.stringify(detallePedido, null, 2)} `);
     const detalle = await this.putDetallePedido.putDT(
       JSON.stringify(detallePedido),
       detallePedido.id_pedido,
@@ -146,7 +146,12 @@ export class AddToCartComponent {
     const detalleActualizado = await this.getDetallePedido.getDetallePedidoByID(
       detallePedido.id_pedido,
     );
-    this.carritoService.setCartCount(detalleActualizado.length);
+
+    const totalItems = detalleActualizado.reduce(
+      (total: number, item: any) => total + item.cantidad,
+      0,
+    );
+    this.carritoService.cartCount.set(totalItems);
   }
 
   async postPedido(detallePedido: any) {
@@ -166,7 +171,7 @@ export class AddToCartComponent {
       JSON.stringify(detallePedido),
     );
 
-    this.carritoService.setCartCount(1);
+    this.carritoService.cartCount.set(detallePedido.cantidad);
   }
 
   validarIndicaciones() {
