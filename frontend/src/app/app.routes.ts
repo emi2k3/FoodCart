@@ -15,6 +15,7 @@ import { RestablecerContrasenaPage } from './paginas/reestablecer-contrasena/ree
 import { VerdetallesPedidosPage } from './paginas/verdetalles-pedidos/verdetalles-pedidos.page'; // Importa la página para ver detalles de los pedidos
 import { PoliticasPrivacidadPage } from './paginas/politicas-privacidad/politicas-privacidad.page'; // Importa la página de políticas de privacidad
 import { TerminosServicioPage } from './paginas/terminos-servicio/terminos-servicio.page'; // Importa la página de términos y condiciones
+import { EditarPerfilPage } from './paginas/editar-perfil/editar-perfil.page';
 
 export const routes: Routes = [
   {
@@ -90,10 +91,18 @@ export const routes: Routes = [
     path: 'politicas-privacidad', // Ruta para la página depolíticas de privacidad.
     component: PoliticasPrivacidadPage,
     title: 'Políticas de Privacidad', // Título de la página
+    canActivate: [checkTokenGuard],
   },
   {
     path: 'terminos-servicio', // Ruta para la página de términos y condiciones
     component: TerminosServicioPage,
     title: 'Términos y Condiciones', // Título de la página
+    canActivate: [checkTokenGuard],
+  },
+  {
+    path: 'editarPerfil', // Ruta para la página de detalles de pedidos
+    component: EditarPerfilPage,
+    title: 'Editar perfil', // Título de la página
+    canActivate: [checkTokenGuard], // Guard para verificar si el usuario está autenticado
   },
 ];
