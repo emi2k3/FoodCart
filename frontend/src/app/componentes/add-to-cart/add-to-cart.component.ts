@@ -159,6 +159,7 @@ export class AddToCartComponent {
       estado: 'PENDIENTE',
       importe_total: 0,
       id_local: 1,
+      id_direccion: 1,
       id_usuario: parseInt(this.userId),
     };
 

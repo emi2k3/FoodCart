@@ -19,7 +19,7 @@ import { CartoDB } from 'ol/source';
 @Component({
   selector: 'app-carrito',
   standalone: true,
-  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent, RouterModule],
+  imports: [NavbarComponent, NgFor, NgIf, AddToCartComponent, RouterModule, ConfirmOrderComponent],
   templateUrl: './carrito.page.html',
 })
 export class CarritoPage implements OnInit {
@@ -27,6 +27,7 @@ export class CarritoPage implements OnInit {
   modalIsOpen: boolean = false;
   subTotal: number[] = [];
   id_pedido: number = 0;
+  importe_total: number = 0;
   productosPedido: any[] = [];
   productos: any[] = [];
   pedidoaConfirmar: any;
@@ -71,6 +72,7 @@ export class CarritoPage implements OnInit {
             precio_unidad: item.precio_unidad,
             indicaciones: item.indicaciones,
           }));
+          this.pedidoaConfirmar = pedidoPendiente;
           return;
         }
       }
@@ -148,6 +150,7 @@ export class CarritoPage implements OnInit {
   // Método para confirmar el pedido
 
   onConfirmar() {
+    this.importe_total = this.getTotal();
     this.modalIsOpendir = true;
   }
 

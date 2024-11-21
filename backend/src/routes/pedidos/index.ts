@@ -67,13 +67,15 @@ const pedidosRoute: FastifyPluginAsync = async (
             estado,
             importe_total,
             id_local,
-            id_usuario
-          ) VALUES($1, $2, $3, $4) RETURNING *`,
+            id_usuario,
+            id_direccion
+          ) VALUES($1, $2, $3, $4, $5) RETURNING *`,
           [
             bodyPedido.estado || "PENDIENTE",
             bodyPedido.importe_total,
             bodyPedido.id_local,
             bodyPedido.id_usuario,
+            bodyPedido.id_direccion || 1
           ]
         );
 
@@ -146,6 +148,16 @@ const pedidosRoute: FastifyPluginAsync = async (
             .status(400)
             .send({ error: "El local especificado no existe" });
         }
+        const direccionExists = await query(
+          "SELECT id FROM direccion WHERE id = $1",
+          [bodyPedido.id_direccion]
+        );
+        if (direccionExists.rows.length === 0) {
+          await query("ROLLBACK");
+          return reply
+            .status(400)
+            .send({ error: "La dirección especificada no existe" });
+        }
 
         // Verifica si el usuario especificado existe
         const userExists = await query("SELECT id FROM usuario WHERE id = $1", [
@@ -164,14 +176,16 @@ const pedidosRoute: FastifyPluginAsync = async (
             estado = $1,
             importe_total = $2,
             id_local = $3,
-            id_usuario = $4
-          WHERE id_pedido = $5
+            id_usuario = $4,
+            id_direccion = $5
+          WHERE id_pedido = $6
           RETURNING *`,
           [
             bodyPedido.estado,
             bodyPedido.importe_total,
             bodyPedido.id_local,
             bodyPedido.id_usuario,
+            bodyPedido.id_direccion,
             id_pedido,
           ]
         );
@@ -214,6 +228,7 @@ const pedidosRoute: FastifyPluginAsync = async (
               estado: "PENDIENTE",
               importe_total: 1500,
               id_local: 1,
+              id_direccion: 1,
               id_usuario: 1,
             },
           ],
@@ -309,6 +324,9 @@ const pedidosRoute: FastifyPluginAsync = async (
             properties: {
               id_pedido: { type: "number" },
               id_usuario: { type: "number" },
+              id_local: { type: "number" },
+              id_direccion: { type: "number" },
+              importe_total: { type: "number" },
               estado: { type: "string" },
               fecha: { type: "string", format: "date-time" },
               items: {
@@ -339,7 +357,10 @@ const pedidosRoute: FastifyPluginAsync = async (
           `
           SELECT 
             p.id_pedido,
+            p.id_local,
             p.id_usuario,
+            p.id_direccion,
+            p.importe_total,
             p.estado,  
             p.fecha_hora,
             dp.id_producto,
@@ -369,7 +390,10 @@ const pedidosRoute: FastifyPluginAsync = async (
             // Si el pedido no está en la lista, lo añadimos con su estructura básica
             pedido = {
               id_pedido: row.id_pedido,
+              id_local: row.id_local,
               id_usuario: row.id_usuario,
+              id_direccion: row.id_direccion,
+              importe_total: row.importe_total,
               estado: row.estado,
               fecha: row.fecha_hora,
               items: [],

@@ -30,6 +30,9 @@ export const PedidoPostSchema = Type.Object(
     id_local: Type.Integer({
       description: "Identificador del local",
     }),
+    id_direccion: Type.Integer({
+      description: "Identificador de la dirección donde se va a entregar el pedido.",
+    }),
     id_usuario: Type.Integer({
       description: "Identificador del usuario",
     }),
