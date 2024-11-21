@@ -1,7 +1,7 @@
 import {
   Component,
   EventEmitter,
-  inject,
+  Input,
   OnInit,
   Output,
   HostListener,
@@ -9,7 +9,7 @@ import {
 import { SearchComponent } from '../search/search.component';
 import { AuthService } from '../../servicios/auth.service';
 import { Router } from '@angular/router';
-import { JsonPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
@@ -32,6 +32,7 @@ export class NavbarComponent implements OnInit {
 
   isDropdownOpen = false;
 
+  @Input() withSearch: boolean = true;
   @Output() searchValueChange = new EventEmitter<string>();
 
   constructor(
@@ -40,7 +41,6 @@ export class NavbarComponent implements OnInit {
     private router: Router,
     public carritoService: CarritoService,
     private getPedido: GetPedidosService,
-    private getDetallePedido: GetDetallePedidosService,
   ) {}
 
   @HostListener('document:click', ['$event'])
@@ -77,7 +77,7 @@ export class NavbarComponent implements OnInit {
                 (total: number, item: any) => total + item.cantidad,
                 0,
               );
-              this.carritoService.setCartCount(totalItems);
+              this.carritoService.cartCount.set(totalItems);
             }
           }
         }
