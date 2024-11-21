@@ -10,7 +10,6 @@ import { Producto } from '../../interfaces/producto';
 import { FooterComponent } from '../../componentes/footer/footer.component';
 import { AddToCartComponent } from '../../componentes/add-to-cart/add-to-cart.component';
 import { GetPedidosService } from '../../servicios/pedidos/get-pedidos.service';
-import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import { Pedido, PedidoItem } from '../../interfaces/pedido';
 
 @Component({
@@ -23,7 +22,6 @@ import { Pedido, PedidoItem } from '../../interfaces/pedido';
     NgIf,
     AddToCartComponent,
     FooterComponent,
-    NgClass,
   ], // Importa componentes necesarios
   templateUrl: './comidas.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
 })
@@ -41,7 +39,6 @@ export class ComidasPage implements OnInit {
     private router: Router,
     private deleteProduct: DeleteProductoService,
     private getPedidoService: GetPedidosService,
-    private getDetallePedido: GetDetallePedidosService,
   ) {}
 
   // Método que se ejecuta al inicializar el componente

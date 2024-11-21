@@ -5,45 +5,43 @@ import {
   OnInit,
   Output,
   HostListener,
-} from '@angular/core'; // Importa las funciones necesarias de Angular
-import { SearchComponent } from '../search/search.component'; // Importa el componente SearchComponent
-import { FetchService } from '../../servicios/fetch.service'; // Importa el servicio FetchService
-import { AuthService } from '../../servicios/auth.service'; // Importa el servicio AuthService
-import { Router } from '@angular/router'; // Importa Router para la navegación de rutas
-import { NgIf } from '@angular/common'; // Importa NgIf para directivas de Angular
-import { CommonModule } from '@angular/common'; // Importa CommonModule para directivas comunes de Angular
-import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service'; // Importa el servicio CRUDUsuariosService
-import GetPedidosService from '../../servicios/pedidos/get-pedidos.service'; // Importa el servicio GetPedidosService
-import { GetProductosService } from '../../servicios/productos/get-productos.service'; // Importa el servicio GetProductosService
-import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service'; // Importa el servicio GetDetallePedidosService
-import { CarritoService } from '../../servicios/carrito-service.service'; // Importa el servicio CarritoService
-import { determinant } from 'ol/transform';
+} from '@angular/core';
+import { SearchComponent } from '../search/search.component';
+import { AuthService } from '../../servicios/auth.service';
+import { Router } from '@angular/router';
+import { JsonPipe, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service';
+import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
+import { GetProductosService } from '../../servicios/productos/get-productos.service';
+import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
+import { CarritoService } from '../../servicios/carrito-service.service';
+import { Pedido } from '../../interfaces/pedido';
 
 @Component({
-  selector: 'app-navbar', // Define el selector del componente, que se utiliza en el HTML
-  standalone: true, // Indica que el componente es autónomo
-  imports: [SearchComponent, NgIf, CommonModule], // Importa módulos y componentes necesarios
-  templateUrl: './navbar.component.html', // Especifica la ubicación del archivo de plantilla HTML del componente
+  selector: 'app-navbar',
+  standalone: true,
+  imports: [SearchComponent, NgIf, CommonModule],
+  templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {
   usuario = {
     nombre: '',
     foto: 'assets/default-user.png',
-  }; // Define un objeto para almacenar los datos del usuario
+  };
 
-  isDropdownOpen = false; // Define una propiedad para controlar el estado del menú desplegable
-  private authservice: AuthService = inject(AuthService); // Inyecta el servicio AuthService
-  private crudUsuarios: CRUDUsuariosService = inject(CRUDUsuariosService); // Inyecta el servicio CRUDUsuariosService
-  private router: Router = inject(Router); // Inyecta el servicio Router
-  carritoService: CarritoService = inject(CarritoService); // Inyecta el servicio CarritoService
-  private getPedido: GetPedidosService = inject(GetPedidosService); // Inyecta el servicio GetPedidosService
-  private getDetallePedido: GetDetallePedidosService = inject(
-    GetDetallePedidosService,
-  ); // Inyecta el servicio GetDetallePedidosService
+  isDropdownOpen = false;
 
-  @Output() searchValueChange = new EventEmitter<string>(); // Define un EventEmitter para emitir el valor de búsqueda al componente padre
+  @Output() searchValueChange = new EventEmitter<string>();
 
-  constructor() {}
+  constructor(
+    private authservice: AuthService,
+    private crudUsuarios: CRUDUsuariosService,
+    private router: Router,
+    public carritoService: CarritoService,
+    private getPedido: GetPedidosService,
+    private getDetallePedido: GetDetallePedidosService,
+  ) {}
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -51,9 +49,8 @@ export class NavbarComponent implements OnInit {
     if (!dropdownElement) {
       this.isDropdownOpen = false;
     }
-  } // Escucha clics en el documento para cerrar el menú desplegable si se hace clic fuera de él
+  }
 
-  // Método que se ejecuta al inicializar el componente
   async ngOnInit() {
     if (this.authservice.isValidUser()) {
       try {
@@ -68,19 +65,20 @@ export class NavbarComponent implements OnInit {
             this.usuario.foto = 'assets/default-user.png';
           }
 
-          const pedidosUsuarioFiltrado = await this.getPedido.getPedidoById(
-            idToken.id,
-          );
+          const pedidosUsuario = await this.getPedido.getPedidoById(idToken.id);
 
-          const pedidoPendiente = pedidosUsuarioFiltrado.filter((pedido: any) =>
-            ['PENDIENTE'].includes(pedido.estado),
-          );
+          if (pedidosUsuario.length > 0) {
+            const pedidoPendiente = pedidosUsuario.find(
+              (pedido: Pedido) => pedido.estado === 'PENDIENTE',
+            );
 
-          if (pedidoPendiente.length > 0) {
-            const id_pedido = pedidoPendiente[0].id_pedido;
-            const detallePedido =
-              await this.getDetallePedido.getDetallePedidoByID(id_pedido);
-            this.carritoService.setCartCount(detallePedido.length);
+            if (pedidoPendiente) {
+              const totalItems = pedidoPendiente.items.reduce(
+                (total: number, item: any) => total + item.cantidad,
+                0,
+              );
+              this.carritoService.setCartCount(totalItems);
+            }
           }
         }
       } catch (error) {
@@ -89,19 +87,16 @@ export class NavbarComponent implements OnInit {
     }
   }
 
-  // Método para alternar el estado del menú desplegable
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  // Método para cerrar sesión
   logout() {
     localStorage.removeItem('token');
     this.router.navigate(['']);
     this.isDropdownOpen = false;
   }
 
-  // Método para manejar el valor de búsqueda
   onSearchValue(value: string) {
     this.searchValueChange.emit(value);
   }
