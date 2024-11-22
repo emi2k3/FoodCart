@@ -10,7 +10,6 @@ import { UsuarioLogin } from '../../interfaces/usuario'; // Importa la interfaz 
   standalone: true, // Indica que el componente es autónomo
   imports: [FormsModule, NgIf, NgClass], // Importa módulos y directivas necesarias
   templateUrl: './login.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrl: './login.page.css', // Especifica la ubicación del archivo de estilos CSS del componente
 })
 export class LoginPage {
   // Propiedades para almacenar los datos de inicio de sesión

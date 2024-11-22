@@ -7,7 +7,6 @@ import { FooterComponent } from '../../componentes/footer/footer.component';
   standalone: true,
   imports: [FooterComponent],
   templateUrl: './terminos-servicio.page.html',
-  styleUrls: ['./terminos-servicio.page.scss'],
 })
 export class TerminosServicioPage implements OnInit {
   private router: Router = inject(Router);

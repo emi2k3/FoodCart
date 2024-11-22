@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
   templateUrl: './politicas-privacidad.page.html',
   standalone: true,
   imports: [FooterComponent],
-  styleUrls: ['./politicas-privacidad.page.scss'],
 })
 export class PoliticasPrivacidadPage implements OnInit {
   private router: Router = inject(Router);

@@ -10,7 +10,6 @@ import { UsuarioRegister } from '../../interfaces/usuario'; // Importa la interf
   standalone: true, // Indica que el componente es autónomo
   imports: [FormsModule, NgIf, NgClass], // Importa módulos y directivas necesarias
   templateUrl: './registro-usuario.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrl: './registro-usuario.page.css', // Especifica la ubicación del archivo de estilos CSS del componente
 })
 export class RegistroUsuarioPage implements OnInit {
   // Variables para almacenar los datos del formulario

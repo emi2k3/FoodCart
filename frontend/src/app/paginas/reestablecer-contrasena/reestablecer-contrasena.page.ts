@@ -8,7 +8,6 @@ import { NgClass, NgIf } from '@angular/common'; // Importa las directivas NgCla
 @Component({
   selector: 'app-restablecer-contrasena', // Define el selector del componente, que se utiliza en el HTML
   templateUrl: './reestablecer-contrasena.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrls: ['./reestablecer-contrasena.page.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
   standalone: true, // Indica que el componente es autónomo
   imports: [FormsModule, NgClass, NgIf], // Importa módulos necesarios
 })
