@@ -17,7 +17,6 @@ import { PutProductoService } from '../../servicios/productos/edit-producto.serv
   selector: 'editar-producto', // Define el selector del componente, que se utiliza en el HTML
   standalone: true, // Indica que el componente es autónomo
   templateUrl: './editar-producto.pages.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrls: ['./editar-producto.pages.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
   imports: [FormsModule, NgIf, NgClass, ImageCropperComponent], // Importa módulos y componentes necesarios
 })
 export class EditarProductoPages implements OnInit {

@@ -18,12 +18,14 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@capacitor/angular": "^2.0.3",
     "@ionic/angular": "^8.3.3",
     "ngx-image-cropper": "^8.1.0",
     "ol": "^10.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10"
+    "zone.js": "~0.14.10",
+    "@capacitor/core": "latest"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.7",
@@ -41,6 +43,7 @@
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.13",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.2",
+    "@capacitor/cli": "latest"
   }
 }

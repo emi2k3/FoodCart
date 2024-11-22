@@ -8,7 +8,6 @@ import { HeaderComponent } from '../../componentes/header/header.component';
   standalone: true,
   imports: [HeaderComponent, FooterComponent],
   templateUrl: './terminos-servicio.page.html',
-  styleUrls: ['./terminos-servicio.page.scss'],
 })
 export class TerminosServicioPage implements OnInit {
   private router: Router = inject(Router);

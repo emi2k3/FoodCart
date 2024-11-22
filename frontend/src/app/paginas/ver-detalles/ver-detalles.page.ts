@@ -8,7 +8,6 @@ import { FooterComponent } from '../../componentes/footer/footer.component'; // 
 @Component({
   selector: 'app-ver-detalles', // Define el selector del componente, que se utiliza en el HTML
   templateUrl: './ver-detalles.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrls: ['./ver-detalles.page.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
   imports: [FooterComponent, NavbarComponent, NgIf], // Importa componentes y directivas necesarias
   standalone: true, // Indica que el componente es autónomo
 })

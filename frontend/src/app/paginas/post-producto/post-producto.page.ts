@@ -14,7 +14,6 @@ import { ProductoPost } from '../../interfaces/producto'; // Importa la interfaz
 @Component({
   selector: 'app-post-producto', // Define el selector del componente, que se utiliza en el HTML
   templateUrl: './post-producto.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
-  styleUrls: ['./post-producto.page.scss'], // Especifica la ubicación del archivo de estilos CSS del componente
   imports: [FormsModule, NgIf, NgClass, ImageCropperComponent], // Importa módulos y componentes necesarios
   standalone: true, // Indica que el componente es autónomo
 })
