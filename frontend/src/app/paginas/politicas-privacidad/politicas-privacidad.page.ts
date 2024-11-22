@@ -1,12 +1,14 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FooterComponent } from '../../componentes/footer/footer.component';
 import { Router } from '@angular/router';
+import { HeaderComponent } from '../../componentes/header/header.component';
 
 @Component({
   selector: 'app-politicas-privacidad',
   templateUrl: './politicas-privacidad.page.html',
   standalone: true,
-  imports: [FooterComponent],
+  imports: [HeaderComponent, FooterComponent],
+  styleUrls: ['./politicas-privacidad.page.scss'],
 })
 export class PoliticasPrivacidadPage implements OnInit {
   private router: Router = inject(Router);

@@ -4,12 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router'; // Importa ActivatedRo
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service'; // Importa el servicio GetDetallePedidosService
 import { GetProductosService } from '../../servicios/productos/get-productos.service'; // Importa el servicio GetProductosService
 import { CommonModule, NgFor } from '@angular/common'; // Importa CommonModule y NgFor para directivas de Angular
+import { MapaPedidosComponent } from '../../componentes/mapa-pedidos/mapa-pedidos.component';
 
 @Component({
   selector: 'app-verdetalles-pedidos', // Define el selector del componente, que se utiliza en el HTML
   templateUrl: './verdetalles-pedidos.page.html', // Especifica la ubicación del archivo de plantilla HTML del componente
   standalone: true, // Indica que el componente es autónomo
-  imports: [NavbarComponent, NgFor, CommonModule], // Importa componentes y directivas necesarias
+  imports: [MapaPedidosComponent, NavbarComponent, NgFor, CommonModule], // Importa componentes y directivas necesarias
 })
 export class VerdetallesPedidosPage implements OnInit {
   // Inyecta los servicios y rutas necesarias utilizando la función inject
@@ -24,7 +25,7 @@ export class VerdetallesPedidosPage implements OnInit {
   detalle_pedidos: any[] = [];
   productos: any[] = [];
 
-  constructor() { }
+  constructor() {}
 
   // Método para obtener el nombre del producto por su ID
   getProducto(id_producto: string) {
