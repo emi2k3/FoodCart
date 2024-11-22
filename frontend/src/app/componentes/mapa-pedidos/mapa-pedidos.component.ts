@@ -56,7 +56,7 @@ export class MapaPedidosComponent implements OnInit {
         vectorLayer, // Capa de ubicaciones
       ],
       view: new View({
-        center: fromLonLat([-99.1332, 19.4326]), // Coordenadas iniciales (Ciudad de México)
+        center: fromLonLat([-57.95325964113459, -31.390312485072155]), // Coordenadas iniciales (Ciudad de México)
         zoom: 12, // Nivel de zoom inicial
       }),
     });

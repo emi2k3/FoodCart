@@ -40,8 +40,20 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.initializeMap(); // Inicializa el mapa
-    }, 100); // Retraso de 100 ms
+      this.initializeMap();
+
+      // Deshabilitar la interacción del mapa inicialmente
+      this.map.getInteractions().forEach((interaction) => {
+        interaction.setActive(false);
+      });
+
+      // Habilitar la interacción del mapa al hacer clic
+      this.mapContainer.nativeElement.addEventListener('pointerdown', () => {
+        this.map.getInteractions().forEach((interaction) => {
+          interaction.setActive(true);
+        });
+      });
+    }, 100);
   }
 
   // Método para inicializar el mapa
