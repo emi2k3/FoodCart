@@ -13,6 +13,7 @@ services:
       - PGUSER=${PGUSER} # Usuario de PostgreSQL
       - PGPASSWORD=${PGPASSWORD} # Contraseña de PostgreSQL
       - PGHOST=${PGHOST} # Host de PostgreSQL
+      - FRONT_URL=${FRONT_URL}
       - GOOGLE_ID=${GOOGLE_ID} # ID de cliente de Google OAuth
       - GOOGLE_SECRET=${GOOGLE_SECRET} # Secreto de cliente de Google OAuth
       - FACEBOOK_ID=${FACEBOOK_ID} # ID de cliente de Facebook OAuth
@@ -50,7 +51,7 @@ services:
       - ./proxy/certs:/etc/nginx/certs # Volumen para los certificados SSL/TLS
       - ./proxy/myconf.template:/etc/nginx/templates/default.conf.template # Volumen para la plantilla de configuración de NGINX
     environment: # Variables de entorno para configurar el proxy
-      - FRONT_URL=localhost # URL del frontend
+      - FRONT_URL=${FRONT_URL} # URL del frontend
     ports:
       - 80:80 # Mapea el puerto 80 del contenedor al puerto 80 del host (HTTP)
       - 443:443 # Mapea el puerto 443 del contenedor al puerto 443 del host (HTTPS)

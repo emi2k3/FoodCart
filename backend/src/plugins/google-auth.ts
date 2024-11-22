@@ -19,7 +19,7 @@ export default fp(async (fastify) => {
       auth: oauthPlugin.fastifyOauth2.GOOGLE_CONFIGURATION, // Configuración predefinida para Google.
     },
     startRedirectPath: "/auth/login/google", // Ruta de inicio para redirigir al login.
-    callbackUri: `https://localhost/backend/auth/login/google/callback`, // URI de redirección después del login.
+    callbackUri: `https://${process.env.FRONT_URL}/backend/auth/login/google/callback`, // URI de redirección después del login.
     callbackUriParams: {
       access_type: "offline", // Solicita un token de actualización (refreshToken).
     },

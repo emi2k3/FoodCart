@@ -1,8 +1,9 @@
-import cors from "@fastify/cors";
 import fp from "fastify-plugin";
+import cors, { FastifyCorsOptions } from "@fastify/cors";
 
-export default fp(async (fastify) => {
+export default fp<FastifyCorsOptions>(async (fastify) => {
   fastify.register(cors, {
-    origin: true, // Permite todas las solicitudes desde cualquier origen
+    origin: true,
   });
+  console.log("registre cors");
 });
