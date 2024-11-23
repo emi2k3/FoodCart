@@ -3,7 +3,7 @@ import cors, { FastifyCorsOptions } from "@fastify/cors";
 
 export default fp<FastifyCorsOptions>(async (fastify) => {
   fastify.register(cors, {
-    origin: true,
+    origin: ["https://10.4.201.213", "https://localhost"],
   });
   console.log("registre cors");
 });

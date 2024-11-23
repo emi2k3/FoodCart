@@ -31,7 +31,7 @@ export class VerPedidosPage implements OnInit {
 
   constructor() {
     const config: WebSocketSubjectConfig<string> = {
-      url: 'wss://192.168.1.20/backend/websocket',
+      url: 'wss://10.4.201.213/backend/websocket',
       deserializer: (event: MessageEvent) => event.data,
     };
 
