@@ -117,9 +117,9 @@ export class VerPedidosPage implements OnInit {
   }
 
   // Método para ver los detalles del pedido
-  verDetalles(id_pedido: string) {
+  verDetalles(id_pedido: string, id_direccion: string) {
     this.router.navigate(['pedidos/detalles/'], {
-      queryParams: { id: id_pedido },
+      queryParams: { id_pedido: id_pedido, id_direccion: id_direccion },
     });
   }
 }
