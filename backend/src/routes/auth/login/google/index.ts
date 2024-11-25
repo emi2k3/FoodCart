@@ -60,7 +60,9 @@ const googleRoutes: FastifyPluginAsync = async (
 
       // Si no existe, redirige al formulario de registro.
       if (res.rowCount === 0) {
-        const formUrl = `https://localhost/registro?email=${encodeURIComponent(
+        const formUrl = `https://${
+          process.env.FRONT_URL
+        }/registro?email=${encodeURIComponent(
           userInfo.email
         )}&given_name=${encodeURIComponent(
           userInfo.given_name
@@ -78,7 +80,7 @@ const googleRoutes: FastifyPluginAsync = async (
       };
 
       const token = fastify.jwt.sign(payload);
-      const url = `https://localhost/?token=${token}`;
+      const url = `https://${process.env.FRONT_URL}/?token=${token}`;
       return reply.redirect(url);
     }
   );

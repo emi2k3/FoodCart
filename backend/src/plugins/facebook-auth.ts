@@ -19,7 +19,7 @@ export default fp(async (fastify) => {
       auth: oauthPlugin.fastifyOauth2.FACEBOOK_CONFIGURATION, // Configuración predefinida para Facebook.
     },
     startRedirectPath: "/auth/login/facebook", // Ruta de inicio para redirigir al login.
-    callbackUri: "https://localhost/backend/auth/login/facebook/callback", // URI de redirección después del login.
+    callbackUri: `https://${process.env.FRONT_URL}/backend/auth/login/facebook/callback`, // URI de redirección después del login.
   };
 
   // Registra el plugin OAuth2 con las opciones configuradas.

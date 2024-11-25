@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --host=0.0.0.0 --poll 2000",
-    "build": "ng build",
+    "build": "ng build --aot=false",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "gradle": "npm run build && npx cap sync && cd android && ./gradlew assembleDebug --info"
   },
   "private": true,
   "dependencies": {
@@ -18,19 +19,21 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@capacitor/android": "^6.2.0",
     "@capacitor/angular": "^2.0.3",
+    "@capacitor/core": "^6.2.0",
     "@ionic/angular": "^8.3.3",
     "ngx-image-cropper": "^8.1.0",
     "ol": "^10.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.14.10",
-    "@capacitor/core": "latest"
+    "zone.js": "~0.14.10"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.7",
     "@angular/cli": "^18.2.7",
     "@angular/compiler-cli": "^18.2.0",
+    "@capacitor/cli": "latest",
     "@ionic/angular-toolkit": "latest",
     "@types/jasmine": "~5.1.0",
     "autoprefixer": "^10.4.20",
@@ -43,7 +46,6 @@
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.13",
-    "typescript": "~5.5.2",
-    "@capacitor/cli": "latest"
+    "typescript": "~5.5.2"
   }
 }

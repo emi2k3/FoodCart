@@ -18,7 +18,7 @@ const options: SwaggerOptions = {
     },
     servers: [
       {
-        url: "https://localhost/backend", // Servidor de desarrollo.
+        url: `https://${process.env.FRONT_URL}/backend`, // Servidor de desarrollo.
         description: "Development server",
       },
     ],
