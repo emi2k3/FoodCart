@@ -20,6 +20,7 @@ export class VerPedidosPage implements OnInit {
   pedidosFiltrados = signal<VerPedido[]>([]);
   detalle_pedidos: any[] = [];
   isAdmin: boolean = false;
+  repartidor: boolean = false;
   authService: AuthService = inject(AuthService);
   getPedidos: GetPedidosService = inject(GetPedidosService);
   getDetalle_Pedido: GetDetallePedidosService = inject(
@@ -39,6 +40,10 @@ export class VerPedidosPage implements OnInit {
 
     this.wsSubject.subscribe((message) => {
       if (message === 'Actualizacion_pedido') {
+        if (this.repartidor) {
+          this.cargarPedidosRepartidor();
+          return;
+        }
         if (this.isAdmin == false) {
           const token = localStorage.getItem('token');
           if (token) {
@@ -57,7 +62,12 @@ export class VerPedidosPage implements OnInit {
 
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
-    if (this.isAdmin == false) {
+    this.repartidor = this.authService.isRepartidor();
+    if (this.repartidor) {
+      this.cargarPedidosRepartidor();
+      return;
+    }
+    if (this.isAdmin) {
       const token = localStorage.getItem('token');
       if (token) {
         const idusuario = JSON.parse(atob(token.split('.')[1]));
@@ -84,6 +94,21 @@ export class VerPedidosPage implements OnInit {
     this.pedidosFiltrados.set(this.pedidos());
   }
 
+  async cargarPedidosRepartidor() {
+    let pedidossinfiltrar = await this.getPedidos.getAllPedidos();
+    pedidossinfiltrar = pedidossinfiltrar.map(
+      (pedido: VerPedido, index: number) => {
+        return { ...pedido, nombre: 'Pedido ' + index };
+      },
+    );
+    this.pedidos.set(
+      pedidossinfiltrar.filter(
+        (pedido: any) =>
+          !['PENDIENTE', 'CONFIRMADO', 'EN_PREPARACION', 'EN_CAMINO', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
+      ),
+    );
+    this.pedidosFiltrados.set(this.pedidos());
+  }
   // Método para cargar los pedidos por ID de usuario
   async cargarPedidosbyID(id_usuario: string) {
     let pedidossinfiltrar = await this.getPedidos.getPedidoById(id_usuario);
@@ -114,6 +139,15 @@ export class VerPedidosPage implements OnInit {
     const estado = Elemento.value;
     pedido.estado = estado;
     this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido); // Actualiza el estado del pedido
+  }
+
+  tomarPedido(pedido: any) {
+    const estado = "EN_CAMINO"
+    pedido.estado = estado;
+    this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido); // Actualiza el estado del pedido
+    this.router.navigate(['pedidos/detalles/'], {
+      queryParams: { id_pedido: pedido.id_pedido, id_direccion: pedido.id_direccion },
+    });
   }
 
   // Método para ver los detalles del pedido

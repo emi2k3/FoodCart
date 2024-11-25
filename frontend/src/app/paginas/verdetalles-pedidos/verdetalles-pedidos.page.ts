@@ -6,6 +6,7 @@ import { GetProductosService } from '../../servicios/productos/get-productos.ser
 import { CommonModule, JsonPipe, NgFor } from '@angular/common'; // Importa CommonModule y NgFor para directivas de Angular
 import { MapaPedidosComponent } from '../../componentes/mapa-pedidos/mapa-pedidos.component';
 import { CRUDdireccionesService } from '../../servicios/direcciones/cruddirecciones.service';
+import { AuthService } from '../../servicios/auth.service';
 
 @Component({
   selector: 'app-verdetalles-pedidos', // Define el selector del componente, que se utiliza en el HTML
@@ -16,6 +17,7 @@ import { CRUDdireccionesService } from '../../servicios/direcciones/cruddireccio
 export class VerdetallesPedidosPage implements OnInit {
   // Inyecta los servicios y rutas necesarias utilizando la función inject
   private cargarProducto: GetProductosService = inject(GetProductosService);
+  private repartidorCheck: AuthService = inject(AuthService);
   private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private router: Router = inject(Router);
   getDetalle_Pedido: GetDetallePedidosService = inject(
@@ -27,7 +29,7 @@ export class VerdetallesPedidosPage implements OnInit {
   detalle_pedidos: any[] = [];
   productos: any[] = [];
   address = signal<string>('');
-
+  repartidor = signal<boolean>(false);
   constructor() { }
 
   // Método para obtener el nombre del producto por su ID
@@ -55,6 +57,8 @@ export class VerdetallesPedidosPage implements OnInit {
 
       let direccion = await this.getDireccionID.getDireccionesByID(this.activatedRoute.snapshot.queryParams['id_direccion']);
       this.address.set(`${direccion.calle} ${direccion.numero}`);
+      this.repartidor.set(this.repartidorCheck.isRepartidor());
+
     } else {
       // Navega a la ruta de inicio si no hay un ID de pedido en los parámetros de la ruta
       this.router.navigate(['']);

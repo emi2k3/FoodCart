@@ -74,6 +74,7 @@ const googleRoutes: FastifyPluginAsync = async (
         email: res.rows[0].email,
         isAdmin: res.rows[0].admin,
         expiresIn: "3h",
+        isRepartidor: res.rows[0].repartidor
       };
 
       const token = fastify.jwt.sign(payload);

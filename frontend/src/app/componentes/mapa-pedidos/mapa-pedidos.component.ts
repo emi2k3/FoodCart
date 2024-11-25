@@ -1,4 +1,4 @@
-import { Component, effect, Input, OnChanges, OnInit, signal, SimpleChanges } from '@angular/core';
+import { Component, effect, Input, OnChanges, OnDestroy, OnInit, signal, SimpleChanges } from '@angular/core';
 import Map from 'ol/Map'; // Clase principal de mapas en OpenLayers
 import View from 'ol/View'; // Para definir la vista del mapa
 import TileLayer from 'ol/layer/Tile'; // Para usar capas de mapas base
@@ -9,6 +9,7 @@ import VectorSource from 'ol/source/Vector'; // Fuente de capas vectoriales
 import VectorLayer from 'ol/layer/Vector'; // Capa para las ubicaciones
 import { fromLonLat } from 'ol/proj'; // Para convertir coordenadas
 import { Icon, Style } from 'ol/style';
+import { WebSocketSubject } from 'rxjs/webSocket';
 
 @Component({
   selector: 'app-mapa-pedidos',
@@ -16,20 +17,36 @@ import { Icon, Style } from 'ol/style';
   templateUrl: './mapa-pedidos.component.html',
   styleUrls: ['./mapa-pedidos.component.css'],
 })
-export class MapaPedidosComponent implements OnInit {
+export class MapaPedidosComponent implements OnInit, OnDestroy {
   @Input() address = signal<string>('');
+  @Input() repartidorBoolean = signal<boolean>(false);
+
+  repartidor!: Feature;
   mapa!: Map; // Variable para almacenar el mapa
   vectorSource = new VectorSource();
+  private socket: WebSocketSubject<any>;
+
 
   constructor() {
+    // Si hay un cambio en las signal entonces se va a ejecutar el effect.
     effect(() => {
       this.addAddressMarker();
+      if (this.repartidorBoolean()) {
+        this.addMarkerRepatirdor()
+      }
+      else {
+        this.escucharPosicionRepartidor();
+      }
     });
+    this.socket = new WebSocketSubject('wss://localhost/backend/websocket');
+  }
+  ngOnDestroy(): void {
+    this.socket.unsubscribe();
   }
   ngOnInit(): void {
     // Inicializar el mapa al cargar el componente
     this.inicializarMapa();
-    // Si hay un cambio en la signal entonces se va a ejecutar el effect.
+
 
   }
 
@@ -114,24 +131,76 @@ export class MapaPedidosComponent implements OnInit {
     // Agregar marcador a la capa de la fuente vectorial
     this.vectorSource.addFeature(marker);
   }
-  addMarkerRepatirdor(coordinates: any): void {
-    // Crear un nuevo marcador
-    const marker = new Feature({
-      geometry: new Point(coordinates),
-    });
+  addMarkerRepatirdor(): void {
+    console.log("Soy repartidor");
+    navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
 
-    // Estilo del marcador
-    marker.setStyle(
-      new Style({
-        image: new Icon({
-          src: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // Icono del marcador
-          scale: 0.05, // Tamaño del icono
-        }),
-      })
+        // Si ya hay una Feature(Punto) entonces lo borra y crea uno nuevo.
+        if (this.repartidor) {
+          this.vectorSource.removeFeature(this.repartidor);
+        }
+
+        // Posición del repartidor con la data nueva
+        this.repartidor = new Feature({
+          geometry: new Point(fromLonLat([longitude, latitude])),
+        });
+
+        // Como se va a ver el punto
+        this.repartidor.setStyle(
+          new Style({
+            image: new Icon({
+              src: 'https://cdn-icons-png.freepik.com/256/5457/5457799.png',
+              scale: 0.05,
+            }),
+          })
+        );
+        this.socket.next({
+          type: 'positionChanged',
+          data: { lat: latitude, lon: longitude },
+        });
+        // Pone el punto
+        this.vectorSource.addFeature(this.repartidor);
+      },
+      // Si la geolocation por alguna razón no funca tiramos este error en consola.
+      (error) => console.error('Error al obtener ubicación del repartidor:', error),
+      { enableHighAccuracy: true } // Config de precision.
     );
+  }
 
-    // Agregar marcador a la capa de la fuente vectorial
-    this.vectorSource.addFeature(marker);
+  escucharPosicionRepartidor(): void {
+    this.socket.subscribe((message) => {
+      try {
+        if (message.type === 'repartidorPosition') {
+          const { lat, lon } = message.data;
+
+          if (this.repartidor) {
+            this.vectorSource.removeFeature(this.repartidor);
+          }
+
+          this.repartidor = new Feature({
+            geometry: new Point(fromLonLat([lon, lat])),
+          });
+
+          this.repartidor.setStyle(
+            new Style({
+              image: new Icon({
+                src: 'https://cdn-icons-png.freepik.com/256/5457/5457799.png',
+                scale: 0.05,
+              }),
+            })
+          );
+
+          this.vectorSource.addFeature(this.repartidor);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+    });
   }
 }
+
+
 
