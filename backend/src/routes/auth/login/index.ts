@@ -34,7 +34,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
       // Consulta a la base de datos para verificar el usuario.
       const checkResult = await query(
-        "SELECT id,admin FROM usuario WHERE email = $1 AND contraseña = crypt($2, contraseña)",
+        "SELECT id,admin,repartidor FROM usuario WHERE email = $1 AND contraseña = crypt($2, contraseña)",
         [email, contraseña]
       );
       const rows = checkResult.rows;
@@ -45,11 +45,14 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       // Si el usuario existe, genera un token JWT.
       const id_usuario = rows[0].id;
       const isAdmin = rows[0].admin;
+      const isRepartidor = rows[0].repartidor;
+      console.log(isRepartidor);
       const token = fastify.jwt.sign({
         email,
         id: id_usuario,
         expiresIn: "3h", // El token expira en 3 horas.
         isAdmin: isAdmin,
+        isRepartidor: isRepartidor
       });
       reply.send({ token }); // Devuelve el token al cliente.
     },

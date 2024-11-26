@@ -1,4 +1,12 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { AuthService } from '../../servicios/auth.service';
 import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
@@ -51,15 +59,15 @@ export class ConfirmOrderComponent implements OnInit {
 
   close() {
     this.closeModal.emit();
-
   }
   async cargarDirecciones() {
-    const response = await this.getDireccionesUser.getDireccionesByUserID(this.userId);
+    const response = await this.getDireccionesUser.getDireccionesByUserID(
+      this.userId,
+    );
     this.direcciones.set(response.direcciones);
   }
-  constructor() { }
+  constructor() {}
   ngOnInit(): void {
     this.cargarDirecciones();
   }
-
 }

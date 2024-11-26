@@ -8,20 +8,18 @@ import {
 } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { AuthService } from '../../servicios/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { CRUDUsuariosService } from '../../servicios/crud-usuarios.service';
 import GetPedidosService from '../../servicios/pedidos/get-pedidos.service';
-import { GetProductosService } from '../../servicios/productos/get-productos.service';
-import { GetDetallePedidosService } from '../../servicios/pedidos/get-detalle-pedidos.service';
 import { CarritoService } from '../../servicios/carrito-service.service';
 import { Pedido } from '../../interfaces/pedido';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [SearchComponent, NgIf, CommonModule],
+  imports: [RouterLink, SearchComponent, NgIf, CommonModule],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent implements OnInit {

@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root', // Provee el servicio en el nivel raíz de la aplicación, haciéndolo disponible en todas partes
 })
 export class FetchMultipartService {
-  readonly baseurl = 'https://10.4.201.213/backend/'; // URL base para todas las solicitudes al backend
+  readonly baseurl = 'https://192.168.1.11/backend/'; // URL base para todas las solicitudes al backend
 
   // Función privada para obtener los encabezados de las solicitudes HTTP
   private getHeaders(): HeadersInit {
@@ -125,5 +125,5 @@ export class FetchMultipartService {
     }
   }
 
-  constructor() {} // Constructor vacío, puede ser utilizado para inicializar el servicio si es necesario
+  constructor() { } // Constructor vacío, puede ser utilizado para inicializar el servicio si es necesario
 }

@@ -8,20 +8,21 @@ export interface PedidoItem {
 export interface Pedido {
   id_usuario: number;
   estado:
-    | 'PENDIENTE'
-    | 'CONFIRMADO'
-    | 'EN_PREPARACION'
-    | 'LISTO'
-    | 'EN_CAMINO'
-    | 'ENTREGADO'
-    | 'COMPLETADO'
-    | 'CANCELADO';
+  | 'PENDIENTE'
+  | 'CONFIRMADO'
+  | 'EN_PREPARACION'
+  | 'LISTO'
+  | 'EN_CAMINO'
+  | 'ENTREGADO'
+  | 'COMPLETADO'
+  | 'CANCELADO';
   fecha: string;
   items: PedidoItem[];
 }
 
 export interface VerPedido {
   id_pedido: string;
+  id_direccion: string;
   nombre: string;
   fecha_hora: string;
   id_local: number;

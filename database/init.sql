@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS usuario (
     id_telefono INTEGER NOT NULL,
     contraseña VARCHAR(225) NOT NULL,
     foto BOOLEAN NULL,
-    admin BOOLEAN NOT NULL DEFAULT FALSE
+    admin BOOLEAN NOT NULL DEFAULT FALSE,
+    repartidor BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Crear tabla usuarios_direcciones para manejar la relación entre usuarios y direcciones
@@ -102,13 +103,22 @@ CREATE TABLE IF NOT EXISTS detalle_pedido (
 
 -- Insertar datos iniciales en las tablas telefono y direccion
 INSERT INTO telefono (numeroTel) VALUES('099482111');
-INSERT INTO direccion (numero, calle) VALUES('123', 'vibaracha');
+INSERT INTO telefono (numeroTel) VALUES('47325467');
+INSERT INTO direccion (numero, calle) VALUES('123', 'Calle');
+INSERT INTO direccion (numero, calle) VALUES('1251', 'Artigas');
+ 
 
 -- Insertar un usuario administrador
 INSERT INTO usuario (nombre, apellido, email, id_direccion, id_telefono, contraseña) 
 VALUES('ad', 'min', 'admin@example.com', 1, 1, crypt('Contraseña123!', gen_salt('bf')));
 UPDATE usuario SET admin = TRUE WHERE id = 1;
 
+INSERT INTO usuario (nombre, apellido, email, id_direccion, id_telefono, contraseña) 
+VALUES('Repar', 'Tidor', 'repartidor@example.com', 1, 1, crypt('Contraseña123!', gen_salt('bf')));
+UPDATE usuario SET repartidor = TRUE WHERE id = 2;
+
+INSERT INTO usuarios_direcciones (id_usuario,id_direccion) VALUES (1,1);
+INSERT INTO usuarios_direcciones (id_usuario,id_direccion) VALUES (2,2);
 -- Insertar categorías iniciales
 INSERT INTO categoria (nombre) VALUES('COMIDA');
 INSERT INTO categoria (nombre) VALUES('BEBIDA');

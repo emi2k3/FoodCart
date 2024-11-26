@@ -6,7 +6,7 @@ const direccionRoute: FastifyPluginAsync = async (
     fastify,
     opts
 ): Promise<void> => {
-    fastify.get("/:id_usuario", {
+    fastify.get("/lista/:id_usuario", {
         schema: {
             summary: "Se consiguen todas las direcciones del usuario",
             description: "### Implementa y valida: \n" + "- token \n" + "- params",
@@ -19,19 +19,19 @@ const direccionRoute: FastifyPluginAsync = async (
                     type: "object",
                     properties: {
                         id_usuario: { type: "number" },
-                        direcciones:{
-                                type: "array",
-                                items: {
-                                    type: "object",
-                                    properties: {
-                                        id_direccion: { type: "number" },
-                                        calle: { type: "string" },
-                                        numero: { type: "string" },
-                                        apto: { type: "string" }
-                                    },
+                        direcciones: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    id_direccion: { type: "number" },
+                                    calle: { type: "string" },
+                                    numero: { type: "string" },
+                                    apto: { type: "string" }
                                 },
+                            },
                         }
-                        
+
                     },
 
                 },
@@ -77,6 +77,53 @@ const direccionRoute: FastifyPluginAsync = async (
             }
             reply.status(200);
             return resultado;
+        },
+    });
+
+    fastify.get("/:id_direccion", {
+        schema: {
+            summary: "Se consiguen todas las direcciones del usuario",
+            description: "### Implementa y valida: \n" + "- token \n" + "- params",
+            tags: ["Direcciones"],
+            security: [{ BearerAuth: [] }],
+            params: {
+                type: "object",
+                properties: {
+                    id_direccion: { type: "string" },
+                },
+                required: ["id_direccion"],
+            },
+            response: {
+                200: {
+                    description: "Proporciona todas las direcciones del usuario",
+                    type: "object",
+                    properties: {
+                        id_direccion: { type: "number" },
+                        calle: { type: "string" },
+                        numero: { type: "string" },
+                        apto: { type: "string" }
+                    },
+
+                },
+            },
+        },
+        onRequest: [fastify.authenticate], // Middleware para autenticar
+        handler: async function (request, reply) {
+            const { id_direccion } = (request.params as { id_direccion: string })
+
+            const response = await query(`
+            SELECT 
+                d.id AS id_direccion,
+                d.numero,
+                d.calle,
+                d.apto
+            FROM 
+                direccion AS d
+            WHERE 
+                d.id = $1;`, [id_direccion]);
+
+            reply.status(200);
+            return response.rows[0];
         },
     });
 };

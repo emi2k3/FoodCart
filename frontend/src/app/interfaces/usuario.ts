@@ -22,3 +22,9 @@ export interface ResetPassword {
   newPassword: string; // Campo para la nueva contraseña del usuario
   confirmPassword: string; // Campo para confirmar la nueva contraseña del usuario
 }
+
+export interface FormularioContacto {
+  nombre: string;
+  email: string;
+  mensaje: string;
+}
