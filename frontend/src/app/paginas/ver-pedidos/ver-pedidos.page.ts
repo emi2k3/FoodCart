@@ -32,19 +32,39 @@ export class VerPedidosPage implements OnInit {
 
   constructor() {
     const config: WebSocketSubjectConfig<string> = {
-      url: 'wss://10.4.201.213/backend/websocket',
+      url: 'wss://192.168.1.11/backend/websocket',
       deserializer: (event: MessageEvent) => event.data,
     };
 
     this.wsSubject = new WebSocketSubject(config);
 
+  }
+
+  ngOnInit(): void {
+    this.isAdmin = this.authService.isAdmin();
+    this.repartidor = this.authService.isRepartidor();
+    if (this.repartidor) {
+      this.cargarPedidosRepartidor();
+    }
+    else if (this.isAdmin == false) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const idusuario = JSON.parse(atob(token.split('.')[1]));
+        this.cargarPedidosbyID(idusuario.id);
+      }
+    } else {
+      this.cargarPedidos();
+    }
+    this.setupWebSocket();
+
+  }
+  setupWebSocket() {
     this.wsSubject.subscribe((message) => {
       if (message === 'Actualizacion_pedido') {
         if (this.repartidor) {
           this.cargarPedidosRepartidor();
-          return;
         }
-        if (this.isAdmin == false) {
+        else if (this.isAdmin == false) {
           const token = localStorage.getItem('token');
           if (token) {
             const idusuario = JSON.parse(atob(token.split('.')[1]));
@@ -55,29 +75,7 @@ export class VerPedidosPage implements OnInit {
         }
       }
     });
-    effect(() => {
-      console.log('Pedidos actualizados:', this.pedidos());
-    });
   }
-
-  ngOnInit(): void {
-    this.isAdmin = this.authService.isAdmin();
-    this.repartidor = this.authService.isRepartidor();
-    if (this.repartidor) {
-      this.cargarPedidosRepartidor();
-      return;
-    }
-    if (this.isAdmin) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const idusuario = JSON.parse(atob(token.split('.')[1]));
-        this.cargarPedidosbyID(idusuario.id);
-      }
-    } else {
-      this.cargarPedidos();
-    }
-  }
-
   async cargarPedidos() {
     let pedidossinfiltrar = await this.getPedidos.getAllPedidos();
     pedidossinfiltrar = pedidossinfiltrar.map(
@@ -85,6 +83,7 @@ export class VerPedidosPage implements OnInit {
         return { ...pedido, nombre: 'Pedido ' + index };
       },
     );
+
     this.pedidos.set(
       pedidossinfiltrar.filter(
         (pedido: any) =>

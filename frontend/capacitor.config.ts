@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'frontend',
   webDir: 'dist/frontend/browser',
   server: {
-    allowNavigation: ['10.4.201.213'],
+    allowNavigation: ['192.168.1.11'],
   },
 };
 
