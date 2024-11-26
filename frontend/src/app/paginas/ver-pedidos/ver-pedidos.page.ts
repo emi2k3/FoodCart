@@ -20,6 +20,7 @@ export class VerPedidosPage implements OnInit {
   pedidosFiltrados = signal<VerPedido[]>([]);
   detalle_pedidos: any[] = [];
   isAdmin: boolean = false;
+  repartidor: boolean = false;
   authService: AuthService = inject(AuthService);
   getPedidos: GetPedidosService = inject(GetPedidosService);
   getDetalle_Pedido: GetDetallePedidosService = inject(
@@ -31,15 +32,39 @@ export class VerPedidosPage implements OnInit {
 
   constructor() {
     const config: WebSocketSubjectConfig<string> = {
-      url: 'wss://localhost/backend/websocket',
+      url: 'wss://192.168.1.11/backend/websocket',
       deserializer: (event: MessageEvent) => event.data,
     };
 
     this.wsSubject = new WebSocketSubject(config);
 
+  }
+
+  ngOnInit(): void {
+    this.isAdmin = this.authService.isAdmin();
+    this.repartidor = this.authService.isRepartidor();
+    if (this.repartidor) {
+      this.cargarPedidosRepartidor();
+    }
+    else if (this.isAdmin == false) {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const idusuario = JSON.parse(atob(token.split('.')[1]));
+        this.cargarPedidosbyID(idusuario.id);
+      }
+    } else {
+      this.cargarPedidos();
+    }
+    this.setupWebSocket();
+
+  }
+  setupWebSocket() {
     this.wsSubject.subscribe((message) => {
       if (message === 'Actualizacion_pedido') {
-        if (this.isAdmin == false) {
+        if (this.repartidor) {
+          this.cargarPedidosRepartidor();
+        }
+        else if (this.isAdmin == false) {
           const token = localStorage.getItem('token');
           if (token) {
             const idusuario = JSON.parse(atob(token.split('.')[1]));
@@ -50,24 +75,7 @@ export class VerPedidosPage implements OnInit {
         }
       }
     });
-    effect(() => {
-      console.log('Pedidos actualizados:', this.pedidos());
-    });
   }
-
-  ngOnInit(): void {
-    this.isAdmin = this.authService.isAdmin();
-    if (this.isAdmin == false) {
-      const token = localStorage.getItem('token');
-      if (token) {
-        const idusuario = JSON.parse(atob(token.split('.')[1]));
-        this.cargarPedidosbyID(idusuario.id);
-      }
-    } else {
-      this.cargarPedidos();
-    }
-  }
-
   async cargarPedidos() {
     let pedidossinfiltrar = await this.getPedidos.getAllPedidos();
     pedidossinfiltrar = pedidossinfiltrar.map(
@@ -75,6 +83,7 @@ export class VerPedidosPage implements OnInit {
         return { ...pedido, nombre: 'Pedido ' + index };
       },
     );
+
     this.pedidos.set(
       pedidossinfiltrar.filter(
         (pedido: any) =>
@@ -84,6 +93,21 @@ export class VerPedidosPage implements OnInit {
     this.pedidosFiltrados.set(this.pedidos());
   }
 
+  async cargarPedidosRepartidor() {
+    let pedidossinfiltrar = await this.getPedidos.getAllPedidos();
+    pedidossinfiltrar = pedidossinfiltrar.map(
+      (pedido: VerPedido, index: number) => {
+        return { ...pedido, nombre: 'Pedido ' + index };
+      },
+    );
+    this.pedidos.set(
+      pedidossinfiltrar.filter(
+        (pedido: any) =>
+          !['PENDIENTE', 'CONFIRMADO', 'EN_PREPARACION', 'EN_CAMINO', 'ENTREGADO', 'CANCELADO'].includes(pedido.estado),
+      ),
+    );
+    this.pedidosFiltrados.set(this.pedidos());
+  }
   // Método para cargar los pedidos por ID de usuario
   async cargarPedidosbyID(id_usuario: string) {
     let pedidossinfiltrar = await this.getPedidos.getPedidoById(id_usuario);
@@ -116,10 +140,19 @@ export class VerPedidosPage implements OnInit {
     this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido); // Actualiza el estado del pedido
   }
 
-  // Método para ver los detalles del pedido
-  verDetalles(id_pedido: string) {
+  tomarPedido(pedido: any) {
+    const estado = "EN_CAMINO"
+    pedido.estado = estado;
+    this.putPedido.put(JSON.stringify(pedido), pedido.id_pedido); // Actualiza el estado del pedido
     this.router.navigate(['pedidos/detalles/'], {
-      queryParams: { id: id_pedido },
+      queryParams: { id_pedido: pedido.id_pedido, id_direccion: pedido.id_direccion },
+    });
+  }
+
+  // Método para ver los detalles del pedido
+  verDetalles(id_pedido: string, id_direccion: string) {
+    this.router.navigate(['pedidos/detalles/'], {
+      queryParams: { id_pedido: id_pedido, id_direccion: id_direccion },
     });
   }
 }

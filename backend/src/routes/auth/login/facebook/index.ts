@@ -67,7 +67,9 @@ const facebookRoutes: FastifyPluginAsync = async (
 
         // Si no existe, redirige al formulario de registro.
         if (res.rowCount === 0) {
-          const formUrl = `https://localhost/registro?email=${encodeURIComponent(
+          const formUrl = `https://${
+            process.env.FRONT_URL
+          }/registro?email=${encodeURIComponent(
             userInfo.email
           )}&given_name=${encodeURIComponent(
             userInfo.first_name
@@ -81,13 +83,14 @@ const facebookRoutes: FastifyPluginAsync = async (
           email: res.rows[0].email,
           isAdmin: res.rows[0].admin,
           expiresIn: "3h",
+          isRepartidor: res.rows[0].repartidor
         };
 
         const token = fastify.jwt.sign(payload);
-        const url = `https://localhost/?token=${token}`;
+        const url = `https://${process.env.FRONT_URL}/?token=${token}`;
         return reply.redirect(url);
       } catch (error) {
-        return reply.redirect("https://localhost"); // Si ocurre un error, redirige al inicio.
+        return reply.redirect(`https://${process.env.FRONT_URL}`); // Si ocurre un error, redirige al inicio.
       }
     }
   );

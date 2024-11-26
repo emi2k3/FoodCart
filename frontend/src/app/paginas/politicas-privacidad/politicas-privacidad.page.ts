@@ -7,14 +7,13 @@ import { HeaderComponent } from '../../componentes/header/header.component';
   selector: 'app-politicas-privacidad',
   templateUrl: './politicas-privacidad.page.html',
   standalone: true,
-  imports: [HeaderComponent, FooterComponent],
-  styleUrls: ['./politicas-privacidad.page.scss'],
+  imports: [HeaderComponent, FooterComponent]
 })
 export class PoliticasPrivacidadPage implements OnInit {
   private router: Router = inject(Router);
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   navegarA(ruta: string) {
     this.router.navigate([ruta]);

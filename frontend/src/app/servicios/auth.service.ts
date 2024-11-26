@@ -68,6 +68,21 @@ export class AuthService {
     }
   }
 
+  isRepartidor(): boolean {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Decodifica el token y verifica si el usuario es administrador
+        const repartidor = JSON.parse(atob(token.split('.')[1]));
+        return repartidor.isRepartidor === true;
+      }
+      return false;
+    } catch (error) {
+      console.log(error); // Maneja errores en la consola
+      return false;
+    }
+  }
+
   // Método para obtener el ID del usuario desde el token
   getUserId() {
     try {
@@ -85,5 +100,5 @@ export class AuthService {
   }
 
   // Constructor del servicio
-  constructor() {}
+  constructor() { }
 }
