@@ -104,9 +104,13 @@ CREATE TABLE IF NOT EXISTS detalle_pedido (
 -- Insertar datos iniciales en las tablas telefono y direccion
 INSERT INTO telefono (numeroTel) VALUES('099482111');
 INSERT INTO telefono (numeroTel) VALUES('47325467');
+INSERT INTO telefono (numeroTel) VALUES('099492111');
+INSERT INTO telefono (numeroTel) VALUES('099482993');
 INSERT INTO direccion (numero, calle) VALUES('123', 'Calle');
 INSERT INTO direccion (numero, calle) VALUES('1251', 'Artigas');
- 
+INSERT INTO direccion (numero, calle) VALUES('1254', 'Artigas');
+INSERT INTO direccion (numero, calle) VALUES('1436', 'Guarani');
+
 
 -- Insertar un usuario administrador
 INSERT INTO usuario (nombre, apellido, email, id_direccion, id_telefono, contraseña) 
@@ -117,8 +121,17 @@ INSERT INTO usuario (nombre, apellido, email, id_direccion, id_telefono, contras
 VALUES('Repar', 'Tidor', 'repartidor@example.com', 1, 1, crypt('Contraseña123!', gen_salt('bf')));
 UPDATE usuario SET repartidor = TRUE WHERE id = 2;
 
+INSERT INTO usuario (nombre, apellido, email, id_direccion, id_telefono, contraseña) 
+VALUES('Jorge', 'Melnik', 'jmelnik19@gmail.com', 3, 3, crypt('@Jmelnik19', gen_salt('bf')));
+UPDATE usuario SET admin = TRUE WHERE id = 3;
+
+INSERT INTO usuario (nombre, apellido, email, id_direccion, id_telefono, contraseña) 
+VALUES('Emilio', 'Rodriguez', 'emilio@rodriguez.com', 4, 4, crypt('@RodriguezEmilio1', gen_salt('bf')));
+
 INSERT INTO usuarios_direcciones (id_usuario,id_direccion) VALUES (1,1);
 INSERT INTO usuarios_direcciones (id_usuario,id_direccion) VALUES (2,2);
+INSERT INTO usuarios_direcciones (id_usuario,id_direccion) VALUES (3,3);
+INSERT INTO usuarios_direcciones (id_usuario,id_direccion) VALUES (4,4);
 -- Insertar categorías iniciales
 INSERT INTO categoria (nombre) VALUES('COMIDA');
 INSERT INTO categoria (nombre) VALUES('BEBIDA');

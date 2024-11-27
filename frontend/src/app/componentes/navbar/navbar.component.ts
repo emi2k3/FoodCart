@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   HostListener,
+  inject,
 } from '@angular/core';
 import { SearchComponent } from '../search/search.component';
 import { AuthService } from '../../servicios/auth.service';
@@ -27,7 +28,7 @@ export class NavbarComponent implements OnInit {
     nombre: '',
     foto: 'assets/default-user.png',
   };
-
+  isAdmin: boolean = false;
   isDropdownOpen = false;
 
   @Input() withSearch: boolean = true;
@@ -50,6 +51,7 @@ export class NavbarComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.isAdmin = this.authservice.isAdmin();
     if (this.authservice.isValidUser()) {
       try {
         const token = localStorage.getItem('token');

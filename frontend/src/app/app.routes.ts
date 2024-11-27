@@ -17,6 +17,8 @@ import { PoliticasPrivacidadPage } from './paginas/politicas-privacidad/politica
 import { TerminosServicioPage } from './paginas/terminos-servicio/terminos-servicio.page'; // Importa la página de términos y condiciones
 import { EditarPerfilPage } from './paginas/editar-perfil/editar-perfil.page';
 import { ContactoPage } from './paginas/contacto/contacto.page'; // Importa la página de contacto
+import { ListadoUsuariosPage } from './paginas/listado-usuarios/listado-usuarios.page';
+import { HistorialPedidosPage } from './paginas/historial-pedidos/historial-pedidos.page';
 
 export const routes: Routes = [
   {
@@ -111,5 +113,17 @@ export const routes: Routes = [
     component: ContactoPage,
     title: 'Contacto', // Título de la página
     canActivate: [checkAdminGuard], // Guard para verificar si el usuario está autenticado
+  },
+  {
+    path: 'usuarios', // Ruta para la página de contacto
+    component: ListadoUsuariosPage,
+    title: 'Contacto', // Título de la página
+    canActivate: [checkAdminGuard], // Guard para verificar si el usuario está autenticado
+  },
+  {
+    path: 'historial', // Ruta para la página de contacto
+    component: HistorialPedidosPage,
+    title: 'Historial', // Título de la página
+    canActivate: [checkTokenGuard], // Guard para verificar si el usuario está autenticado
   },
 ];
